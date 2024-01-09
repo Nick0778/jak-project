@@ -1,3 +1,44 @@
+# "PORTBLMP-Restoration" Branch
+
+This branch contains modifications as an attempt to restore that cut port mission from Jak 2 July Prototype called "Defend the Portwall" in the final version of the game on OpenGoal. More info about this mission can be found in: https://www.youtube.com/watch?v=2ZGTRvTlA3M&t=131s
+
+### Usage
+
+You need to get PORTBLMP.DGO from _Jak 2 July Prototype build_'s DGO folder, and put it into the DGO folder of iso_data. Also, you need to get CIPBRES.STR from STR folder of the Prototype build, and put it into the STR folder from iso_data. Then, do all the rest of Opengoal installation process. If you did everything right, you will be able to access this level by entering in Debug Menu: _game/continue/default/ctyport-turret_, then the level should work.
+
+(Note: The original idea would be to connect the level with the game's overworld, but due to the limitations of Opengoal, it is not possible to add new regions yet.)
+
+### Progress so far
+- The task for this level was fully recreated with the help of some remains from it found in the source code that made it easier for me to recreate it.
+- The Task was placed exactly where it originally belonged, between "Defend Stadium" and "Find Baron at Construction Site" tasks.
+- Torn's cutscene was restored and it can close the task after the scene ends. However, it still does not have any audio, due to the absence of the cutscene audio file that are only present in the prototype build. You can load the cutscene by entering in Debug Menu: _scene/city/city-protect-blimp-res_.
+- The game task system proceed normally after "beating" this mission.
+
+### To do
+- Restore The entire code from this mission (This require a decompiling the mission codes, a lot of work and much pain).
+- Restore all the missing audios from this mission (Torn voicelines).
+- Fix some visual glitches, like the missing textures from the turret and Torn eyes that are glitched.
+- Fix Jak coordinates when starting the level.
+- Add new sounds that originally don't exist in the mission, like turret sounds and damage sounds.
+- Connect portblmp level with the game overworld.
+
+### Note about "PORTBLMP_Decompiled_Codes" folder
+
+It's just a folder that will contain the codes that will be decompiled for now. At the moment, it only has one mission code that contains the turret code, but it has not yet been completely decompiled and will cause errors when trying to include it in the game.
+Thanks for Hat Kid who send me these files!
+
+### Contributing
+
+Doing things like this requires a lot of effort and work, as decompiling several codes is a very complicated and painful task. So, I would really appreciate it if someone could help me with the development of this project and be able to make this mission accessible in the final version of the game and also make it as complete as possible and with extra additional content!
+
+
+### Video Showcase
+
+https://github.com/open-goal/jak-project/assets/149975116/e86a88cb-9d7f-4a42-b464-6a03fe35f9f9
+
+
+---
+
 <p align="center">
   <img width="500" height="100%" src="./docs/img/logo-text-colored-new.png">
 </p>
@@ -9,8 +50,6 @@
   <a href="https://www.codacy.com/gh/open-goal/jak-project/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-goal/jak-project&amp;utm_campaign=Badge_Grade" rel="nofollow"><img src="https://app.codacy.com/project/badge/Grade/29316d04a1644aa390c33be07289f3f5" alt="Codacy Badge" style="max-width:100%;"></a>
   <a href="https://discord.gg/VZbXMHXzWv"><img src="https://img.shields.io/discord/756287461377703987" alt="Discord"></a>
 </p>
-
-## Please read first <!-- omit from toc -->
 
 > [!IMPORTANT]
 > Our repositories on GitHub are primarily for development of the project and tracking active issues. Most of the information you will find here pertains to setting up the project for development purposes and is not relevant to the end-user.
