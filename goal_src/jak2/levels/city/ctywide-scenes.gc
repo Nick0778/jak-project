@@ -829,6 +829,7 @@
     )
   )
 
+;;Remains from portblmp "Defend the Portwall" found! Torn cutscene when the task ends
 (scene-method-16 (new 'static 'scene
                    :name "city-protect-blimp-res"
                    :extra #f
