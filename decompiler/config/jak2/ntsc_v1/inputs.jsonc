@@ -248,6 +248,7 @@
     "STR/CIOL1.STR",
     "STR/CIOL2.STR",
     "STR/CIOL3.STR",
+    "STR/CIPBRES.STR", // Added in PC Port; Cutscene data "CIPBRES.STR" restored from Jak 2 July Prototype 
     "STR/CIPHOVER.STR",
     "STR/CIPOGINT.STR",
     "STR/CIPOGRES.STR",
