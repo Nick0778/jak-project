@@ -5624,6 +5624,10 @@
                dm-scene-load-pick-func
                )
              (function "city-intercept-tanker-res" ("ctymarkb-tanker" "city-intercept-tanker-res") dm-scene-load-pick-func)
+
+             ;;Added in PC Port; Torn cutscene from 'Defend Portwall' mission restored from Jak 2 July Prototype
+             (function "city-protect-blimp-res" ("ctyport-turret" "city-protect-blimp-res") dm-scene-load-pick-func)
+             
              (function "city-get-yellow-gun" ("gungame-movie" "city-get-yellow-gun") dm-scene-load-pick-func)
              (function "city-get-hoverboard" ("ctyfarma-airlock-movie" "city-get-hoverboard") dm-scene-load-pick-func)
              (function "city-get-dark-gun" ("gungame-movie" "city-get-dark-gun") dm-scene-load-pick-func)
