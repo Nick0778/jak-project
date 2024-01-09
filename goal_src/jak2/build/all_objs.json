@@ -2096,5 +2096,19 @@
 ["4COMMON",                                    "4COMMON",                    2, ["NO-XGO"], ""],
 ["5COMMON",                                    "5COMMON",                    2, ["NO-XGO"], ""],
 ["6COMMON",                                    "6COMMON",                    2, ["NO-XGO"], ""],
-["7COMMON",                                    "7COMMON",                    2, ["NO-XGO"], ""]
+["7COMMON",                                    "7COMMON",                    2, ["NO-XGO"], ""],
+["jak-turret+0-ag-PORTBLMP",                   "jak-turret+0",               4, ["PORTBLMP"], ""],
+["port-metal-head-boat-ag",                    "port-metal-head-boat",       4, ["PORTBLMP"], ""],
+["port-turret-ag-PORTBLMP",                    "port-turret",                4, ["PORTBLMP"], ""],
+["drill-turret-ext-ag-PORTBLMP",               "drill-turret-ext",           4, ["PORTBLMP"], ""],
+["target-turret-PORTBLMP",                     "target-turret",              3, ["PORTBLMP"], ""],
+["target-turret-shot-PORTBLMP",                "target-turret-shot",         3, ["PORTBLMP"], ""],
+["torn-highres-ag-PORTBLMP",                   "torn-highres",               4, ["PORTBLMP"], ""],
+["torn-turret+0-ag",                           "torn-turret+0",              4, ["PORTBLMP"], ""],
+["tpage-2934",                                 "tpage-2934",                 4, ["PORTBLMP"], ""],
+["tpage-2935",                                 "tpage-2935",                 4, ["PORTBLMP"], ""],
+["tpage-2967",                                 "tpage-2967",                 4, ["PORTBLMP"], ""],
+["tpage-3071",                                 "tpage-3071",                 4, ["PORTBLMP"], ""],
+["tpage-3130",                                 "tpage-3130",                 4, ["PORTBLMP"], ""],
+["portblmp",                                   "portblmp",                   4, ["PORTBLMP"], ""]
 ]
