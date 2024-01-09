@@ -270,6 +270,8 @@
 (cgo-file "lguard.gd" common-dep)
 (cgo-file "lerbrngd.gd" common-dep)
 (cgo-file "lyskdcd.gd" common-dep)
+;;portblmp
+(cgo-file "portblmp.gd" common-dep)
 
 ;; test levels from the ps3 version
 (when USE_PS3_LEVELS
