@@ -1,7 +1,7 @@
 ("PORTBLMP.DGO"
   ("target-turret-shot.o"
-   "target-turret.o"
-   ;;"port-blimp.o"
+   "target-port-turret.o" ;;Not in original
+   "port-blimp.o" ;;Need to be fully decompiled, but it works partially
    "jak-turret+0-ag.go"
    "torn-turret+0-ag.go"
    "torn-highres-ag.go"
