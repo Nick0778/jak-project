@@ -37647,16 +37647,16 @@
    (red-filter-timer      time-frame            :offset-assert 552)
    (ride-height           float                 :offset-assert 560)
    )
-  :method-count-assert 49
+  :method-count-assert 48 ;;original: 49
   :size-assert         #x234
-  :flag-assert         #x3101c00234
+  :flag-assert         #x3001c00234 ;;original: x3101c00234
   (:state-methods
     idle
     setup
     active
     shutdown
     dormant
-    die
+    ;;die
     )
   (:methods
     (turret-init! (_type_ entity-actor matrix) none) ;; 33
@@ -37703,9 +37703,9 @@
    (egg-timer       time-frame      :offset-assert 616)
    (cgh-timer       time-frame      :offset-assert 624)
    )
-  :method-count-assert 49
+  :method-count-assert 48 ;;original: 49
   :size-assert         #x278
-  :flag-assert         #x3102000278
+  :flag-assert         #x3002000278 ;;original: x3102000278
   )
 
 (define-extern *drill-turret-10-battle* (array hover-enemy-battle-command))
