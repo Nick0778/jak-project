@@ -975,7 +975,7 @@
 ;; failed to figure out what this is:
 (defstate impact (port-turret-shot)
   :virtual #t
-  :code L91
+  ;;:code L91
   )
 
 ;; definition for function port-turret-shot-move
