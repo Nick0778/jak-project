@@ -11,21 +11,58 @@ You need to get PORTBLMP.DGO from _Jak 2 July Prototype build_'s DGO folder, and
 ### Progress so far
 - The task for this level was fully recreated with the help of some remains from it found in the source code that made it easier for me to recreate it.
 - The Task was placed exactly where it originally belonged, between "Defend Stadium" and "Find Baron at Construction Site" tasks.
-- Torn's cutscene was restored and it can close the task after the scene ends. However, it still does not have any audio, due to the absence of the cutscene audio file that are only present in the prototype build. You can load the cutscene by entering in Debug Menu: _scene/city/city-protect-blimp-res_.
+- Torn's cutscene was restored and it can close the task after the scene ends. You can load the cutscene by entering in Debug Menu: _scene/city/city-protect-blimp-res_. 
 - The game task system proceed normally after "beating" this mission.
+- The turret is now functional, however the rest of the mission still doesn't work. It's necessary to fully decompile "port-blimp.o".
+- Added new sounds that originally don't exist in the mission, like turret sounds and damage sounds.
 
 ### To do
 - Restore The entire code from this mission (This require a decompiling the mission codes, a lot of work and much pain).
 - Restore all the missing audios from this mission (Torn voicelines).
-- Fix some visual glitches, like the missing textures from the turret and Torn eyes that are glitched.
+- Fix some visual glitches, like Torn eyes that are glitched.
 - Fix Jak coordinates when starting the level.
-- Add new sounds that originally don't exist in the mission, like turret sounds and damage sounds.
 - Connect portblmp level with the game overworld.
 
-### Note about "PORTBLMP_Decompiled_Codes" folder
+### Note about "PORTBLMP_Decompiled_Codes" folder (This will be a temporary folder until the mission code was fully decompiled)
 
 It's just a folder that will contain the codes that will be decompiled for now. At the moment, it only has one mission code that contains the turret code, but it has not yet been completely decompiled and will cause errors when trying to include it in the game.
 Thanks for Hat Kid who send me these files!
+
+### List of all the audios from Jak 2 July Build required for this mission
+
+- "CIPBRES"
+- "torn010"
+- "torn011"
+- "torn012"
+- "torn014"
+- "torn017"
+- "torn018"
+- "torn019"
+- "torn020"
+- "torn022"
+- "torn023"
+- "torn026"
+- "torn028"
+- "torn029"
+- "torn030"
+- "torn033"
+- "torn034"
+- "torn035"
+- "torn037"
+- "torn038"
+- "torn039"
+- "torn040"
+- "torn047"
+- "torn048"
+- "torn049"
+- "torn051"
+- "torn052"
+- "torn053"
+- "torn056"
+- "torn057"
+- "torn060"
+- "torn061"
+- "torn062"
 
 ### Contributing
 
@@ -34,7 +71,15 @@ Doing things like this requires a lot of effort and work, as decompiling several
 
 ### Video Showcase
 
+- Progress Update 1:
+
 https://github.com/open-goal/jak-project/assets/149975116/e86a88cb-9d7f-4a42-b464-6a03fe35f9f9
+
+- Progress Update 2:
+  
+(Note: Torn cutscene audio "CIPBRES" wasn't included because it's not allowed to share any ISO contents! You will have to do it by yourself using a Hex editor and editing VAGDIR.AYB and VAGWAD.ENG or waiting when some tool that allows us to edit VAG contents release for Opengoal.)
+
+https://github.com/open-goal/jak-project/assets/149975116/c14553dc-cb97-4aec-8a1c-9a2823ab36c5
 
 
 ---
