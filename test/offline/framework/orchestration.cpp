@@ -12,9 +12,9 @@
 #include "decompiler/ObjectFile/ObjectFileDB.h"
 #include "test/offline/config/config.h"
 
-#include "third-party/fmt/color.h"
-#include "third-party/fmt/core.h"
-#include "third-party/fmt/ranges.h"
+#include "fmt/color.h"
+#include "fmt/core.h"
+#include "fmt/ranges.h"
 
 OfflineTestThreadManager g_offline_test_thread_manager;
 
@@ -53,6 +53,7 @@ OfflineTestDecompiler setup_decompiler(const OfflineTestWorkGroup& work,
       std::vector<fs::path>{}, std::vector<fs::path>{}, *dc.config);
   dc.db->dts.art_group_info = dc.config->art_group_info_dump;
   dc.db->dts.jg_info = dc.config->jg_info_dump;
+  dc.db->dts.textures = dc.config->texture_info_dump;
 
   std::unordered_set<std::string> db_files;
   for (auto& files_by_name : dc.db->obj_files_by_name) {

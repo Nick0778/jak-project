@@ -17,7 +17,7 @@
 #include "goalc/emitter/Register.h"
 #include "goalc/listener/Listener.h"
 
-#include "third-party/fmt/core.h"
+#include "fmt/core.h"
 
 /*!
  * Is the target halted? If we don't know or aren't connected, returns false.
@@ -224,7 +224,7 @@ InstructionPointerInfo Debugger::get_rip_info(u64 rip) {
 
 void print_and_append_to_string(std::string& str, const std::string& log) {
   str += log;
-  lg::print(log);
+  lg::print("{}", log);
 }
 
 std::vector<BacktraceFrame> Debugger::get_backtrace(u64 rip,

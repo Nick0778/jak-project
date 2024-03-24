@@ -2,7 +2,7 @@
 
 #include "goalc/compiler/Compiler.h"
 
-#include "third-party/fmt/core.h"
+#include "fmt/core.h"
 
 using namespace goos;
 
@@ -66,7 +66,7 @@ Val* Compiler::compile_goos_macro(const goos::Object& o,
       }
       std::string line(80, '-');
       line.push_back('\n');
-      lg::print(line);
+      lg::print("{}", line);
     }
 
     throw;
@@ -87,7 +87,7 @@ Val* Compiler::compile_goos_macro(const goos::Object& o,
     }
     std::string line(80, '-');
     line.push_back('\n');
-    lg::print(line);
+    lg::print("{}", line);
 
     throw;
   }

@@ -169,9 +169,10 @@ void decompile(const fs::path& iso_data_path, const std::string& data_subfolder)
   // textures
   decompiler::TextureDB tex_db;
   auto textures_out = out_folder / "textures";
+  auto dump_out = out_folder / "import";
   file_util::create_dir_if_needed(textures_out);
   file_util::write_text_file(textures_out / "tpage-dir.txt",
-                             db.process_tpages(tex_db, textures_out, config));
+                             db.process_tpages(tex_db, textures_out, config, dump_out));
 
   // texture merges
   // TODO - put all this stuff in somewhere common
@@ -200,8 +201,7 @@ void decompile(const fs::path& iso_data_path, const std::string& data_subfolder)
     auto level_out_path =
         file_util::get_jak_project_dir() / "out" / game_version_names[config.game_version] / "fr3";
     file_util::create_dir_if_needed(level_out_path);
-    extract_all_levels(db, tex_db, config.levels_to_extract, "GAME.CGO", config, config.rip_levels,
-                       config.extract_collision, level_out_path);
+    extract_all_levels(db, tex_db, config.levels_to_extract, "GAME.CGO", config, level_out_path);
   }
 }
 
