@@ -9,7 +9,7 @@
 
 (kmemopen global "game-info")
 
-;; fix possible compiler crash which doesn't know these functions
+;; fix possible compiler error which don't know these functions
 (define-extern task-closed? (function string symbol))
 (define-extern task-close! (function string symbol))
 
