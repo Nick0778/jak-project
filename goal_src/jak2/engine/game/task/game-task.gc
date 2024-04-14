@@ -9,6 +9,10 @@
 
 (kmemopen global "game-info")
 
+;; fix possible compiler crash which doesn't know these functions
+(define-extern task-closed? (function string symbol))
+(define-extern task-close! (function string symbol))
+
 (let ((gp-0 *game-info*))
   (set! (-> gp-0 play-list)
         (new 'static 'boxed-array :type game-task-info
