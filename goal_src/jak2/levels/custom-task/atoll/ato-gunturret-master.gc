@@ -141,7 +141,6 @@
     ()
     (when (or (zero? (-> *game-info* counter)) (task-node-closed? (game-task-node atoll-destroy-turrets-resolution)))
       (when (zero? (-> *game-info* counter))
-        (talker-spawn-func (-> *talker-speech* 92) *entity-pool* (target-pos 0) (the-as region #f))
         (task-node-close! (game-task-node atoll-destroy-turrets-resolution))
         (send-event (handle->process (-> self hud-timer)) 'hide-and-die)
         (send-event (handle->process (-> self hud-counter)) 'hide-and-die)
