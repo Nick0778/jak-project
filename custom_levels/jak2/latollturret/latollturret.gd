@@ -7,5 +7,6 @@
   "ato-gunturret-master.o"
   "ato-gunturret.o"
   "sew-gunturret-ag.go"
+  "tpage-3383.go" ;; sewerb-minimap tpage (contains the turret HUD, but still don't work)
   "latollturret.go"
   ))
