@@ -2368,3 +2368,71 @@
       )
     )
   )
+
+;; Fix compiler error that don't know these enemy types due to Task-control.gc being compiled before the code for these enemies
+  (declare-type amphibian nav-enemy)
+  (declare-type metalmonk nav-enemy)
+  (declare-type fodder nav-enemy)
+
+(process-spawn-function process
+  (lambda :behavior process ()
+    (loop
+    ;; Hack to force actors to spawn
+      ;; Pumping Station custom mission
+      (when (= (-> (level-get-target-inside *level*) name) 'atoll)
+        (when (and (task-closed? "atoll-destroy-turrets-introduction") (not (task-closed? "atoll-destroy-turrets-resolution")))
+          ;; SPYDER
+          (when (and (entity-by-type spyder) (task-closed? "atoll-destroy-turrets-introduction"))
+            (set! (-> (the entity-actor (entity-by-name "spyder-53")) extra kill-mask) (task-mask task3)) ;; spyder-53
+            (set! (-> (the entity-actor (entity-by-name "spyder-2")) extra kill-mask) (task-mask task3)) ;; spyder-2
+            (set! (-> (the entity-actor (entity-by-name "spyder-3")) extra kill-mask) (task-mask task3)) ;; spyder-3
+            (set! (-> (the entity-actor (entity-by-name "spyder-4")) extra kill-mask) (task-mask task3)) ;; spyder-4
+            )
+          ;; AMPHIBIAN
+          (when (and (entity-by-type amphibian) (task-closed? "atoll-destroy-turrets-introduction"))
+            (set! (-> (the entity-actor (entity-by-name "amphibian-1")) extra kill-mask) (task-mask task3)) ;; amphibian-1
+            (set! (-> (the entity-actor (entity-by-name "amphibian-2")) extra kill-mask) (task-mask task3)) ;; amphibian-2
+            (set! (-> (the entity-actor (entity-by-name "amphibian-4")) extra kill-mask) (task-mask task3)) ;; amphibian-4
+            (set! (-> (the entity-actor (entity-by-name "amphibian-48")) extra kill-mask) (task-mask task3)) ;; amphibian-48
+            (set! (-> (the entity-actor (entity-by-name "amphibian-49")) extra kill-mask) (task-mask task3)) ;; amphibian-49
+            (set! (-> (the entity-actor (entity-by-name "amphibian-46")) extra kill-mask) (task-mask task3)) ;; amphibian-46
+            (set! (-> (the entity-actor (entity-by-name "amphibian-50")) extra kill-mask) (task-mask task3)) ;; amphibian-50
+            (set! (-> (the entity-actor (entity-by-name "amphibian-47")) extra kill-mask) (task-mask task3)) ;; amphibian-47
+            )
+          ;; JUICER
+          (when (and (entity-by-type juicer) (task-closed? "atoll-destroy-turrets-introduction"))
+            (set! (-> (the entity-actor (entity-by-name "juicer-12")) extra kill-mask) (task-mask task3)) ;; juicer-12
+            (set! (-> (the entity-actor (entity-by-name "juicer-13")) extra kill-mask) (task-mask task3)) ;; juicer-13
+            (set! (-> (the entity-actor (entity-by-name "juicer-81")) extra kill-mask) (task-mask task3)) ;; juicer-81
+            (set! (-> (the entity-actor (entity-by-name "juicer-82")) extra kill-mask) (task-mask task3)) ;; juicer-82
+            (set! (-> (the entity-actor (entity-by-name "juicer-8")) extra kill-mask) (task-mask task3)) ;; juicer-8
+            (set! (-> (the entity-actor (entity-by-name "juicer-76")) extra kill-mask) (task-mask task3)) ;; juicer-76
+            (set! (-> (the entity-actor (entity-by-name "juicer-77")) extra kill-mask) (task-mask task3)) ;; juicer-78
+            (set! (-> (the entity-actor (entity-by-name "juicer-78")) extra kill-mask) (task-mask task3)) ;; juicer-78
+            )
+          ;; METALMONK
+          (when (and (entity-by-type metalmonk) (task-closed? "atoll-destroy-turrets-introduction"))
+            (set! (-> (the entity-actor (entity-by-name "metalmonk-5")) extra kill-mask) (task-mask task3)) ;; metalmonk-5
+            (set! (-> (the entity-actor (entity-by-name "metalmonk-34")) extra kill-mask) (task-mask task3)) ;; metalmonk-34
+            (set! (-> (the entity-actor (entity-by-name "metalmonk-35")) extra kill-mask) (task-mask task3)) ;; metalmonk-35
+            )
+          ;; FODDER
+          (when (and (entity-by-type fodder) (task-closed? "atoll-destroy-turrets-introduction"))
+            (set! (-> (the entity-actor (entity-by-name "fodder-114")) extra kill-mask) (task-mask task3)) ;; fodder-114
+            (set! (-> (the entity-actor (entity-by-name "fodder-18")) extra kill-mask) (task-mask task3)) ;; fodder-18
+            (set! (-> (the entity-actor (entity-by-name "fodder-111")) extra kill-mask) (task-mask task3)) ;; fodder-111
+            (set! (-> (the entity-actor (entity-by-name "fodder-112")) extra kill-mask) (task-mask task3)) ;; fodder-111
+            )
+          )
+        )
+        
+      ;; checker for atoll custom task (close the task after all turrets have been destroyed and after leaving from atoll)
+      (when (task-closed? "atoll-destroy-turrets-resolution")
+        (when (!= (-> (level-get-target-inside *level*) name) 'atoll)
+          (task-node-close! (game-task-node atoll-destroy-turrets-post-win))
+          )
+        )
+      (suspend)
+      )
+    )
+  )
