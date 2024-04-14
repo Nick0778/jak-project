@@ -463,6 +463,6 @@
   "elec-gate.o"
   "cty-guard-turret-button.o"
   "entity-debug.o" ;; added
-  "cty-gunturret-master.o" ;; added
-  "cty-gunturret.o" ;; added
+  "ato-gunturret-master.o" ;; added
+  "ato-gunturret.o" ;; added
  ))
