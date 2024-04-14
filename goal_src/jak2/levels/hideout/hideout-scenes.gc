@@ -1111,3 +1111,164 @@
                    :save #t
                    )
                  )
+
+;; Custom cutscene for "Destroy turrets in Pumping Station" custom mission
+(scene-method-16 (new 'static 'scene
+                   :name "atoll-4-int"
+                   :extra #f
+                   :info #f
+                   :mask-to-clear (process-mask movie enemy platform projectile)
+                   :entity "scene-stage-19"
+                   :art-group "scenecamera"
+                   :anim "atoll-1-int"
+                   :parts 18
+                   :command-list '((0 (kill "hide-faucet-1"))
+                     (269 (part-tracker
+                            "group-hideout-pipe"
+                            entity
+                            "particleman"
+                            joint
+                            "particleA"
+                            track
+                            #t
+                            duration
+                            (frame-range 269 312)
+                            )
+                          )
+                     (312 (part-tracker
+                            "group-hideout-mud-drip"
+                            entity
+                            "particleman"
+                            joint
+                            "particleA"
+                            track
+                            #t
+                            duration
+                            (frame-range 312 3000)
+                            )
+                          )
+                     (312 (part-tracker
+                            "group-hideout-mouth"
+                            entity
+                            "particleman"
+                            joint
+                            "particleB"
+                            track
+                            #t
+                            duration
+                            (frame-range 312 324)
+                            )
+                          )
+                     (340 (part-tracker
+                            "group-hideout-mouth"
+                            entity
+                            "particleman"
+                            joint
+                            "particleB"
+                            track
+                            #t
+                            duration
+                            (frame-range 344 346)
+                            )
+                          )
+                     (393 (part-tracker
+                            "group-hideout-mouth"
+                            entity
+                            "particleman"
+                            joint
+                            "particleB"
+                            track
+                            #t
+                            duration
+                            (frame-range 393 396)
+                            )
+                          )
+                     (10000 (task-close! "atoll-destroy-turrets-introduction")) ;; update the task system
+                     )
+                   :cut-list '(50 235 270 406 913 1044 1264 1361 1520 1978)
+                   :wait-ground-time (seconds 1)
+                   :draw-target #f
+                   :abort #t
+                   :actor (new 'static 'boxed-array :type scene-actor
+                     (new 'static 'scene-actor
+                       :name "scenecamera"
+                       :level #f
+                       :art-group "skel-scenecamera"
+                       :prefix ""
+                       :draw-frames '((min max))
+                       :scissor-frames '()
+                       :camera 4
+                       :shadow-flags -1
+                       :shadow-volume-joint #f
+                       )
+                     (new 'static 'scene-actor
+                       :name "sidekick-highres"
+                       :level 'hideout
+                       :art-group "skel-sidekick-highres"
+                       :prefix ""
+                       :draw-frames '((min max))
+                       :scissor-frames '()
+                       :light-index #x1e
+                       :flags #x1
+                       :shadow-flags -1
+                       :shadow-volume-joint #f
+                       )
+                     (new 'static 'scene-actor
+                       :name "jak-highres"
+                       :level 'hideout
+                       :art-group "skel-jak-highres"
+                       :prefix ""
+                       :draw-frames '((min max))
+                       :scissor-frames '()
+                       :light-index #x1e
+                       :flags #x1
+                       :shadow-flags -1
+                       :shadow-volume-joint #f
+                       )
+                     (new 'static 'scene-actor
+                       :name "hide-faucet"
+                       :level 'hideout
+                       :art-group "skel-hide-faucet"
+                       :prefix ""
+                       :draw-frames '((min max))
+                       :scissor-frames '()
+                       :light-index #x1e
+                       :flags #x1
+                       :shadow-flags -1
+                       :shadow-volume-joint #f
+                       )
+                     (new 'static 'scene-actor
+                       :name "particleman"
+                       :level 'hideout
+                       :art-group "skel-particleman"
+                       :prefix ""
+                       :draw-frames '((min max))
+                       :scissor-frames '()
+                       :shadow-flags -1
+                       :shadow-volume-joint #f
+                       )
+                     (new 'static 'scene-actor
+                       :name "torn-highres"
+                       :level 'ltrnysam
+                       :art-group "skel-torn-highres"
+                       :prefix ""
+                       :draw-frames '((min 1361) (1520 1978))
+                       :scissor-frames '()
+                       :light-index #x1e
+                       :flags #x1
+                       :shadow-flags -1
+                       :shadow-volume-joint #f
+                       )
+                     )
+                   :load-point-obj "hideout-movie"
+                   :end-point-obj "hideout-start"
+                   :borrow '((hideout 0 ltrnysam special))
+                   :sfx-volume -1.0
+                   :ambient-volume -1.0
+                   :music-volume -1.0
+                   :blackout-end #t
+                   :peaceful #t
+                   :music-delay 1500.0
+                   :save #t
+                   )
+                 )
