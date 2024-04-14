@@ -1,0 +1,164 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+(declare-type ato-gunturret process-focusable)
+
+(defmethod draw ((this hud-turret))
+  (set-hud-piece-position!
+    (the-as hud-sprite (-> this sprites))
+    (the int (+ 457.0 (* 130.0 (-> this offset))))
+    205
+    )
+  (format (clear (-> this strings 0 text)) "~D" (-> this values 0 current))
+  (set-as-offset-from! (the-as hud-sprite (-> this strings 0 pos)) (the-as vector4w (-> this sprites)) -19 22)
+  ((method-of-type hud draw) this)
+  0
+  (none)
+  )
+
+(defmethod update-values ((this hud-turret))
+  (set! (-> this values 0 target) (the int (-> *game-info* counter)))
+  ((method-of-type hud update-values) this)
+  0
+  (none)
+  )
+
+(defmethod init-callback ((this hud-turret))
+  (set! (-> this level) (level-get *level* 'latollturret))
+  (set! (-> this gui-id)
+        (add-process *gui-control* this (gui-channel hud-middle-right) (gui-action hidden) (-> this name) 81920.0 0)
+        )
+  (logior! (-> this flags) (hud-flags show))
+  
+  ;; couldn't figure out how to use the sewer's turret HUD in there
+  (set! (-> this sprites 0 tex) (lookup-texture-by-name "hud-gunturret-01" (the-as string #f) (the-as (pointer texture-page) #f)))
+  (set! (-> this sprites 0 flags) (the-as uint 4))
+  (set! (-> this sprites 0 scale-x) 1.2)
+  (set! (-> this sprites 0 scale-y) 1.2)
+  (alloc-string-if-needed this 0)
+  (set! (-> this strings 0 scale) 0.6)
+  (set! (-> this strings 0 flags) (font-flags kerning middle large))
+  0
+  (none)
+  )
+
+(deftype ato-gunturret-master (process)
+  ((turret-count          int8)
+   (hud-turret            handle)
+   (hud-timer             handle)
+   (exited?               symbol)
+   )
+  (:state-methods
+    idle
+    )
+  (:methods
+    (spawn-hud-turret (_type_ symbol) none)
+    )
+  )
+
+(define *ato-gunturret-master* (the-as (pointer ato-gunturret-master) #f))
+
+(defbehavior ato-gunturret-master-event-handler ato-gunturret-master ((arg0 process) (arg1 int) (arg2 symbol) (arg3 event-message-block))
+  (case arg2
+    ;; Decreases the counter value by one unit
+    (('ato-gunturret)
+     (set! (-> self turret-count) (max 0 (+ (-> self turret-count) -1)))
+     (set! (-> *game-info* counter) (the float (-> self turret-count)))
+     )
+    )
+  )
+
+(defmethod spawn-hud-turret ((this ato-gunturret-master) (arg0 symbol))
+  (cond
+    ((and arg0 (nonzero? (-> this turret-count)))
+     (if (not (handle->process (-> this hud-turret)))
+         (set! (-> this hud-turret) (ppointer->handle (process-spawn hud-turret :init hud-init-by-other :to this)))
+         )
+     )
+    (else
+      (send-event (handle->process (-> this hud-turret)) 'hide-and-die)
+      (set! (-> this hud-turret) (the-as handle #f))
+      )
+    )
+  (none)
+  )
+
+(defstate idle (ato-gunturret-master)
+  :virtual #t
+  :event ato-gunturret-master-event-handler
+  :code sleep-code
+  )
+
+(defbehavior ato-gunturret-master-init-by-other ato-gunturret-master ()
+  (set! *ato-gunturret-master* (the-as (pointer ato-gunturret-master) (process->ppointer self)))
+  (set! (-> self turret-count) 6)
+  (set! (-> *game-info* counter) 6.0)
+  (dotimes (gp-0 (-> *level* length))
+    (let ((v1-9 (-> *level* level gp-0)))
+      (when (= (-> v1-9 status) 'active)
+        (let ((s5-0 (-> v1-9 bsp actors)))
+          (when (nonzero? s5-0)
+            (dotimes (s4-0 (-> s5-0 length))
+              (let ((s3-0 (-> s5-0 data s4-0 actor)))
+                (if (type-type? (-> s3-0 etype) ato-gunturret)
+                    (add-icon! *minimap* self (the-as uint 16) (the-as int #f) (the-as vector s3-0) 0)
+                    )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (go-virtual idle)
+  (none)
+  )
+
+
+(set-subtask-hook!
+  *game-info*
+  (game-task-node atoll-destroy-turrets-resolution)
+  TASK_MANAGER_CODE_HOOK
+  (lambda :behavior task-manager
+    ()
+    (set! (-> self hud-timer) (ppointer->handle (process-spawn hud-turret :init hud-init-by-other :to self)))
+    (when (!= (level-status *level* 'atoll) 'active)
+      (send-event (handle->process (-> self hud-timer)) 'hide-and-die)
+      (send-event (handle->process (-> self hud-counter)) 'hide-and-die)
+      (while (-> self child)
+        (suspend)
+        )
+      (deactivate self)
+      )
+  )
+)
+
+(set-subtask-hook!
+  *game-info*
+  (game-task-node atoll-destroy-turrets-resolution)
+  TASK_MANAGER_UPDATE_HOOK
+  (lambda :behavior task-manager
+    ()
+    (when (or (zero? (-> *game-info* counter)) (task-node-closed? (game-task-node atoll-destroy-turrets-resolution)))
+      (when (zero? (-> *game-info* counter))
+        (talker-spawn-func (-> *talker-speech* 92) *entity-pool* (target-pos 0) (the-as region #f))
+        (task-node-close! (game-task-node atoll-destroy-turrets-resolution))
+        (send-event (handle->process (-> self hud-timer)) 'hide-and-die)
+        (send-event (handle->process (-> self hud-counter)) 'hide-and-die)
+        )
+      )
+    )
+  )
+
+(set-subtask-hook!
+  *game-info*
+  (game-task-node atoll-destroy-turrets-resolution)
+  TASK_MANAGER_INIT_HOOK
+  (lambda :behavior task-manager 
+    ()
+    (let ((v0-3 (ppointer->handle (process-spawn ato-gunturret-master :to self))))
+                                      (set! (-> self slave 0) (the-as handle v0-3))
+                                      v0-3
+                                      )
+                                 )
+  )
