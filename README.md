@@ -1,3 +1,18 @@
+# "Jak2 Custom-tasks" Branch
+
+This branch contains Jak 2 custom tasks that are unlocked only after beating the game. Also, due to Opengoal limitations there's no custom cutscenes and there are some issues in the tasks. I have future plans for more tasks and other cool stuff, but for now my project still very unfinished!
+
+### Progress so far:
+As mentioned before, my project still very unfinished, so this is the list of the available tasks for now:
+
+- Destroy turrets in Pumping Station
+
+---
+_Have fun~!_ (-;
+
+
+---
+
 <p align="center">
   <img width="500" height="100%" src="./docs/img/logo-text-colored-new.png">
 </p>
