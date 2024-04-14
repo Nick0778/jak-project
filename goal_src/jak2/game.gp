@@ -302,6 +302,10 @@
 ;; the DGO file
 (custom-level-cgo "TSZ.DGO" "test-zone/testzone.gd")
 
+(build-custom-level "latollturret")
+;; the DGO file
+(custom-level-cgo "LAT.DGO" "latollturret/latollturret.gd")
+
 ;;;;;;;;;;;;;;;;;;;;;
 ;; ANIMATIONS
 ;;;;;;;;;;;;;;;;;;;;;
