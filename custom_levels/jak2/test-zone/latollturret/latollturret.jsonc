@@ -60,7 +60,7 @@
    // This is mainly useful for textures which are not in the common level files and have no art group associated with them.
    // To get a list of all the textures, you can extract all of the game's textures
    // by setting "save_texture_pngs" to true in the decompiler config.
-   "textures": ["hud-gunturret-01"],
+   "textures": ["hud-gunturret-01"], // No idea how to make the sewer's turret HUD work in the custom task
 
   "actors" : [
     {
@@ -72,8 +72,7 @@
       "bsphere": [425.34, 12.61, -980.63, 10], // bounding sphere
       "lump": {
         "name": "atoll-gunturret-1",
-        "extra-id": ["int32", 0],
-        "rotoffset": ["degrees", -9000.0]
+        "extra-id": ["int32", 0]
       }
     },
 
@@ -86,8 +85,7 @@
       "bsphere": [346.24, 12.67, -1064.97, 10], // bounding sphere
       "lump": {
         "name": "atoll-gunturret-2",
-        "extra-id": ["int32", 1],
-        "rotoffset": ["degrees", 180.0]
+        "extra-id": ["int32", 1]
       }
     },
 
@@ -100,8 +98,7 @@
       "bsphere": [419.60, 12.58, -1143.80, 10], // bounding sphere
       "lump": {
         "name": "atoll-gunturret-3",
-        "extra-id": ["int32", 2],
-        "rotoffset": ["degrees", 180.0]
+        "extra-id": ["int32", 2]
       }
     },
 
@@ -114,8 +111,7 @@
       "bsphere": [458.34, 30.00, -1246.74, 10], // bounding sphere
       "lump": {
         "name": "atoll-gunturret-4",
-        "extra-id": ["int32", 3],
-        "rotoffset": ["degrees", 180.0]
+        "extra-id": ["int32", 3]
       }
     },
 
@@ -128,8 +124,7 @@
       "bsphere": [410.65, 35.56, -1144.71, 10], // bounding sphere
       "lump": {
         "name": "atoll-gunturret-5",
-        "extra-id": ["int32", 4],
-        "rotoffset": ["degrees", 180.0]
+        "extra-id": ["int32", 4]
       }
     },
 
@@ -142,8 +137,7 @@
       "bsphere": [552.00, 23.55, -1067.25, 10], // bounding sphere
       "lump": {
         "name": "atoll-gunturret-6",
-        "extra-id": ["int32", 5],
-        "rotoffset": ["degrees", 180.0]
+        "extra-id": ["int32", 5]
       }
     }
   ]
