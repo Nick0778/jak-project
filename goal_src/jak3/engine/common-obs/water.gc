@@ -67,7 +67,7 @@
 
 (when (or (zero? *water-simple-alpha-curve-in*) (!= loading-level global))
   (set! *water-simple-alpha-curve-in* (new 'loading-level 'curve2d-piecewise))
-  (curve2d-piecewise-method-10 *water-simple-alpha-curve-in* 2 'loading-level (the-as uint #f))
+  (curve2d-piecewise-method-10 *water-simple-alpha-curve-in* 2 'loading-level (the-as int #f))
   )
 
 (set! (-> *water-simple-alpha-curve-in* pts data 0 first) 0.0)
@@ -80,7 +80,7 @@
 
 (when (or (zero? *growing-curve*) (!= loading-level global))
   (set! *growing-curve* (new 'loading-level 'curve2d-piecewise))
-  (curve2d-piecewise-method-10 *growing-curve* 2 'loading-level (the-as uint #f))
+  (curve2d-piecewise-method-10 *growing-curve* 2 'loading-level (the-as int #f))
   )
 
 (set! (-> *growing-curve* pts data 0 first) 0.0)
@@ -93,7 +93,7 @@
 
 (when (or (zero? *water-simple-alpha-curve-fade-out*) (!= loading-level global))
   (set! *water-simple-alpha-curve-fade-out* (new 'loading-level 'curve2d-piecewise))
-  (curve2d-piecewise-method-10 *water-simple-alpha-curve-fade-out* 2 'loading-level (the-as uint #f))
+  (curve2d-piecewise-method-10 *water-simple-alpha-curve-fade-out* 2 'loading-level (the-as int #f))
   )
 
 (set! (-> *water-simple-alpha-curve-fade-out* pts data 0 first) 0.0)
@@ -699,66 +699,28 @@
                (sp-group-flag sp13)
                )
      (set! (-> *launch-matrix* trans quad) (-> arg1 quad))
-     (let ((s4-0 (get-process *default-dead-pool* part-tracker-subsampler #x4000 0)))
-       (when s4-0
-         (let ((t9-1 (method-of-type part-tracker-subsampler activate)))
-           (t9-1
-             (the-as part-tracker-subsampler s4-0)
-             *entity-pool*
-             "part-tracker-subsampler"
-             (the-as pointer #x70004000)
-             )
+     (part-tracker-spawn
+       part-tracker-subsampler
+       :to *entity-pool*
+       :group (if (zero? arg2)
+           (-> *part-group-id-table* 193)
+           (-> *part-group-id-table* 192)
            )
-         (let ((t9-2 run-function-in-process)
-               (a0-5 s4-0)
-               (a1-3 part-tracker-subsampler-init)
-               )
-           (set! (-> *part-tracker-subsampler-params-default* group) (if (zero? arg2)
-                                                                         (-> *part-group-id-table* 193)
-                                                                         (-> *part-group-id-table* 192)
-                                                                         )
-                 )
-           (set! (-> *part-tracker-subsampler-params-default* duration) 0)
-           (set! (-> *part-tracker-subsampler-params-default* callback)
-                 (the-as (function part-tracker vector) part-water-splash-callback)
-                 )
-           (set! (-> *part-tracker-subsampler-params-default* userdata) (the-as uint arg0))
-           (set! (-> *part-tracker-subsampler-params-default* target) #f)
-           (set! (-> *part-tracker-subsampler-params-default* mat-joint) *launch-matrix*)
-           (set! (-> *part-tracker-subsampler-params-default* subsample-num) 1.0)
-           ((the-as (function object object object none) t9-2) a0-5 a1-3 *part-tracker-subsampler-params-default*)
-           )
-         (-> s4-0 ppointer)
-         )
+       :callback (the-as (function part-tracker vector) part-water-splash-callback)
+       :userdata (the-as uint arg0)
        )
      )
     (else
       (set! (-> *launch-matrix* trans quad) (-> arg1 quad))
-      (let ((s4-1 (get-process *default-dead-pool* part-tracker #x4000 0)))
-        (when s4-1
-          (let ((t9-4 (method-of-type part-tracker activate)))
-            (t9-4 (the-as part-tracker s4-1) *entity-pool* "part-tracker" (the-as pointer #x70004000))
+      (part-tracker-spawn
+        part-tracker
+        :to *entity-pool*
+        :group (if (zero? arg2)
+            (-> *part-group-id-table* 193)
+            (-> *part-group-id-table* 192)
             )
-          (let ((t9-5 run-function-in-process)
-                (a0-10 s4-1)
-                (a1-6 part-tracker-init)
-                )
-            (set! (-> *part-tracker-params-default* group) (if (zero? arg2)
-                                                               (-> *part-group-id-table* 193)
-                                                               (-> *part-group-id-table* 192)
-                                                               )
-                  )
-            (set! (-> *part-tracker-params-default* duration) 0)
-            (set! (-> *part-tracker-params-default* callback)
-                  (the-as (function part-tracker vector) part-water-splash-callback)
-                  )
-            (set! (-> *part-tracker-params-default* userdata) (the-as uint arg0))
-            (set! (-> *part-tracker-params-default* target) #f)
-            (set! (-> *part-tracker-params-default* mat-joint) *launch-matrix*)
-            ((the-as (function object object object none) t9-5) a0-10 a1-6 *part-tracker-params-default*)
-            )
-          (-> s4-1 ppointer)
-          )
+        :callback (the-as (function part-tracker vector) part-water-splash-callback)
+        :userdata (the-as uint arg0)
         )
       )
     )
@@ -1001,8 +963,9 @@
             )
           )
         (dotimes (s1-2 (the-as int (+ arg3 -1)))
-          (set! (-> (the-as region-prim-area #x70000000) pos quad) (-> arg2 s1-2 sphere quad))
-          (when (and (within-area? arg1 (the-as region-prim-area (+ #x70000000 0)))
+          ;; og:preserve-this
+          (set! (-> (scratchpad-object region-prim-area) pos quad) (-> arg2 s1-2 sphere quad))
+          (when (and (within-area? arg1 (scratchpad-object region-prim-area))
                      (begin
                        (logior! (-> arg0 flags) (water-flag over-water))
                        (>= (-> arg0 trans y) (- (-> arg2 s1-2 sphere y) (-> arg2 s1-2 sphere r)))
@@ -1030,9 +993,10 @@
   (set! (-> arg1 flags) (water-flag))
   (set! (-> arg1 handle) (the-as handle #f))
   (set! (-> arg2 extra-flags) (the-as uint 0))
-  (set! (-> (the-as region-prim-area #x70000000) region-prim-list num-items) 0)
-  (set! (-> (the-as region-prim-area #x70000000) region-inside-count) 0)
-  (set! (-> (the-as region-prim-area #x70000000) pos quad) (-> arg0 sphere quad))
+  ;; og:preserve-this
+  (set! (-> (scratchpad-object region-prim-area) region-prim-list num-items) 0)
+  (set! (-> (scratchpad-object region-prim-area) region-inside-count) 0)
+  (set! (-> (scratchpad-object region-prim-area) pos quad) (-> arg0 sphere quad))
   (dotimes (gp-0 (-> *level* length))
     (let ((v1-7 (-> *level* level gp-0)))
       (when (= (-> v1-7 status) 'active)
@@ -1046,9 +1010,10 @@
                 (if (= (-> a0-6 name) 'water)
                     (collect-regions
                       a0-6
-                      (the-as sphere (-> (the-as region-prim-area #x70000000) pos))
+                      ;; og:preserve-this
+                      (the-as sphere (-> (scratchpad-object region-prim-area) pos))
                       0
-                      (the-as region-prim-list (+ #x70000000 0))
+                      (the-as region-prim-list (scratchpad-object region-prim-area))
                       )
                     )
                 (+! s3-0 1)
@@ -1060,17 +1025,19 @@
         )
       )
     )
-  (return (nonzero? (-> (the-as region-prim-area #x70000000) region-prim-list num-items)))
+  ;; og:preserve-this
+  (return (nonzero? (-> (scratchpad-object region-prim-area) region-prim-list num-items)))
   v0-1
   )
 
 (defun find-water-2 ((arg0 (inline-array water-sphere)) (arg1 int) (arg2 water-info) (arg3 water-info) (arg4 process-drawable))
   (set! (-> arg2 prim) #f)
   (set! (-> arg3 prim) #f)
-  (countdown (s1-0 (-> (the-as region-prim-area #x70000000) region-prim-list num-items))
+  ;; og:preserve-this
+  (countdown (s1-0 (-> (scratchpad-object region-prim-area) region-prim-list num-items))
     (water-info<-region
       arg3
-      (-> (the-as region-prim-area #x70000000) region-prim-list items s1-0)
+      (-> (scratchpad-object region-prim-area) region-prim-list items s1-0)
       arg0
       (the-as collide-action arg1)
       arg4
