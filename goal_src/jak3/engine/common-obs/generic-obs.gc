@@ -164,12 +164,11 @@
          )
        (update-anim-data (-> self skel))
        (do-joint-math (-> self draw) (-> self node-list) (-> self skel))
-       ;; not-yet-implemented
-       ;; (let ((a0-22 (-> self skel effect)))
-       ;;   (if a0-22
-       ;;       (effect-control-method-9 a0-22)
-       ;;       )
-       ;;   )
+       (let ((a0-22 (-> self skel effect)))
+         (if a0-22
+             (effect-control-method-9 a0-22)
+             )
+         )
        (if (logtest? (-> self skel status) (joint-control-status blend-shape blend-shape-valid))
            (merc-blend-shape self)
            )
@@ -1783,6 +1782,13 @@
                                              )
           )
     )
+  ;; Note: there's some changes here to skip setting things if arg4 is #f.
+  ;; the address of #f is misaligned, but on ps2 the lq instruction will silently mask.
+  ;; Loading from #f doesn't really make sense, so this was likely just a mistake in the
+  ;; original game.
+  ;; the OpenGOAL compiler uses vmovaps, which will crash on a misaligned load because
+  ;; this has been useful for finding errors. So to prevent this crash, we skip the load
+  ;; if the argument is #f. (some callers of this directly pass #f, so it's not a bug higher up).
   (cond
     ((>= 256 (the-as int arg4))
      (set! (-> self target-joint0) (the-as int arg4))
@@ -1790,7 +1796,10 @@
      )
     (else
       (set! (-> self target-joint0) -1)
-      (set! (-> self offset0 quad) (-> arg4 quad))
+      ;: og:preserve-this hack, fixed bug in original game
+      (when arg4
+        (set! (-> self offset0 quad) (-> arg4 quad))
+        )
       )
     )
   (cond
@@ -1800,7 +1809,10 @@
      )
     (else
       (set! (-> self target-joint1) -1)
-      (set! (-> self offset1 quad) (-> arg5 quad))
+      ;: og:preserve-this hack, fixed bug in original game
+      (when arg5
+        (set! (-> self offset1 quad) (-> arg5 quad))
+        )
       )
     )
   (set! (-> self root) (new 'process 'trsqv))
@@ -3656,11 +3668,7 @@
     (dotimes (s3-0 (-> this actor-group s4-0 length))
       (set! sv-32 "#f")
       (set! (-> this particle-launchers (-> this particle-launchers length))
-            (entity-lookup-part-group
-              (the-as entity-actor (-> this actor-group s4-0 data s3-0 actor))
-              (& sv-32)
-              'art-name
-              )
+            (entity-lookup-part-group (-> this actor-group s4-0 data s3-0 actor) (& sv-32) 'art-name)
             )
       (+! (-> this particle-launchers length) 1)
       )
@@ -3871,10 +3879,14 @@
               )
         )
     (set! (-> this is-spooling?) (nonzero? (res-lump-value arg0 'spooling-val uint128 :time -1000000000.0)))
-    (set! (-> this path) (new 'process 'path-control this 'path 0.0 arg0 #f))
+    ;; og:preserve-this some entities store their path data in the path1 lump
+    (let ((bad-entity? (symbol-member? (string->symbol (-> this name)) '(sound-on-path-119))))
+      (set! (-> this path) (new 'process 'path-control this (#if PC_PORT (if bad-entity? 'path1 'path) 'path) 0.0 arg0 #f))
+      )
     (logior! (-> this path flags) (path-control-flag display draw-line draw-point draw-text))
     (logclear! (-> this mask) (process-mask actor-pause))
-    (when (= s4-0 "")
+    ;; og:preserve-this
+    (when (string= (the string s4-0) "")
       (go (method-of-object this no-play))
       (return 0)
       )

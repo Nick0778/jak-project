@@ -776,13 +776,12 @@
   (none)
   )
 
-;; WARN: Return type mismatch vector vs none.
 (defmethod rigid-body-control-method-25 ((this rigid-body-control) (arg0 vector))
   (let ((gp-0 (new 'stack-no-clear 'vector)))
     (vector-rotate*! gp-0 (-> this info cm-offset-joint) (-> this matrix))
     (vector-! arg0 (-> this position) gp-0)
     )
-  (none)
+  arg0
   )
 
 (defmethod debug-print-force-torque ((this rigid-body-control) (arg0 object))
@@ -843,7 +842,7 @@
     (while (nonzero? s4-1)
       (+! s4-1 -1)
       (s3-0 arg0 f30-0)
-      (rigid-body-control-method-9 this (the-as collide-shape-moving (-> arg0 root)) f30-0)
+      (rigid-body-control-method-9 this (-> arg0 root) f30-0)
       )
     )
   0
@@ -1014,16 +1013,16 @@
   (none)
   )
 
+;; WARN: Return type mismatch int vs object.
 (defmethod rigid-body-object-method-30 ((this rigid-body-object))
   (ja-post)
   0
-  (none)
   )
 
 (defmethod rbody-post ((this rigid-body-object))
   (rigid-body-object-method-32 this)
   (rigid-body-object-method-38 this)
-  (update-rbody-transform! (-> this rbody) (the-as collide-shape-moving (-> this root)))
+  (update-rbody-transform! (-> this rbody) (-> this root))
   (rigid-body-object-method-30 this)
   (update-transforms (-> this root))
   0

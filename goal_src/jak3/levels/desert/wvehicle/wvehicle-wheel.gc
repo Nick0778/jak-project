@@ -192,13 +192,13 @@
   (none)
   )
 
+;; WARN: Return type mismatch int vs object.
 (defmethod rigid-body-object-method-30 ((this vehicle-wheel))
   (ja-post)
   (if (logtest? (-> this rbody flags) (rigid-body-flag enable-collision))
       (update-transforms (-> this root))
       )
   0
-  (none)
   )
 
 (defmethod rbody-post ((this vehicle-wheel))
@@ -239,7 +239,7 @@
       )
   (rigid-body-object-method-32 this)
   (rigid-body-object-method-38 this)
-  (update-rbody-transform! (-> this rbody) (the-as collide-shape-moving (-> this root)))
+  (update-rbody-transform! (-> this rbody) (-> this root))
   (rigid-body-object-method-30 this)
   0
   (none)

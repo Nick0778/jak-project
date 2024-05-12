@@ -3,5 +3,9 @@
   "(method 29 target)": 2048,
   "(method 11 part-spawner)": 64,
   "(method 11 elevator)": 1024,
-  "scene-player-init": 1024
+  "scene-player-init": 1024,
+  "task-manager-init-by-other": 2048,
+  "race-manager-init-by-other": 1024,
+  "neo-sat-shield-init-by-other": 64,
+  "bt-gun-manager-init-by-other": 256
 }

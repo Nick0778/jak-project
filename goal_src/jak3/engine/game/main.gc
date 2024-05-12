@@ -25,18 +25,43 @@
 
 (defun letterbox ((arg0 bucket-id) (arg1 float))
   "Draw letterbox"
-  (with-dma-buffer-add-bucket ((s4-0 (-> *display* frames (-> *display* on-screen) global-buf))
-                               arg0
-                               )
-    (draw-sprite2d-xy-absolute s4-0 0 0 512 (the int (* 46.0 arg1)) (new 'static 'rgba :a #x80) #x3fffff)
-    (draw-sprite2d-xy-absolute
-      s4-0
-      0
-      (- 416 (the int (* 46.0 arg1)))
-      512
-      (+ (the int (* 46.0 arg1)) 1)
-      (new 'static 'rgba :a #x80)
-      #x3fffff
+  (with-dma-buffer-add-bucket ((dma-buf (-> (current-frame) global-buf))
+                               arg0)
+    (#cond
+      ((not PC_PORT)
+        (draw-sprite2d-xy-absolute dma-buf 0 0 512 (the int (* 46.0 arg1)) (new 'static 'rgba :a #x80) #x3fffff)
+        (draw-sprite2d-xy-absolute dma-buf 0 (- 416 (the int (* 46.0 arg1))) 512 (+ (the int (* 46.0 arg1)) 1) (new 'static 'rgba :a #x80) #x3fffff)
+        )
+      (#t
+        (if (-> *pc-settings* use-vis?)
+            ;; original game mode. dont do anything.
+            (begin
+              (draw-sprite2d-xy-absolute dma-buf 0 0 512 (the int (* 46.0 arg1)) (new 'static 'rgba :a #x80) #x3fffff)
+              (draw-sprite2d-xy-absolute dma-buf 0 (- 416 (the int (* 46.0 arg1))) 512 (+ (the int (* 46.0 arg1)) 1) (new 'static 'rgba :a #x80) #x3fffff))
+            ;; native mode. force 16x9 letterboxing always.
+            (begin
+              (cond
+                ((< (-> *pc-settings* aspect-ratio) ASPECT_16X9)
+                  ;; too tall. needs vertical letterboxing.
+                  (let ((lbx-h (the int (* 208.0 (- 1.0 (/ (-> *pc-settings* aspect-ratio) ASPECT_16X9))))))
+                    (set! lbx-h (the int (* arg1 lbx-h)))
+                    ;(format 0 "using new letterbox! size: ~D~%" lbx-h)
+                    (draw-sprite2d-xy dma-buf 0 0 512 lbx-h (new 'static 'rgba :a #x80) #x3fffff)
+                    (draw-sprite2d-xy dma-buf 0 (- 416 lbx-h) 512 lbx-h (new 'static 'rgba :a #x80) #x3fffff)
+                      )
+                  )
+                ((> (-> *pc-settings* aspect-ratio) ASPECT_16X9)
+                  ;; too wide. needs horizontal letterboxing.
+                  (let ((lbx-w (the int (* 256.0 (- 1.0 (/ ASPECT_16X9 (-> *pc-settings* aspect-ratio)))))))
+                    ;(format 0 "using new pillarbox! size: ~D~%" lbx-w)
+                    (draw-sprite2d-xy dma-buf 0 0 lbx-w 416 (new 'static 'rgba :a #x80) #x3fffff)
+                    (draw-sprite2d-xy dma-buf (- 512 lbx-w) 0 lbx-w 416 (new 'static 'rgba :a #x80) #x3fffff)
+                      )
+                  )
+                )
+              )
+            )
+        )
       )
     )
   0
@@ -646,8 +671,8 @@
                  (logclear! (-> *cpad-list* cpads 0 button0-rel 0) (pad-buttons r1))
                  (set! *cheat-mode* (not *cheat-mode*))
                  (if *cheat-mode*
-                     (sound-play-by-spec (static-sound-spec "menu-pick" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
-                     (sound-play-by-spec (static-sound-spec "menu-back" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                     (sound-play-by-spec (static-sound-spec "menu-pick" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                     (sound-play-by-spec (static-sound-spec "menu-back" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
                      )
                  (set! (-> *cheat-temp* 0) 0)
                  0
@@ -819,8 +844,8 @@
                                           )
                          )
                    (if (= *cheat-mode* 'debug)
-                       (sound-play-by-spec (static-sound-spec "menu-pick" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
-                       (sound-play-by-spec (static-sound-spec "menu-back" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                       (sound-play-by-spec (static-sound-spec "menu-pick" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                       (sound-play-by-spec (static-sound-spec "menu-back" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
                        )
                    (set! (-> *cheat-temp* 1) 0)
                    0
@@ -931,8 +956,8 @@
                                             )
                        )
                  (if *progress-cheat*
-                     (sound-play-by-spec (static-sound-spec "menu-pick" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
-                     (sound-play-by-spec (static-sound-spec "menu-back" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                     (sound-play-by-spec (static-sound-spec "menu-pick" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                     (sound-play-by-spec (static-sound-spec "menu-back" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
                      )
                  (set! (-> *cheat-temp* 2) 0)
                  0
@@ -1038,8 +1063,8 @@
                                               )
                          )
                    (if *progress-cheat*
-                       (sound-play-by-spec (static-sound-spec "menu-pick" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
-                       (sound-play-by-spec (static-sound-spec "menu-back" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                       (sound-play-by-spec (static-sound-spec "menu-pick" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                       (sound-play-by-spec (static-sound-spec "menu-back" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
                        )
                    (set! (-> *cheat-temp* 3) 0)
                    0
@@ -1149,11 +1174,11 @@
                            (external-cam-reset!)
                            )
                        (set! *external-cam-mode* 'pad-1)
-                       (sound-play-by-spec (static-sound-spec "menu-pick" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                       (sound-play-by-spec (static-sound-spec "menu-pick" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
                        )
                      (else
                        (set! *external-cam-mode* #f)
-                       (sound-play-by-spec (static-sound-spec "menu-back" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                       (sound-play-by-spec (static-sound-spec "menu-back" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
                        )
                      )
                    (set! (-> *cheat-temp* 5) 0)
@@ -1207,8 +1232,8 @@
                               darkjak-smack
                               darkjak-bomb0
                               darkjak-bomb1
-                              feature44
-                              feature45
+                              darkjak-tracking
+                              darkjak-invinc
                               lightjak
                               lightjak-regen
                               lightjak-swoop
@@ -1227,34 +1252,34 @@
                             )
                     )
                   )
-            (sound-play-by-spec (static-sound-spec "menu-pick" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
+            (sound-play-by-spec (static-sound-spec "menu-pick" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
             )
            ((and (cpad-pressed? 1 triangle) (!= *cheat-mode* 'debug))
             (send-event *target* 'get-pickup (pickup-type ammo-yellow) 1000.0)
             (send-event *target* 'get-pickup (pickup-type ammo-red) 1000.0)
             (send-event *target* 'get-pickup (pickup-type ammo-blue) 1000.0)
             (send-event *target* 'get-pickup (pickup-type ammo-dark) 1000.0)
-            (sound-play-by-spec (static-sound-spec "menu-pick" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
+            (sound-play-by-spec (static-sound-spec "menu-pick" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
             )
            ((cpad-pressed? 1 square)
             (set! (-> *level* disk-load-timing?) (not (-> *level* disk-load-timing?)))
             (if (-> *level* disk-load-timing?)
-                (sound-play-by-spec (static-sound-spec "menu-pick" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
-                (sound-play-by-spec (static-sound-spec "menu-back" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                (sound-play-by-spec (static-sound-spec "menu-pick" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                (sound-play-by-spec (static-sound-spec "menu-back" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
                 )
             )
            ((cpad-pressed? 1 r1)
             (set! *display-scene-control* (logxor *display-scene-control* (scene-controls bounds-spheres)))
             (if (logtest? *display-scene-control* (scene-controls bounds-spheres))
-                (sound-play-by-spec (static-sound-spec "menu-pick" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
-                (sound-play-by-spec (static-sound-spec "menu-back" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                (sound-play-by-spec (static-sound-spec "menu-pick" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                (sound-play-by-spec (static-sound-spec "menu-back" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
                 )
             )
            ((cpad-pressed? 1 circle)
             (set! *display-bug-report* (not *display-bug-report*))
             (if *display-bug-report*
-                (sound-play-by-spec (static-sound-spec "menu-pick" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
-                (sound-play-by-spec (static-sound-spec "menu-back" :group 1 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                (sound-play-by-spec (static-sound-spec "menu-pick" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
+                (sound-play-by-spec (static-sound-spec "menu-back" :group 0 :fo-curve 1) (new-sound-id) (the-as vector #t))
                 )
             )
            )
@@ -1632,7 +1657,7 @@
   (let ((gp-1 *display*))
     ;; initial setup
     (set! *teleport* #t)
-    (update *setting-control*) ;; dies on camera stuff, which looks for entities.
+    (update *setting-control*)
     (init-time-of-day-context *time-of-day-context*)
     (display-sync gp-1)
     (display-frame-finish gp-1)
@@ -1661,6 +1686,12 @@
       (with-profiler 'actors *profile-actors-color*
         (suspend)
         )
+
+      ;; run the pc port hooks and code
+      (#when PC_PORT
+        (update *pc-settings*)
+        (if (and *display-sha* *debug-segment* (not-screen-shot?))
+            (draw-build-revision)))
       )
     )
   (set! *dproc* #f)
