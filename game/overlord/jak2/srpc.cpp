@@ -365,8 +365,13 @@ void* RPC_Player(unsigned int /*fno*/, void* data, int size) {
       case Jak2SoundCommand::set_fps: {
         gFPS = cmd->fps.fps;
       } break;
+      case Jak2SoundCommand::cancel_dgo: {
+        // temporary. here just so we don't assert.
+        lg::error("RPC Player dgo cancel command received");
+      } break;
       default:
-        ASSERT_MSG(false, fmt::format("Unhandled RPC Player command {}", int(cmd->j2command)));
+        // ASSERT_MSG(false, fmt::format("Unhandled RPC Player command {}", int(cmd->j2command)));
+        lg::error("Unhandled Jak2 RPC Player command {}\n", int(cmd->j2command));
     }
 
     n_messages--;
@@ -467,11 +472,6 @@ void* RPC_Loader(unsigned int /*fno*/, void* data, int size) {
 }
 
 int VBlank_Handler(void*) {
-  bool bVar1;
-  int iVar2;
-  int iVar3;
-  uint8_t uVar4;
-
   IopTicks = IopTicks + 1;
   if (gSoundEnable == 0) {
     return 1;
@@ -538,18 +538,14 @@ LAB_00008d9c:
     info.diskspeed[1] = 0 /*DAT_00013488*/;
     info.lastspeed = 0 /*gLastSpeed*/;
     info.dupseg = 0 /*gDupSeg*/;
-    iVar2 = 1;
-    do {
-      iVar3 = snd_GetVoiceStatus(iVar2);
-      uVar4 = '\0';
-      if (iVar3 == 1) {
-        uVar4 = 0xff;
+    for (int i = 0; i < 48; i++) {
+      if (snd_GetVoiceStatus(i) == 1) {
+        info.chinfo[i] = -1;
+      } else {
+        info.chinfo[i] = 0;
       }
-      info.chinfo[iVar2] = uVar4;
-      bVar1 = iVar2 < 0x30;
-      iVar2 = iVar2 + 1;
-    } while (bVar1);
-    LookupSound(0x29a);  // lol idk
+    }
+    LookupSound(666);  // music
 
     /*
     local_38 = &info;

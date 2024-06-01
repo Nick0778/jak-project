@@ -417,7 +417,10 @@ enum class BucketId {
   BUCKET_2 = 2,
   BLIT_START = 3,
   TEX_LCOM_SKY_PRE = 4,
+  SKY = 5,
   OCEAN_MID_FAR = 6,
+
+  HFRAG = 8,
 
   TEX_L0_TFRAG = 10,
   TFRAG_L0_TFRAG = 11,
@@ -926,7 +929,7 @@ enum class BucketId {
   GMERC2_LCOM_PRIS2 = 460,
 
   TEX_LCOM_SKY_POST = 461,
-  BUCKET462 = 462,
+  OCEAN_NEAR = 462,
 
   TEX_L0_WATER = 463,
   MERC_L0_WATER = 464,

@@ -25,13 +25,16 @@ endif()
 set(RUNTIME_SOURCE
         external/discord_jak1.cpp
         external/discord_jak2.cpp
+        external/discord_jak3.cpp
         external/discord.cpp
         graphics/display.cpp
         graphics/gfx_test.cpp
         graphics/gfx.cpp
         graphics/jak2_texture_remap.cpp
         graphics/jak3_texture_remap.cpp
+        graphics/screenshot.cpp
         graphics/opengl_renderer/background/background_common.cpp
+        graphics/opengl_renderer/background/Hfrag.cpp
         graphics/opengl_renderer/background/Shrub.cpp
         graphics/opengl_renderer/background/TFragment.cpp
         graphics/opengl_renderer/background/Tie3.cpp
@@ -77,6 +80,7 @@ set(RUNTIME_SOURCE
         graphics/opengl_renderer/sprite/Sprite3_Glow.cpp
         graphics/opengl_renderer/sprite/Sprite3.cpp
         graphics/opengl_renderer/TextureAnimator.cpp
+        graphics/opengl_renderer/TextureAnimatorDefs.cpp
         graphics/opengl_renderer/TextureUploadHandler.cpp
         graphics/opengl_renderer/VisDataHandler.cpp
         graphics/opengl_renderer/Warp.cpp
@@ -194,7 +198,6 @@ set(RUNTIME_SOURCE
         mips2c/jak3_functions/generic_effect.cpp
         mips2c/jak3_functions/joint.cpp
         mips2c/jak3_functions/lights.cpp
-        mips2c/jak3_functions/prim.cpp
         mips2c/jak3_functions/sky.cpp
         mips2c/jak3_functions/texture.cpp
         mips2c/jak3_functions/particle_curves.cpp
@@ -209,6 +212,11 @@ set(RUNTIME_SOURCE
         mips2c/jak3_functions/nav_engine.cpp
         mips2c/jak3_functions/merc_blend_shape.cpp
         mips2c/jak3_functions/wvehicle_part.cpp
+        mips2c/jak3_functions/ripple.cpp
+        mips2c/jak3_functions/shadow.cpp
+        mips2c/jak3_functions/ocean.cpp
+        mips2c/jak3_functions/ocean_vu0.cpp
+        mips2c/jak3_functions/generic_merc.cpp
         mips2c/mips2c_table.cpp
         overlord/common/dma.cpp
         overlord/common/fake_iso.cpp

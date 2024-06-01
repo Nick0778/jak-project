@@ -460,7 +460,7 @@
   (go (method-of-object this hostile))
   )
 
-(defmethod have-less-than-10-joints? ((this enemy))
+(defmethod have-more-than-10-joints? ((this enemy))
   (and (nonzero? (-> this node-list)) (-> this node-list) (< 10 (-> this node-list length)))
   )
 
@@ -1178,7 +1178,7 @@
         )
     )
   (when (-> arg1 art-level)
-    (let ((v1-5 (level-get *level* (the-as symbol (-> arg1 art-level)))))
+    (let ((v1-5 (level-get *level* (-> arg1 art-level))))
       (if v1-5
           (set! (-> self level) v1-5)
           )
@@ -1682,28 +1682,28 @@
                 )
               )
             (send-event (ppointer->process (-> this parent)) 'child-hit)
-            (let ((f0-1 (the-as number 0.0)))
+            (let ((f0-1 0.0))
               (if (not *debug-unkillable*)
                   (set! f0-1 (damage-enemy! this proc block))
                   )
-              )
-            (let ((s2-2 (penetrate->next-state this)))
-              (when s2-2
-                (logclear! (-> this enemy-flags) (enemy-flag use-trigger))
-                (send-attack-to-all-tshapes this (the-as process-focusable proc) block)
-                (let ((a1-17 (new 'stack-no-clear 'event-message-block)))
-                  (set! (-> a1-17 from) (process->ppointer proc))
-                  (set! (-> a1-17 num-params) argc)
-                  (set! (-> a1-17 message) s2-2)
-                  (set! (-> a1-17 param 0) (-> block param 0))
-                  (set! (-> a1-17 param 1) (-> block param 1))
-                  (set! (-> a1-17 param 2) (-> block param 2))
-                  (set! (-> a1-17 param 3) (-> block param 3))
-                  (set! (-> a1-17 param 4) (-> block param 4))
-                  (set! (-> a1-17 param 5) (-> block param 5))
-                  (send-event-function this a1-17)
+              (let ((s2-2 (penetrate->next-state this proc block f0-1)))
+                (when s2-2
+                  (logclear! (-> this enemy-flags) (enemy-flag use-trigger))
+                  (send-attack-to-all-tshapes this (the-as process-focusable proc) block)
+                  (let ((a1-17 (new 'stack-no-clear 'event-message-block)))
+                    (set! (-> a1-17 from) (process->ppointer proc))
+                    (set! (-> a1-17 num-params) argc)
+                    (set! (-> a1-17 message) s2-2)
+                    (set! (-> a1-17 param 0) (-> block param 0))
+                    (set! (-> a1-17 param 1) (-> block param 1))
+                    (set! (-> a1-17 param 2) (-> block param 2))
+                    (set! (-> a1-17 param 3) (-> block param 3))
+                    (set! (-> a1-17 param 4) (-> block param 4))
+                    (set! (-> a1-17 param 5) (-> block param 5))
+                    (send-event-function this a1-17)
+                    )
+                  #t
                   )
-                #t
                 )
               )
             )
@@ -2097,7 +2097,7 @@
     )
   )
 
-(defmethod penetrate->next-state ((this enemy))
+(defmethod penetrate->next-state ((this enemy) (arg0 process) (arg1 event-message-block) (arg2 float))
   (let ((gp-0 (-> this incoming penetrate-using)))
     (cond
       ((and (logtest? (penetrate jak-dark-blackhole) gp-0) #t)
@@ -2135,7 +2135,6 @@
   (find-offending-process-focusable arg0 arg1)
   )
 
-;; WARN: Return type mismatch object vs none.
 (defmethod enemy-touch-handler ((this enemy) (arg0 process) (arg1 event-message-block))
   (let* ((s4-0 (-> arg1 param 0))
          (s2-0 arg0)
@@ -2189,10 +2188,9 @@
         )
       )
     )
-  (none)
   )
 
-;; WARN: Return type mismatch symbol vs none.
+;; WARN: Return type mismatch symbol vs object.
 (defmethod send-attack-on-jump-or-knocked ((this enemy) (arg0 process) (arg1 event-message-block))
   (let ((s4-0 (-> arg1 param 0)))
     (when s4-0
@@ -2226,7 +2224,6 @@
         )
       )
     )
-  (none)
   )
 
 (defbehavior enemy-event-handler enemy ((arg0 process) (arg1 int) (arg2 symbol) (arg3 event-message-block))
@@ -2337,11 +2334,11 @@
   (none)
   )
 
-(defmethod on-ground? ((this enemy))
+(defmethod on-ground? ((this enemy) (arg0 enemy-jump-info))
   (let ((gp-0 (-> this root)))
     (when (< (-> gp-0 transv y) 0.0)
-      (let ((a1-0 (new 'stack-no-clear 'collide-query)))
-        (find-ground (-> this root) a1-0 (-> this gnd-collide-with) 8192.0 81920.0 1024.0 (the-as process #f))
+      (let ((a1-1 (new 'stack-no-clear 'collide-query)))
+        (find-ground (-> this root) a1-1 (-> this gnd-collide-with) 8192.0 81920.0 1024.0 (the-as process #f))
         )
       (>= (+ 409.6 (-> gp-0 gspot-pos y)) (-> gp-0 trans y))
       )

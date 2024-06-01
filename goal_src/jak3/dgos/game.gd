@@ -30,6 +30,7 @@
   "dma-buffer.o"
   "dma-bucket.o"
   "dma-disasm.o"
+  "pc-cheats.o" ;; added
   "pckernel-h.o" ;; added
   "pckernel-impl.o" ;; added
   "pc-debug-common.o" ;; added
@@ -348,6 +349,7 @@
   "prototype.o"
   "main-collide.o"
   "video.o"
+  "capture-pc.o" ;; added
   "pckernel-common.o" ;; added
   "pckernel.o" ;; added
   "main.o"
@@ -469,4 +471,5 @@
   "ragdoll-test.o"
   "debris.o"
   "shield-sphere.o"
+  "entity-debug.o" ;; added
  ))

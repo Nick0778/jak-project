@@ -50,15 +50,15 @@
   :bitfield #t
   :type uint32
   (force-on)
+  (endless-dark)
   (active)
+  (smack)
   (bomb0)
   (bomb1)
+  (tracking)
   (invinc)
-  (giant)
+  (invis)
   (no-anim)
-  (disable-force-on)
-  (ds8 8)
-  (ds9 9)
   )
 ;; ---darkjak-stage
 
@@ -138,7 +138,7 @@
 (define-extern pre-intro-play (function none))
 (define-extern intro-play (function none))
 (define-extern find-nearest-entity (function vector type entity))
-(define-extern have-vehicle-v-type? (function int symbol))
+(define-extern have-vehicle-v-type? (function vehicle-type symbol))
 (define-extern entity-birth-no-kill (function entity process))
 (define-extern process-drawable-burn-effect (function time-frame rgbaf :behavior target))
 (define-extern warp-gate type)
@@ -194,6 +194,21 @@
 (define-extern *pilot-get-on-mods* surface)
 (define-extern *pilot-get-off-mods* surface)
 
+;; target-turret
+(define-extern *turret-get-on-mods* surface)
+
+;; target-indax
+(define-extern *indax-walk-mods* surface)
+(define-extern *indax-jump-mods* surface)
+(define-extern *indax-double-jump-mods* surface)
+(define-extern *indax-bounce-mods* surface)
+(define-extern target-indax-exit (function none :behavior target))
+
+;; target-indax-hang
+(define-extern *indax-hang-walk-mods* surface)
+(define-extern *indax-hang-dodge-mods* surface)
+(define-extern *indax-hang-attack-mods* surface)
+
 ;; +++lightjak-stage
 (defenum lightjak-stage
   :bitfield #t
@@ -243,10 +258,27 @@
 ;; ---target-anim
 
 
+;; +++target-effect
+(defenum target-effect
+  :type uint64
+  :bitfield #t
+  (te0 0)
+  (te1 1)
+  (te2 2)
+  (te3 3)
+  (te4 4)
+  (te5 5)
+  (te6 6)
+  )
+;; ---target-effect
+
+
 ;; DECOMP BEGINS
 
 (deftype target (process-focusable)
-  ((fact                         fact-info-target :override)
+  ((self                         target           :override)
+   (ppointer                     (pointer target) :override)
+   (fact                         fact-info-target :override)
    (control                      control-info      :overlay-at root)
    (skel2                        joint-control)
    (shadow-backup                shadow-geo)
@@ -287,18 +319,18 @@
    (spool-anim                   spool-anim)
    (ambient-time                 time-frame)
    (fp-hud                       handle)
-   (no-load-wait                 uint64)
-   (no-look-around-wait          uint64)
+   (no-load-wait                 time-frame)
+   (no-look-around-wait          time-frame)
    (burn-proc                    handle)
    (pre-joint-hook               (function none :behavior target))
    (notify                       handle)
    (death-resetter               resetter-spec     :inline)
-   (mode-cache                   basic)
+   (mode-cache                   symbol)
    (mode-param1                  handle)
    (mode-param2                  uint64)
    (mode-param3                  uint64)
    (major-mode-exit-hook         (function none :behavior target))
-   (major-mode-event-hook        (function none :behavior target))
+   (major-mode-event-hook        (function process int symbol event-message-block object :behavior target))
    (sub-mode-exit-hook           (function none :behavior target))
    (ext-geo-control              external-art-buffer)
    (pending-ext-geo              target-geo)
@@ -309,8 +341,8 @@
    (tobot-state                  state)
    (tobot?                       symbol)
    (tobot-recorder               basic)
-   (target-effect                uint64)
-   (color-effect                 basic)
+   (target-effect                target-effect)
+   (color-effect                 symbol)
    (color-effect-start-time      time-frame)
    (color-effect-duration        time-frame)
    (racer                        racer-info)
@@ -431,16 +463,21 @@
     target-ice-stance
     target-ice-walk
     target-indax-attack
-    target-indax-attack-air
-    target-indax-death
-    target-indax-double-jump
-    target-indax-falling
+    (target-indax-attack-air symbol)
+    (target-indax-death symbol)
+    (target-indax-double-jump float float)
+    (target-indax-falling symbol)
     target-indax-get-off
-    target-indax-grab
+    (target-indax-grab symbol)
     target-indax-hang
-    target-indax-hit
-    target-indax-hit-ground
-    target-indax-jump
+    target-indax-hang-attack
+    target-indax-hang-dodge
+    target-indax-hang-stance
+    target-indax-hang-turn-around
+    target-indax-hang-walk
+    (target-indax-hit symbol attack-info)
+    (target-indax-hit-ground symbol)
+    (target-indax-jump float float surface)
     target-indax-running-attack
     target-indax-stance
     (target-indax-start handle object)
@@ -528,7 +565,7 @@
     target-swim-stance
     target-swim-up
     target-swim-walk
-    target-title
+    (target-title symbol)
     target-tube
     (target-tube-death symbol)
     (target-tube-hit symbol attack-info)

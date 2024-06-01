@@ -323,7 +323,7 @@
 
 ;; definition for method 30 of type wvehicle
 ;; INFO: Used lq/sq
-;; WARN: Return type mismatch symbol vs none.
+;; WARN: Return type mismatch symbol vs object.
 (defmethod rigid-body-object-method-30 ((this wvehicle))
   (set! (-> this v-flags) (the-as vehicle-flag (logclear (-> this v-flags) (vehicle-flag sounds))))
   (let ((f0-0 (-> this player-dist2))
@@ -349,7 +349,7 @@
       (set! (-> a0-13 prev-flags) (-> a0-13 flags))
       )
     )
-  (none)
+  #f
   )
 
 ;; definition for method 162 of type wvehicle
@@ -1054,8 +1054,9 @@
        )
      )
     (('begin-race)
-     (-> arg3 param 0)
-     (wvehicle-method-197 this)
+     (let ((a1-2 (-> arg3 param 0)))
+       (race-setup this (the-as int a1-2))
+       )
      (logclear! (-> this focus-status) (focus-status grabbed))
      (when (and (-> this next-state) (= (-> this next-state name) 'race-waiting))
        (cond
@@ -1098,12 +1099,12 @@
                               )
                        )
                     )
-               (wvehicle-method-180 this (-> v1-51 shortcuts))
+               (race-select-path-randomly-from-mask this (-> v1-51 shortcuts))
                (set! (-> this shortcut-time) (the-as uint (current-time)))
                (set! (-> this shortcut-speed-factor) 1.0)
                )
               (else
-                (wvehicle-method-180 this (-> v1-51 safe-paths))
+                (race-select-path-randomly-from-mask this (-> v1-51 safe-paths))
                 (set! (-> this shortcut-speed-factor) 0.0)
                 )
               )
@@ -1148,10 +1149,10 @@
      #f
      )
     (('race-pass)
-     (send-event (the-as process-tree (vehicle-method-68 this)) 'race-pass)
+     (send-event (find-rider this) 'race-pass)
      )
     (('race-got-passed)
-     (send-event (the-as process-tree (vehicle-method-68 this)) 'race-got-passed)
+     (send-event (find-rider this) 'race-got-passed)
      )
     (('race-finished)
      (-> arg3 param 0)
@@ -1250,20 +1251,10 @@
      v0-0
      )
     (('ai-set-inaccuracy-factor)
-     (let* ((a0-95 this)
-            (t9-23 (method-of-object a0-95 wvehicle-method-202))
-            )
-       (-> arg3 param 0)
-       (t9-23 a0-95)
-       )
+     (wvehicle-method-202 this (the-as float (-> arg3 param 0)))
      )
     (('ai-set-attack-delay-factor)
-     (let* ((a0-97 this)
-            (t9-24 (method-of-object a0-97 wvehicle-method-201))
-            )
-       (-> arg3 param 0)
-       (t9-24 a0-97)
-       )
+     (wvehicle-method-201 this (the-as float (-> arg3 param 0)))
      )
     (('go-player-control)
      (go (method-of-object this player-control))
@@ -1311,7 +1302,7 @@
         )
     )
   (cond
-    ((have-vehicle-v-type? (the-as int (-> this info vehicle-type)))
+    ((have-vehicle-v-type? (the-as vehicle-type (-> this info vehicle-type)))
      (if (not (-> this minimap))
          (set! (-> this minimap) (add-icon! *minimap* this (the-as uint 133) (the-as int #f) (the-as vector #t) 0))
          )
@@ -1326,7 +1317,3 @@
   ((method-of-type vehicle vehicle-method-118) this)
   (none)
   )
-
-
-
-

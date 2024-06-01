@@ -334,7 +334,7 @@
       )
     (if (logtest? (game-secrets darkjak-tracking) (-> *game-info* secrets))
         (set! (-> *game-info* features)
-              (the-as game-feature (logior (game-feature feature44) (-> *game-info* features)))
+              (the-as game-feature (logior (game-feature darkjak-tracking) (-> *game-info* features)))
               )
         )
     (logior! (-> *game-info* features) (-> *game-info* debug-features))
@@ -804,7 +804,7 @@
             ((= (status-of-level-and-borrows *level* 'wasall #f) 'active)
              (set! gp-1 "wasdoors-desert")
              (if (and (-> *game-info* current-continue)
-                      (logtest? (continue-flags record-path) (-> *game-info* current-continue flags))
+                      (logtest? (continue-flags race) (-> *game-info* current-continue flags))
                       )
                  (set! gp-1 (-> *game-info* current-continue name))
                  )
@@ -1395,12 +1395,12 @@
        )
       (((game-task-node-command add-darkjak-tracking))
        (set! (-> *game-info* features)
-             (the-as game-feature (logior (game-feature feature44) (-> *game-info* features)))
+             (the-as game-feature (logior (game-feature darkjak-tracking) (-> *game-info* features)))
              )
        )
       (((game-task-node-command add-darkjak-invinc))
        (set! (-> *game-info* features)
-             (the-as game-feature (logior (game-feature feature45) (-> *game-info* features)))
+             (the-as game-feature (logior (game-feature darkjak-invinc) (-> *game-info* features)))
              )
        )
       (((game-task-node-command add-lighteco))
@@ -2957,8 +2957,9 @@
   )
 
 ;; definition for function task-manager-init-by-other
+;; INFO: Process stack size was changed from 1024 to 2048
 (defbehavior task-manager-init-by-other task-manager ((arg0 game-task-node-info) (arg1 symbol))
-  (stack-size-set! (-> self main-thread) 1024)
+  (stack-size-set! (-> self main-thread) 2048)
   (add-connection *task-manager-engine* self nothing self arg0 #f)
   (set! (-> self node-info) arg0)
   (set! (-> self lev-name) arg1)
@@ -3483,7 +3484,3 @@
       )
     )
   )
-
-
-
-
