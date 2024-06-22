@@ -14,9 +14,9 @@
         :param (new 'static 'boxed-array :type int32 #xf0)
         )
       (new 'static 'turret-path-event
-        :pos (the-as float #x3fcedddd) ;; x3dcccccd
+        :pos (the-as float #x3fcedddd)
         :event-type 'set-rotyvv
-        :param (new 'static 'boxed-array :type float -4294965.896) ;; xfffff6a0
+        :param (new 'static 'boxed-array :type float -4294965.896)
         )
       (new 'static 'turret-path-event
         :pos (the-as float #x3fe66666)
@@ -24,7 +24,7 @@
         :param '(send-event "port-turret-2" 'start-talking)
         )
       (new 'static 'turret-path-event
-        :pos (the-as float #x3fe99999) ;; x3ff33333
+        :pos (the-as float #x3fe99999)
         :event-type 'set-rotyvv
         :param (new 'static 'boxed-array :type float 0.0)
         )
@@ -583,7 +583,6 @@
              ((>= (-> self hit-count) (-> self hit-max))
               (jak-hit-speech (the-as port-turret (-> self parent 0)))
               (+! (-> (the-as port-turret (-> self parent 0)) ships-launched) -1)
-              (sound-play "hover-explode") ;; added an sound effect when boats explode
               (let ((gp-0 (get-process *default-dead-pool* part-tracker #x4000)))
                 (when gp-0
                   (let ((t9-2 (method-of-type part-tracker activate)))
