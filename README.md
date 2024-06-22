@@ -1,3 +1,63 @@
+# "PORTBLMP-Restoration" Branch
+
+This branch contains modifications as an attempt to restore that cut port mission from Jak 2 July Prototype called "Defend the Portwall" in the final version of the game on OpenGoal. More info about this mission can be found in: https://www.youtube.com/watch?v=2ZGTRvTlA3M&t=131s
+
+### Usage
+
+You need to get PORTBLMP.DGO from _Jak 2 July Prototype build_'s DGO folder, and put it into the DGO folder of iso_data. Also, you need to get CIPBRES.STR from STR folder of the Prototype build, and put it into the STR folder from iso_data. Then, do all the rest of Opengoal installation process. If you did everything right, you will be able to access this level by entering in Debug Menu: _game/continue/default/ctyport-turret_, then the level should work.
+
+(Note: The original idea would be to connect the level with the game's overworld, but due to the limitations of Opengoal, it is not possible to add new regions yet.)
+
+### Progress so far
+- The task for this level was fully recreated with the help of some remains from it found in the source code that made it easier for me to recreate it.
+- The Task was placed exactly where it originally belonged, between "Defend Stadium" and "Check the Construction Site" tasks.
+- Torn's cutscene was restored and it can close the task after the scene ends. You can load the cutscene by entering in Debug Menu: _scene/city/city-protect-blimp-res_. 
+- The game task system proceed normally after beating this mission.
+- Added new sounds that originally don't exist in the mission, like turret sounds and damage sounds.
+- The mission is finally functional, so you can really play it!
+
+### To do
+- Restore all the missing audios from this mission (Torn voicelines).
+- Fix some visual glitches, like Torn eyes that are glitched.
+- Fix Jak coordinates when starting the level.
+- Connect portblmp level with the game overworld.
+
+### List of all the audios from Jak 2 July Build required for this mission
+
+- "CIPBRES"
+- "torn010"
+- "torn011"
+- "torn012"
+- "torn014"
+- "torn017"
+- "torn018"
+- "torn019"
+- "torn020"
+- "torn022"
+- "torn023"
+- "torn026"
+- "torn028"
+- "torn029"
+- "torn030"
+- "torn033"
+- "torn034"
+- "torn035"
+- "torn037"
+- "torn038"
+- "torn039"
+- "torn040"
+- "torn047"
+- "torn048"
+- "torn049"
+- "torn051"
+- "torn052"
+- "torn053"
+- "torn056"
+- "torn057"
+- "torn060"
+- "torn061"
+- "torn062"
+
 <p align="center">
   <img width="500" height="100%" src="./docs/img/logo-text-colored-new.png">
 </p>
