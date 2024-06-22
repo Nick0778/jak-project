@@ -2096,5 +2096,8 @@
 ["4COMMON",                                    "4COMMON",                    2, ["NO-XGO"], ""],
 ["5COMMON",                                    "5COMMON",                    2, ["NO-XGO"], ""],
 ["6COMMON",                                    "6COMMON",                    2, ["NO-XGO"], ""],
-["7COMMON",                                    "7COMMON",                    2, ["NO-XGO"], ""]
+["7COMMON",                                    "7COMMON",                    2, ["NO-XGO"], ""],
+["target-port-turret",                         "target-port-turret",         3, ["PORTBLMP"], "levels/portblmp"],
+["port-blimp",                                 "port-blimp",                 3, ["PORTBLMP"], "levels/portblmp"],
+["portblmp",                                   "portblmp",                   4, ["PORTBLMP"], ""]
 ]
