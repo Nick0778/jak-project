@@ -3439,3 +3439,20 @@
       (lookup-text! *common-text* (text-id discord-rpc-not-in-mission) #f)
     )
   )
+
+;; Hack for spawning scoutbot in the sewers
+(process-spawn-function process
+  (lambda :behavior process ()
+    (loop
+      (when (entity-by-name "scoutbot-9")
+        (set! (-> (the entity-actor (entity-by-name "scoutbot-9")) extra kill-mask) (task-mask task3))
+        (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "scoutbot-9") 5))) 67294)
+        (add-data! (entity-by-name "scoutbot-9") (new 'static 'res-tag :name 'alt-actor :key-frame -1000000000.0 :elt-count 1 :elt-type uint32) (the pointer 67421))
+        )
+      (when (entity-by-name "sewer-elec-gate-4")
+        (set! (-> (the (pointer pair) (get-tag-index-data (entity-by-name "sewer-elec-gate-4") 0))) '(send-event "scoutbot-9" 'trigger))
+        )
+      (suspend)
+      )
+    )
+  )
