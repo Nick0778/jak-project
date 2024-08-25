@@ -1,0 +1,1345 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: scoutbot.gc
+;; name in dgo: scoutbot
+;; dgos: SEA
+
+;; DECOMP BEGINS
+
+(defskelgroup skel-scoutbot scoutbot scoutbot-lod0-jg scoutbot-walk-ja
+              ((scoutbot-lod0-mg (meters 999999)))
+              :bounds (static-spherem 0 0 0 6)
+              :shadow scoutbot-shadow-mg
+              :shadow-joint-index 3
+              )
+
+(deftype scoutbot-foot (structure)
+  ((pos-offset     vector  :inline)
+   (joint-index    uint32)
+   (offset         float)
+   (position       vector  :inline)
+   (next-position  vector  :inline)
+   (real-position  vector  :inline)
+   (speed          vector  :inline)
+   (moving         symbol)
+   (main-y         float)
+   (delta-y        float)
+   (init           symbol)
+   )
+  )
+
+(deftype scoutbot (nav-enemy)
+  ((target-pos              vector         :inline)
+   (joint-ik                joint-mod-ik   6)
+   (feet                    scoutbot-foot  6 :inline)
+   (last-trans              vector         :inline)
+   (linear-speed            vector         :inline)
+   (last-quat               quaternion     :inline)
+   (y-angular-velocity      float)
+   (look-dir                vector         :inline)
+   (old-y-angle-diff        float)
+   (angle-change-time       time-frame)
+   (y-angle                 float)
+   (interp                  float)
+   (next-spot-time          time-frame)
+   (min-spot-delay          int32)
+   (max-spot-delay          int32)
+   (dest-pos                vector         :inline)
+   (next-attack-time        time-frame)
+   (next-close-attack-time  time-frame)
+   (shoot-left-right        symbol)
+   (event-actor             entity) ;; Added in PC Port - Allow to 'shutdown' objects which have this event after scoutbot dying
+   )
+  (:state-methods
+    dormant
+    ambush
+    hostile
+    attack-shoot
+    close-attack
+    die ;; Added in PC Port - Implemented a 'die' state
+    )
+  (:methods
+    (toggle-cspec-deadly (_type_ symbol int) none)
+    (fire-shot (_type_) none)
+    (ik-setup (_type_) none)
+    )
+  )
+
+(define *scoutbot-nav-enemy-info*
+  (new 'static 'nav-enemy-info
+    :use-die-falling #f
+    :use-victory #f
+    :use-jump-blocked #f
+    :debug-draw-neck #f
+    :jump-debug-draw #f
+    :move-to-ground #t
+    :hover-if-no-ground #f
+    :idle-anim-script (new 'static 'inline-array idle-control-frame 3
+      (new 'static 'idle-control-frame :command (idle-control-cmd push) :param0 30)
+      (new 'static 'idle-control-frame
+        :command (idle-control-cmd play)
+        :anim #x3
+        :param0 100
+        :param1 100
+        :param2 '((new 'static 'bfloat :data 1.0) (new 'static 'bfloat :data 1.0))
+        )
+      (new 'static 'idle-control-frame)
+      )
+    :idle-anim 3
+    :notice-anim 3
+    :hostile-anim 4
+    :hit-anim 15
+    :knocked-anim 15
+    :knocked-land-anim 3
+    :die-anim 3
+    :die-falling-anim 3
+    :victory-anim -1
+    :jump-wind-up-anim -1
+    :jump-in-air-anim -1
+    :jump-land-anim -1
+    :neck-joint -1
+    :sound-hit (static-sound-name "scoutbot-hit")
+    :sound-die (static-sound-name "scoutbot-die")
+    :notice-distance (meters 300)
+    :notice-distance-delta (meters 300)
+    :proximity-notice-distance (meters 300)
+    :default-hit-points 100.0
+    :gnd-collide-with (collide-spec backgnd)
+    :overlaps-others-collide-with-filter (collide-spec jak bot player-list)
+    :penetrate-knocked (penetrate
+      generic-attack
+      flop
+      punch
+      spin
+      roll
+      uppercut
+      bonk
+      tube
+      vehicle
+      flut-attack
+      board
+      mech-punch
+      mech-bonk
+      dark-skin
+      dark-punch
+      dark-bomb
+      dark-smack
+      flut
+      shield
+      explode
+      jak-yellow-shot
+      jak-red-shot
+      jak-blue-shot
+      jak-dark-shot
+      enemy-yellow-shot
+      enemy-dark-shot
+      eco-green
+      )
+    :movement-gravity (meters -100)
+    :friction 0.8
+    :attack-shove-back (meters 6)
+    :attack-shove-up (meters 3)
+    :attack-mode 'generic
+    :attack-damage 1
+    :recover-gnd-collide-with (collide-spec backgnd crate obstacle hit-by-others-list pusher)
+    :knocked-can-land-timeout (seconds 0.1)
+    :knocked-recover-timeout (seconds 2)
+    :ragdoll-blend-out-time (seconds 0.25)
+    :ragdoll-rotate-velocity-mult 1.0
+    :jump-height-min (meters 3)
+    :jump-height-factor 0.5
+    :knocked-seek-ry-clamp 2730.6667
+    :knocked-soft-vxz-lo 72089.6
+    :knocked-soft-vxz-hi 108134.4
+    :knocked-soft-vy-lo 81920.0
+    :knocked-soft-vy-hi 122880.0
+    :knocked-medium-vxz-lo 147456.0
+    :knocked-medium-vxz-hi 196608.0
+    :knocked-medium-vy-lo 135168.0
+    :knocked-medium-vy-hi 151552.0
+    :knocked-hard-vxz-lo 78643.2
+    :knocked-hard-vxz-hi 117964.8
+    :knocked-hard-vy-lo 183500.8
+    :knocked-hard-vy-hi 209715.2
+    :knocked-huge-vxz-lo 164659.2
+    :knocked-huge-vxz-hi 249036.8
+    :knocked-huge-vy-lo 183500.8
+    :knocked-huge-vy-hi 217907.2
+    :knocked-yellow-vxz-lo 40960.0
+    :knocked-yellow-vxz-hi 49152.0
+    :knocked-yellow-vy-lo 57344.0
+    :knocked-yellow-vy-hi 81920.0
+    :knocked-red-vxz-lo 24576.0
+    :knocked-red-vxz-hi 196608.0
+    :knocked-red-vy-lo 94208.0
+    :knocked-red-vy-hi 151552.0
+    :knocked-blue-vxz-lo 40960.0
+    :knocked-blue-vxz-hi 49152.0
+    :knocked-blue-vy-lo 24576.0
+    :knocked-blue-vy-hi 81920.0
+    :ragdoll-info #f
+    :shadow-size (meters 2)
+    :shadow-max-y (meters 1)
+    :shadow-min-y (meters -1)
+    :shadow-locus-dist (meters 150)
+    :gem-joint -1
+    :gem-offset (new 'static 'sphere :r 163840.0)
+    :knocked-off #t
+    :callback-info #f
+    :use-momentum #f
+    :use-frustration #t
+    :use-stop-chase #f
+    :use-circling #f
+    :use-pacing #t
+    :walk-anim 4
+    :turn-anim -1
+    :run-anim 3
+    :taunt-anim -1
+    :run-travel-speed (meters 8)
+    :run-acceleration (meters 32)
+    :run-turning-acceleration (meters 40)
+    :walk-travel-speed (meters 4)
+    :walk-acceleration (meters 16)
+    :walk-turning-acceleration (meters 40)
+    :maximum-rotation-rate (degrees 360)
+    :notice-nav-radius (meters 2)
+    :frustration-distance (meters 8)
+    :frustration-time (seconds 4)
+    :blocked-time (seconds 0.3)
+    :circle-dist-lo 20480.0
+    :circle-dist-hi 61440.0
+    :nav-mesh #f
+    )
+  )
+
+(set! (-> *scoutbot-nav-enemy-info* fact-defaults) *fact-info-enemy-defaults*)
+
+(deftype scoutbot-ik-setup (structure)
+  ((elbow-index      int32)
+   (hand-dist        float)
+   (foot-index       int32)
+   (foot-length      float)
+   (anticipate-time  float)
+   (on-ground-start  float)
+   (on-ground-dur    float)
+   )
+  )
+
+(define *scoutbot-ik-setup* (new 'static 'boxed-array :type scoutbot-ik-setup
+                              (new 'static 'scoutbot-ik-setup
+                                :elbow-index 5
+                                :hand-dist 9269.101
+                                :foot-index 6
+                                :foot-length 3710.1978
+                                :anticipate-time 1.0
+                                :on-ground-start 15.0
+                                :on-ground-dur 12.0
+                                )
+                              (new 'static 'scoutbot-ik-setup
+                                :elbow-index 8
+                                :hand-dist 9269.101
+                                :foot-index 9
+                                :foot-length 3710.1978
+                                :anticipate-time 1.0
+                                :on-ground-start 6.0
+                                :on-ground-dur 12.0
+                                )
+                              (new 'static 'scoutbot-ik-setup
+                                :elbow-index 11
+                                :hand-dist 9269.101
+                                :foot-index 12
+                                :foot-length 3710.1978
+                                :anticipate-time 1.0
+                                :on-ground-start 12.0
+                                :on-ground-dur 12.0
+                                )
+                              (new 'static 'scoutbot-ik-setup
+                                :elbow-index 20
+                                :hand-dist 9269.101
+                                :foot-index 21
+                                :foot-length 3710.1978
+                                :anticipate-time 1.0
+                                :on-ground-start 6.0
+                                :on-ground-dur 12.0
+                                )
+                              (new 'static 'scoutbot-ik-setup
+                                :elbow-index 17
+                                :hand-dist 9269.101
+                                :foot-index 18
+                                :foot-length 3710.1978
+                                :anticipate-time 1.0
+                                :on-ground-start 12.0
+                                :on-ground-dur 12.0
+                                )
+                              (new 'static 'scoutbot-ik-setup
+                                :elbow-index 14
+                                :hand-dist 9269.101
+                                :foot-index 15
+                                :foot-length 3710.1978
+                                :anticipate-time 1.0
+                                :on-ground-start 3.0
+                                :on-ground-dur 12.0
+                                )
+                              )
+        )
+
+(defmethod toggle-cspec-deadly ((this scoutbot) (arg0 symbol) (arg1 int))
+  (let ((v1-1 (-> this root root-prim)))
+    (dotimes (a0-1 (the-as int (-> v1-1 specific 0)))
+      (let ((a3-1 (-> (the-as collide-shape-prim-group v1-1) child a0-1)))
+        (cond
+          ((and arg0 (= (-> a3-1 prim-id) arg1))
+           (logior! (-> a3-1 prim-core action) (collide-action deadly))
+           (when (nonzero? (-> a3-1 prim-id))
+             (set! (-> a3-1 prim-core collide-as) (collide-spec enemy))
+             (set! (-> a3-1 prim-core collide-with) (collide-spec jak bot player-list))
+             )
+           )
+          (else
+            (logclear! (-> a3-1 prim-core action) (collide-action deadly))
+            (when (nonzero? (-> a3-1 prim-id))
+              (set! (-> a3-1 prim-core collide-as) (collide-spec))
+              (set! (-> a3-1 prim-core collide-with) (collide-spec))
+              0
+              )
+            )
+          )
+        )
+      )
+    )
+  0
+  (none)
+  )
+
+(defmethod normalize-heading! ((this scoutbot) (arg0 nav-control))
+  (let ((s5-0 (new 'stack-no-clear 'vector)))
+    (new 'stack-no-clear 'vector)
+    (vector-! s5-0 (target-pos 0) (-> this root trans))
+    (set! (-> s5-0 y) 0.0)
+    (vector-normalize! s5-0 1.0)
+    (let ((f0-2 (deg-diff (-> this y-angle) (vector-y-angle s5-0))))
+      (let ((f1-0 21845.334))
+        (cond
+          ((< f1-0 f0-2)
+           (set! f0-2 f1-0)
+           )
+          ((< f0-2 (- f1-0))
+           (set! f0-2 (- f1-0))
+           )
+          )
+        )
+      (+! (-> this y-angle) (* f0-2 (seconds-per-frame)))
+      )
+    )
+  (quaternion-vector-angle! (-> this root quat) *y-vector* (-> this y-angle))
+  0
+  (none)
+  )
+
+(defmethod nav-enemy-method-176 ((this scoutbot))
+  (let ((t9-0 (method-of-type nav-enemy nav-enemy-method-176)))
+    (t9-0 this)
+    )
+  (logclear! (-> this nav state nav flags) (nav-control-flag update-heading-from-facing))
+  0
+  (none)
+  )
+  
+(defmethod nav-enemy-method-177 ((this scoutbot))
+  (let ((t9-0 (method-of-type nav-enemy nav-enemy-method-177)))
+    (t9-0 this)
+    )
+  (logclear! (-> this nav state nav flags) (nav-control-flag update-heading-from-facing))
+  0
+  (none)
+  )
+
+(defmethod ik-setup ((this scoutbot))
+  (local-vars
+    (at-0 int)
+    (sv-192 matrix)
+    (sv-208 matrix)
+    (sv-224 matrix)
+    (sv-240 matrix)
+    (sv-256 matrix)
+    (sv-272 matrix)
+    )
+  (with-pp
+    (rlet ((acc :class vf)
+           (vf0 :class vf)
+           (vf1 :class vf)
+           (vf2 :class vf)
+           (vf3 :class vf)
+           (vf4 :class vf)
+           (vf5 :class vf)
+           (vf6 :class vf)
+           (vf7 :class vf)
+           )
+      (init-vf0-vector)
+      (dotimes (s5-0 6)
+        (-> this joint-ik s5-0 shoulder-matrix-no-ik)
+        (set! sv-224 (-> this joint-ik s5-0 elbow-matrix-no-ik))
+        (let ((s3-0 (new 'stack-no-clear 'vector))
+              (s4-0 (new 'stack-no-clear 'vector))
+              )
+          (let ((s0-0 (-> this feet s5-0)))
+            (set! sv-272 (new 'stack-no-clear 'matrix))
+            (let ((s1-0 (new 'stack-no-clear 'vector))
+                  (s2-0 (new 'stack-no-clear 'vector))
+                  )
+              (let ((v1-12 s3-0))
+                (let ((a0-2 (-> sv-224 trans)))
+                  (let ((a1-1 (-> sv-224 uvec)))
+                    (let ((a2-3 (-> *scoutbot-ik-setup* s5-0 hand-dist)))
+                      (.mov vf7 a2-3)
+                      )
+                    (.lvf vf5 (&-> a1-1 quad))
+                    )
+                  (.lvf vf4 (&-> a0-2 quad))
+                  )
+                (.add.x.vf vf6 vf0 vf0 :mask #b1000)
+                (.mul.x.vf acc vf5 vf7 :mask #b111)
+                (.add.mul.w.vf vf6 vf4 vf0 acc :mask #b111)
+                (.svf (&-> v1-12 quad) vf6)
+                )
+              (set! (-> s4-0 quad) (-> s3-0 quad))
+              (when (!= (-> this joint-ik s5-0 blend) 0.0)
+                (when (not (-> s0-0 init))
+                  (set! (-> s0-0 position quad) (-> s3-0 quad))
+                  (set! (-> s0-0 real-position quad) (-> s3-0 quad))
+                  (set! (-> s0-0 next-position quad) (-> s3-0 quad))
+                  (set! (-> s0-0 speed quad) (the-as uint128 0))
+                  (set! (-> this linear-speed quad) (the-as uint128 0))
+                  (set! (-> s0-0 init) #t)
+                  )
+                (let ((a1-3 (-> this node-list data (-> *scoutbot-ik-setup* s5-0 elbow-index) bone transform)))
+                  (set! sv-208 (-> this node-list data (-> *scoutbot-ik-setup* s5-0 foot-index) bone transform))
+                  (set! sv-192 (new 'stack-no-clear 'matrix))
+                  (matrix-4x4-inverse! sv-192 a1-3)
+                  )
+                (let ((t9-1 matrix*!)
+                      (a0-22 sv-192)
+                      (a2-5 sv-192)
+                      )
+                  (t9-1 a0-22 sv-208 a2-5)
+                  )
+                (matrix*! sv-192 sv-192 sv-224)
+                (matrix->trans sv-192 s1-0)
+                (let ((a0-25 s1-0))
+                  (let ((v1-34 s1-0))
+                    (let ((a1-8 (-> sv-192 uvec)))
+                      (let ((a2-10 (-> *scoutbot-ik-setup* s5-0 foot-length)))
+                        (.mov vf7 a2-10)
+                        )
+                      (.lvf vf5 (&-> a1-8 quad))
+                      )
+                    (.lvf vf4 (&-> v1-34 quad))
+                    )
+                  (.add.x.vf vf6 vf0 vf0 :mask #b1000)
+                  (.mul.x.vf acc vf5 vf7 :mask #b111)
+                  (.add.mul.w.vf vf6 vf4 vf0 acc :mask #b111)
+                  (.svf (&-> a0-25 quad) vf6)
+                  )
+                (vector-! s2-0 s3-0 s1-0)
+                (vector-! (the-as vector sv-272) s1-0 (-> this root trans))
+                (set! sv-256 sv-272)
+                (set! sv-240 (new 'stack-no-clear 'matrix))
+                (set! (-> sv-240 rvec x) 0.0)
+                (set! (-> sv-240 rvec y) (sin (* (-> this y-angular-velocity) (-> pp clock frames-per-second))))
+                (set! (-> sv-240 rvec z) 0.0)
+                (set! (-> sv-240 rvec w) 1.0)
+                (let ((v1-45 sv-272))
+                  (.lvf vf1 (&-> sv-240 rvec quad))
+                  (.lvf vf2 (&-> v1-45 rvec quad))
+                  )
+                (.outer.product.a.vf acc vf1 vf2)
+                (.outer.product.b.vf vf3 vf2 vf1 acc)
+                (.svf (&-> sv-256 rvec quad) vf3)
+                (let ((a1-13 sv-272)
+                      (v1-47 sv-272)
+                      (a0-31 (new 'stack-no-clear 'vector))
+                      )
+                  (.lvf vf1 (&-> (-> this linear-speed) quad))
+                  (let ((f0-9 (-> pp clock frames-per-second)))
+                    (.mov at-0 f0-9)
+                    )
+                  (.mov vf2 at-0)
+                  (.mov.vf vf1 vf0 :mask #b1000)
+                  (.mul.x.vf vf1 vf1 vf2 :mask #b111)
+                  (.svf (&-> a0-31 quad) vf1)
+                  (vector+! (the-as vector a1-13) (the-as vector v1-47) a0-31)
+                  )
+                (set! (-> sv-272 rvec y) 0.0)
+                (set! (-> s0-0 speed quad) (-> sv-272 rvec quad))
+                (let ((a1-15 s1-0))
+                  (let ((v1-50 s1-0))
+                    (let ((a0-34 (-> s0-0 speed)))
+                      (let ((a2-17 (* 0.2 (-> *scoutbot-ik-setup* s5-0 anticipate-time))))
+                        (.mov vf7 a2-17)
+                        )
+                      (.lvf vf5 (&-> a0-34 quad))
+                      )
+                    (.lvf vf4 (&-> v1-50 quad))
+                    )
+                  (.add.x.vf vf6 vf0 vf0 :mask #b1000)
+                  (.mul.x.vf acc vf5 vf7 :mask #b111)
+                  (.add.mul.w.vf vf6 vf4 vf0 acc :mask #b111)
+                  (.svf (&-> a1-15 quad) vf6)
+                  )
+                (let ((f0-14 (+ 18.0 (ja-aframe-num 0)))
+                      (f1-3 (-> *scoutbot-ik-setup* s5-0 on-ground-start))
+                      (f2-1 (+ (-> *scoutbot-ik-setup* s5-0 on-ground-start) (-> *scoutbot-ik-setup* s5-0 on-ground-dur)))
+                      )
+                  0.0
+                  (cond
+                    ((or (and (< f1-3 f0-14) (>= f2-1 f0-14)) (and (< (+ 18.0 f1-3) f0-14) (>= (+ 18.0 f2-1) f0-14)))
+                     (if (-> s0-0 moving)
+                         (set! (-> s0-0 real-position quad) (-> s1-0 quad))
+                         )
+                     (set! (-> s1-0 quad) (-> s0-0 real-position quad))
+                     (set! (-> s0-0 moving) #f)
+                     )
+                    (else
+                      (let* ((f0-15 (+ -18.0 f0-14))
+                             (f0-16 (if (>= f1-3 f0-15)
+                                        (- f1-3 f0-15)
+                                        (+ (- 18.0 f0-15) f1-3)
+                                        )
+                                    )
+                             )
+                        (set! (-> s0-0 next-position quad) (-> s1-0 quad))
+                        (when (not (-> s0-0 moving))
+                          )
+                        (vector-lerp!
+                          s1-0
+                          (-> s0-0 real-position)
+                          (-> s0-0 next-position)
+                          (- 1.0 (/ f0-16 (- 18.0 (-> *scoutbot-ik-setup* s5-0 on-ground-dur))))
+                          )
+                        )
+                      (set! (-> s0-0 moving) (the-as symbol #t))
+                      )
+                    )
+                  )
+                (cond
+                  ((>= (+ 409.6 (-> this root trans y)) (-> s1-0 y))
+                   )
+                  (else
+                    )
+                  )
+                (set! (-> s4-0 quad) (-> s1-0 quad))
+                (vector+! s4-0 s4-0 s2-0)
+                )
+              )
+            )
+          (set! (-> s4-0 y) (-> s3-0 y))
+          (set-ik-target! (-> this joint-ik s5-0) s4-0)
+          )
+        )
+      0
+      (none)
+      )
+    )
+  )
+
+(defmethod enemy-common-post ((this scoutbot))
+  ((method-of-type nav-enemy enemy-common-post) this)
+  (let ((s5-0 (new 'stack-no-clear 'vector)))
+    (vector-! s5-0 (target-pos 0) (-> this root trans))
+    (set! (-> s5-0 y) 0.0)
+    (vector-normalize! s5-0 1.0)
+    )
+  (ik-setup this)
+  (vector-! (-> this linear-speed) (-> this root trans) (-> this last-trans))
+  (set! (-> this last-trans quad) (-> this root trans quad))
+  (set! (-> this y-angular-velocity)
+        (deg- (quaternion-y-angle (-> this root quat)) (quaternion-y-angle (-> this last-quat)))
+        )
+  (quaternion-copy! (-> this last-quat) (-> this root quat))
+  (none)
+  )
+
+(defmethod relocate ((this scoutbot) (offset int))
+  (dotimes (v1-0 6)
+    (if (nonzero? (-> this joint-ik v1-0))
+        (&+! (-> this joint-ik v1-0) offset)
+        )
+    )
+  (call-parent-method this offset)
+  )
+
+(defmethod nav-enemy-method-168 ((this scoutbot) (arg0 vector))
+  (let ((v1-1 (-> this nav state))
+        (a0-2 (-> this root trans))
+        )
+    (logclear! (-> v1-1 flags) (nav-state-flag directional-mode))
+    (logior! (-> v1-1 flags) (nav-state-flag target-poly-dirty))
+    (set! (-> v1-1 target-pos quad) (-> a0-2 quad))
+    )
+  (the-as nav-poly 0)
+  )
+
+(defstate dormant (scoutbot)
+  :virtual #t
+  :event (behavior ((proc process) (argc int) (message symbol) (block event-message-block))
+    (case message
+      (('trigger)
+       (go-virtual ambush)
+       )
+      )
+    (enemy-event-handler proc argc message block)
+    )
+  )
+
+(defstate ambush (scoutbot)
+  :virtual #t
+  :code (behavior ()
+    (let ((f30-0 (rnd-float-range self 0.9 1.1)))
+      (ja-no-eval :group! scoutbot-intro1-ja :num! (seek! max f30-0) :frame-num 0.0)
+      (until (ja-done? 0)
+        (suspend)
+        (ja :num! (seek! max f30-0))
+        )
+      )
+    (go-virtual hostile)
+    )
+  :post ja-post
+  )
+
+(defmethod fire-shot ((this scoutbot))
+  (when (< (the-as time-frame (-> this next-attack-time)) (current-time))
+    (let ((s5-0 (new 'stack-no-clear 'projectile-init-by-other-params)))
+      (let ((s4-0 (-> this node-list data 28)))
+        (let ((s3-0 (vector<-cspace! (new 'stack-no-clear 'vector) s4-0)))
+          (when (-> this shoot-left-right)
+            (set! s4-0 (-> this node-list data 35))
+            (vector<-cspace! s3-0 s4-0)
+            )
+          (set! (-> s5-0 ent) (-> this entity))
+          (set! (-> s5-0 charge) 1.0)
+          (set! (-> s5-0 options) (projectile-options po13 po14 po16))
+          (set! (-> s5-0 pos quad) (-> s3-0 quad))
+          )
+        (set! (-> s5-0 notify-handle) (the-as handle #f))
+        (set! (-> s5-0 owner-handle) (the-as handle #f))
+        (set! (-> s5-0 target-handle) (the-as handle #f))
+        (set! (-> s5-0 target-pos quad) (the-as uint128 0))
+        (set! (-> s5-0 ignore-handle) (process->handle this))
+        (let* ((v1-15 *game-info*)
+               (a0-11 (+ (-> v1-15 attack-id) 1))
+               )
+          (set! (-> v1-15 attack-id) a0-11)
+          (set! (-> s5-0 attack-id) a0-11)
+          )
+        (set! (-> s5-0 timeout) (seconds 4))
+        (vector-normalize-copy! (-> s5-0 vel) (-> s4-0 bone transform fvec) 409.6)
+        )
+      (spawn-projectile scoutbot-shot s5-0 this *default-dead-pool*)
+      )
+    (set! (-> this shoot-left-right) (not (-> this shoot-left-right)))
+    (set! (-> this next-attack-time)
+          (+ (current-time) (rand-vu-int-range (seconds 0.05) (seconds 0.15)))
+          )
+    )
+  0
+  (none)
+  )
+
+(defstate attack-shoot (scoutbot)
+  :virtual #t
+  :event enemy-event-handler
+  :enter (behavior ()
+    (dotimes (gp-0 6)
+      (enable-set! (-> self joint-ik gp-0) #f)
+      )
+    (logior! (-> self enemy-flags) (enemy-flag lock-focus))
+    (logior! (-> self focus-status) (focus-status dangerous))
+    (let* ((v1-10 *game-info*)
+           (a0-3 (+ (-> v1-10 attack-id) 1))
+           )
+      (set! (-> v1-10 attack-id) a0-3)
+      (set! (-> self attack-id) a0-3)
+      )
+    (let ((v1-11 (-> self nav)))
+      (set! (-> v1-11 target-speed) 0.0)
+      )
+    0
+    )
+  :exit (behavior ()
+    (let ((v1-0 self))
+      (if (not (logtest? (enemy-flag has-gem) (-> v1-0 enemy-flags)))
+          (set! (-> v1-0 enemy-flags) (the-as enemy-flag (logior (enemy-flag ef38) (-> v1-0 enemy-flags))))
+          )
+      (set! (-> v1-0 enemy-flags) (the-as enemy-flag (logior (enemy-flag has-gem) (-> v1-0 enemy-flags))))
+      (set! (-> v1-0 nav callback-info) (the-as nav-callback-info (-> v1-0 enemy-info knocked-off)))
+      )
+    0
+    (let ((v1-3 self))
+      (set! (-> v1-3 enemy-flags) (the-as enemy-flag (logior (enemy-flag ef37) (-> v1-3 enemy-flags))))
+      )
+    0
+    (set! (-> self next-attack-time) (+ (current-time) (rand-vu-int-range (seconds 4) (seconds 8))))
+    (if (logtest? (-> self enemy-flags) (enemy-flag dangerous-backup))
+        (logior! (-> self focus-status) (focus-status dangerous))
+        (logclear! (-> self focus-status) (focus-status dangerous))
+        )
+    )
+  :trans (behavior ()
+    '()
+    )
+  :code (behavior ()
+    (ja-channel-push! 1 (seconds 0.5))
+    (ja-no-eval :group! scoutbot-shoot-start-ja :num! (seek!) :frame-num 0.0)
+    (until (ja-done? 0)
+      (suspend)
+      (ja :num! (seek!))
+      )
+    (let ((v1-24 self))
+      (set! (-> v1-24 enemy-flags) (the-as enemy-flag (logclear (-> v1-24 enemy-flags) (enemy-flag has-gem))))
+      (set! (-> v1-24 nav callback-info) *null-nav-callback-info*)
+      )
+    0
+    (let ((v1-27 self))
+      (set! (-> v1-27 enemy-flags) (the-as enemy-flag (logclear (-> v1-27 enemy-flags) (enemy-flag ef37))))
+      )
+    0
+    (let ((v1-30 (-> self nav state)))
+      (set! (-> v1-30 speed) 0.0)
+      )
+    0
+    (ja-no-eval :group! scoutbot-shoot-loop-ja :num! (seek!) :frame-num 0.0)
+    (until (ja-done? 0)
+      (fire-shot self)
+      (suspend)
+      (ja :num! (seek!))
+      )
+    (go-virtual hostile)
+    )
+  :post nav-enemy-chase-post
+  )
+
+(defstate close-attack (scoutbot)
+  :virtual #t
+  :event enemy-event-handler
+  :enter (behavior ()
+    (logior! (-> self enemy-flags) (enemy-flag lock-focus))
+    (let* ((v1-2 *game-info*)
+           (a0-2 (+ (-> v1-2 attack-id) 1))
+           )
+      (set! (-> v1-2 attack-id) a0-2)
+      (set! (-> self attack-id) a0-2)
+      )
+    (let ((v1-3 (-> self nav)))
+      (set! (-> v1-3 target-speed) 0.0)
+      )
+    0
+    )
+  :exit (behavior ()
+    (toggle-cspec-deadly self #f -1)
+    (let ((v1-2 self))
+      (if (not (logtest? (enemy-flag has-gem) (-> v1-2 enemy-flags)))
+          (set! (-> v1-2 enemy-flags) (the-as enemy-flag (logior (enemy-flag ef38) (-> v1-2 enemy-flags))))
+          )
+      (set! (-> v1-2 enemy-flags) (the-as enemy-flag (logior (enemy-flag has-gem) (-> v1-2 enemy-flags))))
+      (set! (-> v1-2 nav callback-info) (the-as nav-callback-info (-> v1-2 enemy-info knocked-off)))
+      )
+    0
+    (let ((v1-5 self))
+      (set! (-> v1-5 enemy-flags) (the-as enemy-flag (logior (enemy-flag ef37) (-> v1-5 enemy-flags))))
+      )
+    0
+    (set! (-> self next-close-attack-time) (+ (current-time) (rand-vu-int-range (seconds 0.1) (seconds 0.5))))
+    (if (logtest? (-> self enemy-flags) (enemy-flag dangerous-backup))
+        (logior! (-> self focus-status) (focus-status dangerous))
+        (logclear! (-> self focus-status) (focus-status dangerous))
+        )
+    )
+  :trans (behavior ()
+    '()
+    )
+  :code (behavior ()
+    (let ((v1-1 (-> self nav state)))
+      (set! (-> v1-1 speed) 0.0)
+      )
+    0
+    (let ((v1-3 self))
+      (set! (-> v1-3 enemy-flags) (the-as enemy-flag (logclear (-> v1-3 enemy-flags) (enemy-flag has-gem))))
+      (set! (-> v1-3 nav callback-info) *null-nav-callback-info*)
+      )
+    0
+    (let ((v1-6 self))
+      (set! (-> v1-6 enemy-flags) (the-as enemy-flag (logclear (-> v1-6 enemy-flags) (enemy-flag ef37))))
+      )
+    0
+    (ja-channel-push! 1 (seconds 0.5))
+    (let* ((gp-0 (handle->process (-> self focus handle)))
+           (a0-10 (if (type? gp-0 process-focusable)
+                      gp-0
+                      )
+                  )
+           (s5-0 0)
+           (gp-1 -1)
+           )
+      (when a0-10
+        (let ((f0-2
+                (deg-diff
+                  (-> self y-angle)
+                  (vector-y-angle
+                    (vector-! (new 'stack-no-clear 'vector) (get-trans (the-as process-focusable a0-10) 0) (-> self root trans))
+                    )
+                  )
+                )
+              )
+          (cond
+            ((< 0.0 f0-2)
+             (cond
+               ((< 21845.334 f0-2)
+                (ja :group! scoutbot-attack-lr-ja)
+                (set! s5-0 1)
+                (enable-set! (-> self joint-ik 0) #f)
+                )
+               ((< 10922.667 f0-2)
+                (ja :group! scoutbot-attack-lm-ja)
+                (set! s5-0 2)
+                (enable-set! (-> self joint-ik 1) #f)
+                )
+               (else
+                 (ja :group! scoutbot-attack-lf-ja)
+                 (set! s5-0 3)
+                 (enable-set! (-> self joint-ik 2) #f)
+                 )
+               )
+             )
+            ((< f0-2 -21845.334)
+             (ja :group! scoutbot-attack-rr-ja)
+             (set! s5-0 4)
+             (enable-set! (-> self joint-ik 3) #f)
+             )
+            ((< f0-2 -10922.667)
+             (ja :group! scoutbot-attack-rm-ja)
+             (set! s5-0 5)
+             (enable-set! (-> self joint-ik 4) #f)
+             )
+            (else
+              (ja :group! scoutbot-attack-rf-ja)
+              (set! s5-0 6)
+              (set! gp-1 3)
+              (enable-set! (-> self joint-ik 5) #f)
+              (enable-set! (-> self joint-ik 2) #f)
+              )
+            )
+          )
+        )
+      (ja :num-func num-func-identity :frame-num 0.0)
+      (until (ja-done? 0)
+        (suspend)
+        (ja :num! (seek! 8.0 1.3))
+        )
+      (logior! (-> self focus-status) (focus-status dangerous))
+      (toggle-cspec-deadly self #t s5-0)
+      (until (ja-done? 0)
+        (suspend)
+        (ja :num! (seek! 9.0))
+        )
+      (when (!= gp-1 -1)
+        (until (ja-done? 0)
+          (suspend)
+          (ja :num! (seek! 10.0))
+          )
+        (toggle-cspec-deadly self #t gp-1)
+        (until (ja-done? 0)
+          (suspend)
+          (ja :num! (seek! 11.0))
+          )
+        )
+      )
+    (logclear! (-> self focus-status) (focus-status dangerous))
+    (toggle-cspec-deadly self #f -1)
+    (until (ja-done? 0)
+      (suspend)
+      (ja :num! (seek!))
+      )
+    (go-virtual hostile)
+    )
+  :post nav-enemy-chase-post
+  )
+
+(defstate hostile (scoutbot)
+  :virtual #t
+  :enter (behavior ()
+    (let ((t9-0 (-> (method-of-type nav-enemy hostile) enter)))
+      (if t9-0
+          (t9-0)
+          )
+      )
+    (dotimes (gp-0 6)
+      (enable-set! (-> self joint-ik gp-0) #t)
+      (set! (-> self feet gp-0 init) #f)
+      )
+    )
+  :trans (behavior ()
+    (rlet ((acc :class vf)
+           (vf0 :class vf)
+           (vf4 :class vf)
+           (vf5 :class vf)
+           (vf6 :class vf)
+           (vf7 :class vf)
+           )
+      (init-vf0-vector)
+      (when (< (-> self next-spot-time) (current-time))
+        (let ((s5-0 (new 'stack-no-clear 'vector))
+              (gp-0 (new 'stack-no-clear 'vector))
+              )
+          (vector-! s5-0 (target-pos 0) (-> self root trans))
+          (if (< (vector-length s5-0) 4096.0)
+              (set! (-> s5-0 quad) (-> *z-vector* quad))
+              )
+          (vector-normalize! s5-0 1.0)
+          (if (rand-vu-percent? 0.5)
+              (vector-rotate-around-y! s5-0 s5-0 (* 182.04445 (rand-vu-float-range -70.0 -110.0)))
+              (vector-rotate-around-y! s5-0 s5-0 (* 182.04445 (rand-vu-float-range 70.0 110.0)))
+              )
+          (let ((s3-2 gp-0))
+            (let ((s4-4 (target-pos 0)))
+              (let ((v1-13 (* 4096.0 (rand-vu-float-range 4.0 20.0))))
+                (.mov vf7 v1-13)
+                )
+              (.lvf vf5 (&-> s5-0 quad))
+              (.lvf vf4 (&-> s4-4 quad))
+              )
+            (.add.x.vf vf6 vf0 vf0 :mask #b1000)
+            (.mul.x.vf acc vf5 vf7 :mask #b111)
+            (.add.mul.w.vf vf6 vf4 vf0 acc :mask #b111)
+            (.svf (&-> s3-2 quad) vf6)
+            )
+          (let ((v1-14 (-> self nav))
+                (a0-15 gp-0)
+                (a1-6 (new 'stack-no-clear 'nav-poly))
+                )
+            (vector-! (the-as vector (-> a1-6 vertex)) a0-15 (the-as vector (-> v1-14 state mesh bounds)))
+            (set! (-> a1-6 vertex1 x) (-> v1-14 nearest-y-threshold))
+            (set! (-> a1-6 data 20) (the-as uint 2))
+            (when (nav-mesh-method-45 (-> v1-14 state mesh) a1-6)
+              (set! (-> self dest-pos quad) (-> gp-0 quad))
+              (set! (-> self next-spot-time)
+                    (+ (current-time) (rand-vu-int-range (-> self min-spot-delay) (-> self max-spot-delay)))
+                    )
+              )
+            )
+          )
+        )
+      (let* ((gp-2 (handle->process (-> self focus handle)))
+             (a0-24 (if (type? gp-2 process-focusable)
+                        gp-2
+                        )
+                    )
+             )
+        (when a0-24
+          (let* ((v1-26 (get-trans (the-as process-focusable a0-24) 0))
+                 (f30-3 (vector-length (vector-! (new 'stack-no-clear 'vector) v1-26 (-> self root trans))))
+                 )
+            (when (< 61440.0 f30-3)
+              (if (< (-> self next-attack-time) (current-time))
+                  (go-virtual attack-shoot)
+                  )
+              )
+            (when (< f30-3 32768.0)
+              (if (< (-> self next-close-attack-time) (current-time))
+                  (go-virtual close-attack)
+                  )
+              )
+            )
+          )
+        )
+      (let ((t9-15 (-> (method-of-type nav-enemy hostile) trans)))
+        (if t9-15
+            (t9-15)
+            )
+        )
+      )
+    )
+  :code (behavior ()
+    (ja-channel-push! 2 (seconds 0.2))
+    (ja-no-eval :group! (-> self draw art-group data (-> self enemy-info idle-anim))
+                :num! (loop!)
+                :frame-num (ja-aframe 0.0 0)
+                )
+    (let ((a0-7 (-> self skel root-channel 1)))
+      (let ((f0-2 (-> self interp)))
+        (set! (-> a0-7 frame-interp 1) f0-2)
+        (set! (-> a0-7 frame-interp 0) f0-2)
+        )
+      (set! (-> a0-7 frame-group)
+            (the-as art-joint-anim (-> self draw art-group data (-> self enemy-info hostile-anim)))
+            )
+      (set! (-> a0-7 param 0) 0.0)
+      (joint-control-channel-group!
+        a0-7
+        (the-as art-joint-anim (-> self draw art-group data (-> self enemy-info hostile-anim)))
+        num-func-chan
+        )
+      )
+    (until #f
+      (suspend)
+      (let* ((v1-27 (-> self linear-speed))
+             (v1-31 (and (< (sqrtf (+ (* (-> v1-27 x) (-> v1-27 x)) (* (-> v1-27 z) (-> v1-27 z)))) 40.96)
+                         (< (fabs (-> self y-angular-velocity)) 1.8204443)
+                         )
+                    )
+             )
+        (if v1-31
+            (seek! (-> self interp) 0.0 (* 4.0 (seconds-per-frame)))
+            (seek! (-> self interp) 1.0 (* 4.0 (seconds-per-frame)))
+            )
+        )
+      (let ((f0-21 (+ 1.1 (fabs (* 0.002 (-> self y-angular-velocity))))))
+        (ja :num! (loop! f0-21))
+        )
+      (ja :chan 1 :num! (chan 0))
+      (let ((v1-49 (-> self skel root-channel 1))
+            (f0-23 (-> self interp))
+            )
+        (set! (-> v1-49 frame-interp 1) f0-23)
+        (set! (-> v1-49 frame-interp 0) f0-23)
+        )
+      )
+    #f
+    (ja-channel-push! 1 (seconds 0.2))
+    (ja :group! (-> self draw art-group data (-> self enemy-info hostile-anim)))
+    (ja :num-func num-func-identity :frame-num 0.0)
+    (until #f
+      (suspend)
+      (let ((f0-26 (+ 1.1 (fabs (* 0.003 (-> self y-angular-velocity))))))
+        (ja :num! (loop! f0-26))
+        )
+      )
+    #f
+    )
+  :post (behavior ()
+    (rlet ((acc :class vf)
+           (vf0 :class vf)
+           (vf4 :class vf)
+           (vf5 :class vf)
+           (vf6 :class vf)
+           (vf7 :class vf)
+           )
+      (init-vf0-vector)
+      (let ((gp-0 (new 'stack-no-clear 'vector)))
+        (vector-! gp-0 (target-pos 0) (-> self root trans))
+        (set! (-> gp-0 y) 0.0)
+        (vector-normalize! gp-0 1.0)
+        (vector-rotate-around-y! gp-0 gp-0 16384.0)
+        (let ((v1-1 gp-0))
+          (let ((a0-6 (-> self root trans)))
+            (let ((a1-2 gp-0))
+              (let ((a2-2 40960.0))
+                (.mov vf7 a2-2)
+                )
+              (.lvf vf5 (&-> a1-2 quad))
+              )
+            (.lvf vf4 (&-> a0-6 quad))
+            )
+          (.add.x.vf vf6 vf0 vf0 :mask #b1000)
+          (.mul.x.vf acc vf5 vf7 :mask #b111)
+          (.add.mul.w.vf vf6 vf4 vf0 acc :mask #b111)
+          (.svf (&-> v1-1 quad) vf6)
+          )
+        (let ((v1-3 (-> self nav state)))
+          (logclear! (-> v1-3 flags) (nav-state-flag directional-mode))
+          (logior! (-> v1-3 flags) (nav-state-flag target-poly-dirty))
+          (set! (-> v1-3 target-pos quad) (-> gp-0 quad))
+          )
+        )
+      0
+      (let ((a0-12 (-> self nav state))
+            (v1-7 (-> self dest-pos))
+            )
+        (logclear! (-> a0-12 flags) (nav-state-flag directional-mode))
+        (logior! (-> a0-12 flags) (nav-state-flag target-poly-dirty))
+        (set! (-> a0-12 target-pos quad) (-> v1-7 quad))
+        )
+      0
+      (nav-enemy-travel-post)
+      )
+    )
+  )
+
+;; Added in PC Port - Implemented a 'die' state
+(defstate die (scoutbot)
+  :virtual #t
+  :event enemy-event-handler
+  :enter (behavior ()
+    (set-time! (-> self state-time))
+    (set! (-> self hit-points) 0.0)
+    )
+  :code (behavior ()
+    (ja-channel-push! 1 (seconds 0.075))
+    (let ((f30-0 (rnd-float-range self 0.8 1.2)))
+      (ja-no-eval :group! scoutbot-idle-ja :num! (seek! max f30-0) :frame-num 0.0)
+      (until (ja-done? 0)
+        (suspend)
+        (ja :num! (seek! max f30-0))
+        )
+      )
+    ;; Added in PC Port - Allow to 'shutdown' objects which have this event after scoutbot dying
+    (let ((a1-2 (new 'stack-no-clear 'event-message-block)))
+      (set! (-> a1-2 from) (process->ppointer self))
+      (set! (-> a1-2 num-params) 0)
+      (set! (-> a1-2 message) 'shutdown)
+      (let ((t9-4 send-event-function)
+            (v1-22 (-> self event-actor))
+            )
+        (t9-4
+          (if v1-22
+              (-> v1-22 extra process)
+              )
+          a1-2
+          )
+        )
+      )
+    (let ((v1-34 (-> self root root-prim)))
+      (set! (-> v1-34 prim-core collide-as) (collide-spec))
+      (set! (-> v1-34 prim-core collide-with) (collide-spec))
+      )
+    0
+    (while (-> self child)
+      (suspend)
+      )
+    (cleanup-for-death self)
+    )
+  :post enemy-simple-post
+  )
+
+;; Added in PC Port - After noticing Jak, go to 'hostile' state immediately
+(defstate notice (scoutbot)
+  :virtual #t
+  :enter (behavior ()
+    (let ((t9-0 (-> (method-of-type nav-enemy notice) enter)))
+      (if t9-0
+          (t9-0)
+          )
+      )
+    (go-virtual hostile)
+    )
+  )
+
+;; Added in PC Port - Implemented a 'event-handler' method
+(defmethod event-handler ((this scoutbot) (arg0 process) (arg1 int) (arg2 symbol) (arg3 event-message-block))
+  (case arg2
+    (('hit 'hit-knocked)
+     (set! (-> this hit-points) (+ (-> this hit-points) -1.0))
+     (cond
+       ((<= (-> this hit-points) 0.0)
+        (if (not (and (-> this next-state) (= (-> this next-state name) 'die)))
+            (go-virtual die)
+            )
+        )
+       (else
+         (go (method-of-object this hit))
+         )
+       )
+     #t
+     )
+    (else
+      ((method-of-type nav-enemy event-handler) this arg0 arg1 arg2 arg3)
+      )
+    )
+  )
+
+(defmethod init-enemy-collision! ((this scoutbot))
+  (let ((s5-0 (new 'process 'collide-shape-moving this (collide-list-enum usually-hit-by-player))))
+    (set! (-> s5-0 dynam) (copy *standard-dynamics* 'process))
+    (set! (-> s5-0 reaction) cshape-reaction-default)
+    (set! (-> s5-0 no-reaction)
+          (the-as (function collide-shape-moving collide-query vector vector object) nothing)
+          )
+    (let ((s4-0 (new 'process 'collide-shape-prim-group s5-0 (the-as uint 8) 0)))
+      (set! (-> s5-0 total-prims) (the-as uint 9))
+      (set! (-> s4-0 prim-core collide-as) (collide-spec enemy))
+      (set! (-> s4-0 prim-core collide-with)
+            (collide-spec backgnd jak bot crate obstacle hit-by-others-list player-list)
+            )
+      (set! (-> s4-0 prim-core action) (collide-action solid can-ride deadly no-standon))
+      (set-vector! (-> s4-0 local-sphere) 0.0 0.0 0.0 32768.0)
+      (set! (-> s5-0 root-prim) s4-0)
+      )
+    (let ((v1-12 (new 'process 'collide-shape-prim-sphere s5-0 (the-as uint 0))))
+      (set! (-> v1-12 prim-core collide-as) (collide-spec enemy))
+      (set! (-> v1-12 prim-core collide-with)
+            (collide-spec backgnd jak bot crate obstacle hit-by-others-list player-list)
+            )
+      (set! (-> v1-12 prim-core action) (collide-action solid can-ride no-standon))
+      (set-vector! (-> v1-12 local-sphere) 0.0 10240.0 0.0 10240.0)
+      )
+    (let ((v1-14 (new 'process 'collide-shape-prim-sphere s5-0 (the-as uint 0))))
+      (set! (-> v1-14 prim-core collide-as) (collide-spec enemy))
+      (set! (-> v1-14 prim-core collide-with) (collide-spec jak bot crate obstacle hit-by-others-list player-list))
+      (set! (-> v1-14 prim-core action) (collide-action solid can-ride no-standon))
+      (set-vector! (-> v1-14 local-sphere) 0.0 0.0 0.0 16384.0)
+      )
+    (let ((v1-16 (new 'process 'collide-shape-prim-sphere s5-0 (the-as uint 1))))
+      (set! (-> v1-16 prim-core collide-as) (collide-spec enemy))
+      (set! (-> v1-16 prim-core collide-with) (collide-spec jak bot player-list))
+      (set! (-> v1-16 prim-core action) (collide-action solid no-standon))
+      (set! (-> v1-16 transform-index) 6)
+      (set-vector! (-> v1-16 local-sphere) 0.0 0.0 0.0 6144.0)
+      )
+    (let ((v1-18 (new 'process 'collide-shape-prim-sphere s5-0 (the-as uint 2))))
+      (set! (-> v1-18 prim-core collide-as) (collide-spec enemy))
+      (set! (-> v1-18 prim-core collide-with) (collide-spec jak bot player-list))
+      (set! (-> v1-18 prim-core action) (collide-action solid no-standon))
+      (set! (-> v1-18 transform-index) 9)
+      (set-vector! (-> v1-18 local-sphere) 0.0 0.0 0.0 6144.0)
+      )
+    (let ((v1-20 (new 'process 'collide-shape-prim-sphere s5-0 (the-as uint 3))))
+      (set! (-> v1-20 prim-core collide-as) (collide-spec enemy))
+      (set! (-> v1-20 prim-core collide-with) (collide-spec jak bot player-list))
+      (set! (-> v1-20 prim-core action) (collide-action solid no-standon))
+      (set! (-> v1-20 transform-index) 12)
+      (set-vector! (-> v1-20 local-sphere) 0.0 0.0 0.0 6144.0)
+      )
+    (let ((v1-22 (new 'process 'collide-shape-prim-sphere s5-0 (the-as uint 4))))
+      (set! (-> v1-22 prim-core collide-as) (collide-spec enemy))
+      (set! (-> v1-22 prim-core collide-with) (collide-spec jak bot player-list))
+      (set! (-> v1-22 prim-core action) (collide-action solid no-standon))
+      (set! (-> v1-22 transform-index) 21)
+      (set-vector! (-> v1-22 local-sphere) 0.0 0.0 0.0 6144.0)
+      )
+    (let ((v1-24 (new 'process 'collide-shape-prim-sphere s5-0 (the-as uint 5))))
+      (set! (-> v1-24 prim-core collide-as) (collide-spec enemy))
+      (set! (-> v1-24 prim-core collide-with) (collide-spec jak bot player-list))
+      (set! (-> v1-24 prim-core action) (collide-action solid no-standon))
+      (set! (-> v1-24 transform-index) 18)
+      (set-vector! (-> v1-24 local-sphere) 0.0 0.0 0.0 6144.0)
+      )
+    (let ((v1-26 (new 'process 'collide-shape-prim-sphere s5-0 (the-as uint 6))))
+      (set! (-> v1-26 prim-core collide-as) (collide-spec enemy))
+      (set! (-> v1-26 prim-core collide-with) (collide-spec jak bot player-list))
+      (set! (-> v1-26 prim-core action) (collide-action solid no-standon))
+      (set! (-> v1-26 transform-index) 15)
+      (set-vector! (-> v1-26 local-sphere) 0.0 0.0 0.0 6144.0)
+      )
+    (set! (-> s5-0 nav-radius) 8192.0)
+    (let ((v1-28 (-> s5-0 root-prim)))
+      (set! (-> s5-0 backup-collide-as) (-> v1-28 prim-core collide-as))
+      (set! (-> s5-0 backup-collide-with) (-> v1-28 prim-core collide-with))
+      )
+    (set! (-> s5-0 max-iteration-count) (the-as uint 3))
+    (set! (-> this root) s5-0)
+    )
+  (none)
+  )
+
+(defmethod coin-flip? ((this scoutbot))
+  #f
+  )
+
+(defmethod init-enemy! ((this scoutbot))
+  (rlet ((acc :class vf)
+         (vf0 :class vf)
+         (vf4 :class vf)
+         (vf5 :class vf)
+         (vf6 :class vf)
+         (vf7 :class vf)
+         )
+    (init-vf0-vector)
+    (initialize-skeleton
+      this
+      (the-as skeleton-group (art-group-get-by-name *level* "skel-scoutbot" (the-as (pointer level) #f)))
+      (the-as pair 0)
+      )
+    (init-enemy-defaults! this *scoutbot-nav-enemy-info*)
+    (logior! (-> this skel status) (joint-control-status sync-math))
+    (quaternion-copy! (-> this last-quat) (-> this root quat))
+    (dotimes (s5-1 6)
+      (set! (-> this joint-ik s5-1)
+            (new
+              'process
+              'joint-mod-ik
+              this
+              (-> *scoutbot-ik-setup* s5-1 elbow-index)
+              (-> *scoutbot-ik-setup* s5-1 hand-dist)
+              )
+            )
+      (set! (-> this joint-ik s5-1 elbow-pole-vector-axis) (the-as uint 0))
+      (set! (-> this joint-ik s5-1 elbow-rotation-axis) (the-as uint 2))
+      )
+    (logior! (-> this joint-ik 0 flags) (joint-mod-ik-flags elbow-trans-neg))
+    (logior! (-> this joint-ik 1 flags) (joint-mod-ik-flags elbow-trans-neg))
+    (logior! (-> this joint-ik 2 flags) (joint-mod-ik-flags elbow-trans-neg))
+    (logior! (-> this joint-ik 0 flags) (joint-mod-ik-flags elbow-rot-neg))
+    (logior! (-> this joint-ik 1 flags) (joint-mod-ik-flags elbow-rot-neg))
+    (logior! (-> this joint-ik 2 flags) (joint-mod-ik-flags elbow-rot-neg))
+    (set! (-> this min-spot-delay) 300)
+    (set! (-> this max-spot-delay) 1200)
+    (set! (-> this event-actor) (entity-actor-lookup (-> this entity) 'alt-actor 0)) ;; Added in PC Port - Allow to 'shutdown' objects which have this event after scoutbot dying
+    (ja-channel-push! 1 0)
+    (let ((s5-2 (-> this skel root-channel 0)))
+      (set! (-> s5-2 frame-group)
+            (the-as art-joint-anim (-> this draw art-group data (-> this enemy-info idle-anim)))
+            )
+      (set! (-> s5-2 param 0) 1.0)
+      (set! (-> s5-2 frame-num) (ja-aframe 0.0 0))
+      (joint-control-channel-group!
+        s5-2
+        (the-as art-joint-anim (-> this draw art-group data (-> this enemy-info idle-anim)))
+        num-func-loop!
+        )
+      )
+    (ja-post)
+    (dotimes (s5-3 6)
+      (let ((s3-0 (-> this feet s5-3))
+            (s4-1 (new 'stack-no-clear 'vector))
+            )
+        (set! (-> s3-0 init) #f)
+        (let ((s2-0 (-> this node-list data (-> *scoutbot-ik-setup* s5-3 foot-index) bone transform)))
+          (matrix->trans s2-0 s4-1)
+          (let ((a0-33 s4-1))
+            (let ((v1-71 s4-1))
+              (let ((a1-11 (-> s2-0 uvec)))
+                (let ((a2-7 (-> *scoutbot-ik-setup* s5-3 foot-length)))
+                  (.mov vf7 a2-7)
+                  )
+                (.lvf vf5 (&-> a1-11 quad))
+                )
+              (.lvf vf4 (&-> v1-71 quad))
+              )
+            (.add.x.vf vf6 vf0 vf0 :mask #b1000)
+            (.mul.x.vf acc vf5 vf7 :mask #b111)
+            (.add.mul.w.vf vf6 vf4 vf0 acc :mask #b111)
+            (.svf (&-> a0-33 quad) vf6)
+            )
+          )
+        (set! (-> s3-0 position quad) (-> s4-1 quad))
+        (set! (-> s3-0 real-position quad) (-> s4-1 quad))
+        (set! (-> s3-0 next-position quad) (-> s4-1 quad))
+        )
+      )
+    (set! (-> this interp) 0.0)
+    (set! (-> this shoot-left-right) #t)
+    (toggle-cspec-deadly this #f -1)
+    (set-vector! (-> this root scale) 1.0 1.0 1.0 1.0)
+    (logclear! (-> this nav flags) (nav-control-flag update-heading-from-facing))
+    (set! (-> this enemy-flags) (the-as enemy-flag (logclear (-> this enemy-flags) (enemy-flag ef43))))
+    (set! (-> this last-trans quad) (-> this root trans quad))
+    (quaternion-copy! (-> this last-quat) (-> this root quat))
+    (vector-! (-> this linear-speed) (-> this root trans) (-> this last-trans))
+    (set! (-> this y-angular-velocity)
+          (deg- (quaternion-y-angle (-> this root quat)) (quaternion-y-angle (-> this last-quat)))
+          )
+    (vector-z-quaternion! (-> this look-dir) (-> this root quat))
+    (set! (-> this y-angle) (vector-y-angle (-> this look-dir)))
+    (let ((v1-93 (-> this nav state))
+          (a0-59 (-> this look-dir))
+          )
+      (set! (-> v1-93 heading quad) (-> a0-59 quad))
+      )
+    (when (logtest? (enemy-option dormant) (-> (the-as fact-info-enemy (-> this fact)) enemy-options))
+      (go (method-of-object this dormant))
+      )
+    0
+    )
+    (none)
+  )
+
