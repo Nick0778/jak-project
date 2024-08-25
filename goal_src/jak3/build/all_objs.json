@@ -2769,5 +2769,7 @@
 ["8COMMON",                       "8COMMON",                    5, ["NO-XGO"], ""],
 ["9COMMON",                       "9COMMON",                    5, ["NO-XGO"], ""],
 ["10COMMON",                      "10COMMON",                   5, ["NO-XGO"], ""],
-["11COMMON",                      "11COMMON",                   5, ["NO-XGO"], ""]
+["11COMMON",                      "11COMMON",                   5, ["NO-XGO"], ""],
+["scoutbot-part",                 "scoutbot-part",              5, ["SEA"], "levels/sewer"],
+["scoutbot",                      "scoutbot",                   5, ["SEA"], "levels/sewer"]
 ]
