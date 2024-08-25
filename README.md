@@ -1,3 +1,15 @@
+# Scouter Robot an cut enemy from Jak 3 Alpha build ported to OpenGoal
+
+This branch have the purpose to restore an cut enemy, called **Scouter Robot**, from _Jak 3 2004 July Prototype_ to OpenGoal. Its codes was decompiled and fixed/improved, so you can use it wherever you want!
+
+Also, Scouter Robot was placed where it originally belonged, in the sewers, replacing the Hover KG Bots battle, so, instead of Hover KG Bots, now you fight with Scouter Robot. After that, the electric fence is deactivated.
+
+### About Scouter Robot Sound Effects
+
+Scouter Robot sounds were removed in the final build, so, in case you want to have Scouter Robot sounds back, you need to grab **Sewer6.SBK** file in the SBK folder from Alpha Build and, then, replace it with the final build one. As consequence of that, some other sounds will be missing!
+
+(Note: I plan to figure out an alternative way to add Scouter Robot sounds in the final build properly, but that will be something for the future.) 
+
 <p align="center">
   <img width="500" height="100%" src="./docs/img/logo-text-colored-new.png">
 </p>
