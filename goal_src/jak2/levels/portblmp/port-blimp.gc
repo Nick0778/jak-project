@@ -514,7 +514,7 @@
 (defstate idle (port-metal-head-boat)
   :virtual #t
   :enter (behavior ()
-    (let ((v0-0 (the-as object (-> self draw color-mult)))) ;; make metal head boat black like in the prototype
+    (let ((v0-0 (the-as object (-> self draw color-mult)))) ;; Added to make metal head boat black like in the prototype
                  (set! (-> (the-as rgbaf v0-0) x) 0.0)
                  (set! (-> (the-as rgbaf v0-0) y) 0.0)
                  (set! (-> (the-as rgbaf v0-0) z) 0.0)
@@ -926,7 +926,7 @@
      (seek! (-> this health) 0.0 (the-as float (-> arg3 param 0)))
      (activate! (-> this smush-control) 0.2 30 240 0.8 0.8 (-> *display* entity-clock))
      (cpad-set-buzz! (-> *cpad-list* cpads 0) 1 255 (seconds 0.5))
-     (sound-play "turret-take-hit") ;; added turret's hit sound
+     (sound-play "turret-take-hit") ;; Added turret's hit sound
      )
     (('exit)
      (if (= (-> this path-u) 0.0)
@@ -1198,15 +1198,15 @@
               (set! (-> self roty-min) 0.0)
               (set! (-> self roty-max) 0.0)
               (set! (-> self available-for-pickup) #f)
-              (remove-setting! 'music) ;; stop the music after beating the mission (Not in original)
+              (remove-setting! 'music) ;; Stop the music after beating the mission (Not in original)
               (process-spawn scene-player :init scene-player-init "city-protect-blimp-res" #t #f)
-              (set! (-> self last-speech) (the-as uint 6)) ;; added a new case which fixes an black screen softlock after the cutscene ends
+              (set! (-> self last-speech) (the-as uint 6)) ;; Added a new case which fixes an black screen softlock after the cutscene ends
               )
             )
-          ((= v1-34 6) ;; added a new case which fixes an black screen softlock after the cutscene ends
+          ((= v1-34 6) ;; Added a new case which fixes an black screen softlock after the cutscene ends
             (go-virtual shutdown)
             (send-event *target* 'end-mode)
-            (set! (-> self path-u) 0.0) ;; set turret's path position to the start
+            (set! (-> self path-u) 0.0) ;; Set turret's path position to the start
             )
            )
          )
@@ -1224,7 +1224,7 @@
                       )
                     )
 
-                (set-setting! 'music 'danger4 0.0 0) ;; added music during the mission
+                (set-setting! 'music 'danger4 0.0 0) ;; Added an music during the mission
               )
           (+! (-> self total-ships-launched) 1)
           (if (< 7 (-> self ships-launched))
