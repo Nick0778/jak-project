@@ -679,7 +679,7 @@
    (arrow-red              float)
    (red-filter-timer       time-frame)
    (ride-height            float)
-   (path-end?              symbol)
+   (path-end?              symbol) ;; added - checks if the path is over to make 'smush-control' effect
    )
   (:state-methods
     idle
