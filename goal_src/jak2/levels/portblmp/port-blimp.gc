@@ -513,6 +513,15 @@
 
 (defstate idle (port-metal-head-boat)
   :virtual #t
+  :enter (behavior ()
+    (let ((v0-0 (the-as object (-> self draw color-mult)))) ;; make metal head boat black like in the prototype
+                 (set! (-> (the-as rgbaf v0-0) x) 0.0)
+                 (set! (-> (the-as rgbaf v0-0) y) 0.0)
+                 (set! (-> (the-as rgbaf v0-0) z) 0.0)
+                 (set! (-> (the-as rgbaf v0-0) w) 1.0)
+                 v0-0
+                 )
+    )
   :event (behavior ((proc process) (argc int) (message symbol) (block event-message-block))
     (case message
       (('attack)
