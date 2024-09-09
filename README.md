@@ -16,7 +16,7 @@ You need to get PORTBLMP.DGO from _Jak 2 July Prototype build_'s DGO folder, and
 - The level loads and can be accessed through the city port during the mission
 
 ### To do
-- Implement the custom audio system, so the users will no longer need to add back every voicelines in VAGWAD using a Hex Editor  
+- Implement the custom audio system, so the users will no need to add back every missing voicelines from this mission in VAGWAD using a Hex Editor  
 - Fix some visual glitches, like Torn eyes that are glitched.
 - Fix Jak coordinates when starting the level.
 
