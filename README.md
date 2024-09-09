@@ -6,8 +6,6 @@ This branch contains modifications as an attempt to restore that cut port missio
 
 You need to get PORTBLMP.DGO from _Jak 2 July Prototype build_'s DGO folder, and put it into the DGO folder of iso_data. Also, you need to get CIPBRES.STR from STR folder of the Prototype build, and put it into the STR folder from iso_data. Then, do all the rest of Opengoal installation process. If you did everything right, you will be able to access this level by entering in Debug Menu: _game/continue/default/ctyport-turret_, then the level should work.
 
-(Note: The original idea would be to connect the level with the game's overworld, but due to the limitations of Opengoal, it is not possible to add new regions yet.)
-
 ### Progress so far
 - The task for this level was fully recreated with the help of some remains from it found in the source code that made it easier for me to recreate it.
 - The Task was placed exactly where it originally belonged, between "Defend Stadium" and "Check the Construction Site" tasks.
@@ -15,12 +13,16 @@ You need to get PORTBLMP.DGO from _Jak 2 July Prototype build_'s DGO folder, and
 - The game task system proceed normally after beating this mission.
 - Added new sounds that originally don't exist in the mission, like turret sounds and damage sounds.
 - The mission is finally functional, so you can really play it!
+- The level loads and can be accessed through the city port during the mission
 
 ### To do
-- Restore all the missing audios from this mission (Torn voicelines).
+- Implement the custom audio system, so the users will no longer need to add back every voicelines in VAGWAD using a Hex Editor  
 - Fix some visual glitches, like Torn eyes that are glitched.
 - Fix Jak coordinates when starting the level.
-- Connect portblmp level with the game overworld.
+
+### About the missing voicelines 
+The major problem about the mission is the missing audios played during it, which is crucial to make the mission work properly with no issues. So, I plan to implement the custom audio system from OpenGoal Mod Base in this mission, which will play all the audios as .wav files with a better quality. At the moment, if you prefer, you can add all the necessary audios back in VAGWAD.ENG file using a Hex Editor and with the help of **Jak Audio Tool**, made by **Luminar Light**: https://github.com/LuminarLight/JakAudioTool
+Below is a list of all the audios required for this mission.
 
 ### List of all the audios from Jak 2 July Build required for this mission
 
