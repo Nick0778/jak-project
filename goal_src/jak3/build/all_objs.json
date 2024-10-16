@@ -2769,5 +2769,7 @@
 ["8COMMON",                       "8COMMON",                    5, ["NO-XGO"], ""],
 ["9COMMON",                       "9COMMON",                    5, ["NO-XGO"], ""],
 ["10COMMON",                      "10COMMON",                   5, ["NO-XGO"], ""],
-["11COMMON",                      "11COMMON",                   5, ["NO-XGO"], ""]
+["11COMMON",                      "11COMMON",                   5, ["NO-XGO"], ""],
+["cty-guard-turret-ag",           "cty-guard-turret-ag",        5, ["CWI"], "levels/city"],
+["cty-destroy-kg-turret",         "cty-destroy-kg-turret",      5, ["LCT", "CWI"], "levels/city/destroy-turret"]
 ]
