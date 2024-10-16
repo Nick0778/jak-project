@@ -472,4 +472,5 @@
   "debris.o"
   "shield-sphere.o"
   "entity-debug.o" ;; added
+  "cty-guard-turret-ag.go" ;; added
  ))
