@@ -121,6 +121,7 @@
    (jammed-starting-time      time-frame)
    (spawners                  battle-spawner-array)
    (allies                    battle-ally-array)
+   (alt-actor-max-count       int32) ;; added - count the number of elements inside the 'alt-actor' lump
    )
   (:state-methods
     idle
@@ -158,6 +159,7 @@
     (beaten? (_type_) symbol)
     (spawner-active? (_type_ battle-spawner symbol) symbol)
     (spawner-active-count (_type_) int)
+    (handle-custom-level-entities (_type_) none) ;; added - handle custom level battle entities
     )
   )
 
@@ -491,6 +493,21 @@
                       :pick-spawner-max-dist 163840.0
                       :max-count #x20000000
                       :desired-alive-count #x6
+                      :spawner-collide-with (collide-spec enemy hit-by-others-list)
+                      )
+                    (new 'static 'battle-info ;; added - new battle-info for custom battle
+                      :id 23
+                      :notice-spec #x2
+                      :notice-distance 122880.0
+                      :dont-spawn-initial-until-notice? #f
+                      :play-battle-music #f
+                      :min-battle-spawn-delay #x96
+                      :max-battle-spawn-delay #x12c
+                      :max-spawner-notice-attack-delay #x78
+                      :spawner-blocked-by-player-xz 24576.0
+                      :pick-spawner-max-dist 163840.0
+                      :max-count #x22
+                      :desired-alive-count #x8
                       :spawner-collide-with (collide-spec enemy hit-by-others-list)
                       )
                     )
@@ -1553,6 +1570,9 @@
           )
         )
       )
+      (when (and (not v0-0) (zero? (-> sv-16 elt-count))) ;; added - when the battle have no 'actor-group' 
+        (handle-custom-level-entities this) ;; handle custom level battle entities
+        )
     )
   0
   (none)
@@ -1616,4 +1636,69 @@
     )
   (initialize-battle this)
   (init-go this)
+  )
+
+(defmethod handle-custom-level-entities ((this battle))
+  (local-vars (v0-4 battle-ally-array) (sv-16 res-tag) (sv-32 entity-actor))
+  (set! sv-16 (new 'static 'res-tag))
+  (let ((v0-0 (res-lump-data (-> this entity) 'alt-actor pointer :tag-ptr (& sv-16)))) ;; using 'alt-actor' instead of 'actor-group'
+    (when (and v0-0 (nonzero? (-> sv-16 elt-count)))
+      (set! (-> this alt-actor-max-count) (the-as int (-> sv-16 elt-count))) ;; store the max count of elements from 'alt-actor' lump in 'alt-actor-max-count' field
+      (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
+        (dotimes (s3-0 2)
+          (let ((s1-0 0)
+                (s2-0 0)
+                )
+            (dotimes (i (-> this alt-actor-max-count)) ;; iterate through 'i' while he is less than 'alt-actor-max-count'
+              (set! entity (entity-actor-lookup (-> this entity) 'alt-actor i)) ;; find the entity stored inside 'alt-actor' lump at the index 'i'
+              (format *stdcon* "entity[~d]: ~s~%" i entity) ;; print the array on screen
+              (when entity ;; run this code on every entity stored inside 'alt-actor' lump  
+                (let ((v0-1 (res-lump-value entity 'enemy-options uint128 :time -1000000000.0)))
+                  (cond
+                    ((logtest? #x80000 v0-1)
+                     (+! s1-0 1)
+                     (cond
+                       ((zero? s3-0)
+                        0
+                        )
+                       (else
+                         (let ((a1-2 (-> this spawners data (+ s1-0 -1))))
+                           (initialize-spawner this a1-2 entity)
+                           )
+                         )
+                       )
+                     )
+                    (else
+                      (when (not (logtest? (-> entity extra perm status) (entity-perm-status dead)))
+                        (+! s2-0 1)
+                        (cond
+                          ((zero? s3-0)
+                           0
+                           )
+                          (else
+                            (let ((a1-3 (-> this allies data (+ s2-0 -1))))
+                              (initialize-ally this a1-3 entity)
+                              )
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            (set! v0-4 (when (zero? s3-0)
+                         (set! (-> this spawners) (new 'process 'battle-spawner-array s1-0))
+                         (set! v0-4 (new 'process 'battle-ally-array s2-0))
+                         (set! (-> this allies) v0-4)
+                         v0-4
+                         )
+                  )
+            )
+          )
+        )
+      )
+    )
+  0
+  (none)
   )
