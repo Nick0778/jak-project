@@ -1329,6 +1329,7 @@
               (desert-game alias desert copy desinter special)
               (deserte 0 #f #f)
               (foresta 0 #f #f)
+              (foresta 1 #f #f)
               (outrocst 0 #f #f)
               (factorya 0 lfactory special)
               (factorya 1 lfacrm1 copy)
@@ -11143,7 +11144,7 @@
               :on-complete '(auto-save (quote auto-save))
               :on-fail #f
               )
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 battle-test display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11214,7 +11215,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 battle-test display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11285,7 +11286,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 battle-test display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11356,7 +11357,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 battle-test display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11427,7 +11428,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 battle-test display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11498,7 +11499,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 battle-test display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11587,7 +11588,7 @@
               :on-complete '(begin (talker-spawn "sam006"))
               :on-fail #f
               )
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 battle-test display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
