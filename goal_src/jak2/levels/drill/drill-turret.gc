@@ -328,6 +328,30 @@
     )
   )
 
+;; added - here is the array of hover-enemy-battle-command used as a example.
+;; here you set up the commands for you hover battle, like the wave that should be used, 
+  ;; the delay time between a wave to another and the 'alive-count' of enemies you want from the wave.
+
+;; NOTE:
+  ; :wave #x0 or not adding anything between 'spawn and :time - first-wave lump
+  ; :wave #x1 - second-wave lump
+  ; :wave #x2 - third-wave lump
+  ; :wave #x3 - fourth-wave lump
+  ; :wave #x4 - fifth-wave lump
+
+(define *strip-turret-1-battle*
+  (new 'static 'boxed-array :type hover-enemy-battle-command
+    (new 'static 'hover-enemy-battle-command :command 'spawn :time (seconds 2) :alive-count 1)
+    (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x1 :time (seconds 2) :alive-count 2)
+    (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x2 :time (seconds 2) :alive-count 2)
+    (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x3 :time (seconds 2) :alive-count 2)
+    (new 'static 'hover-enemy-battle-command :command 'spawn :time (seconds 1) :alive-count 2)
+    (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x3 :alive-count 3)
+    (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x2 :time (seconds 2) :alive-count 2)
+    (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x1 :alive-count 3)
+    )
+  )
+
 
 (defstate active (turret)
   :virtual #t
@@ -509,8 +533,15 @@
        (set! (-> this use-egg-hud) #f)
        (set! (-> this use-cgh-hud) #f)
        )
-      (else
-        (set! (-> this path-event) *turret-15-path*)
+      ((= (the-as uint v1-1) 5)
+       (set! (-> this path-event) *turret-15-path*)
+       (set! (-> this use-egg-hud) #f)
+       (set! (-> this use-cgh-hud) #f)
+       )
+      (else ;; added - handle with the custom hover battle 
+        (set! (-> this hover-battle)
+             (process->handle (hover-manager-spawn this (-> this entity) *strip-turret-1-battle*))
+             )
         (set! (-> this use-egg-hud) #f)
         (set! (-> this use-cgh-hud) #f)
         )
@@ -543,9 +574,19 @@
   )
 
 (defmethod base-turret-method-34 ((this turret) (arg0 process))
-  (set! (-> this hud)
+  ;; this is responsible to spawn turret's HUD
+  ;; no idea how to make the game use turret's HUD textures from hover-test custom level
+  ;; this will prevent the game to crash after entering in the turret
+  (when (= (-> (level-get-target-inside *level*) name) 'strip)
+    (set! (-> this hud)
+        (ppointer->handle (process-spawn hud-strip-turret-health :init hud-init-by-other :to arg0))
+        )
+    )
+  (when (= (-> (level-get-target-inside *level*) name) 'drillmid)
+    (set! (-> this hud)
         (ppointer->handle (process-spawn hud-drill-turret-health :init hud-init-by-other :to arg0))
         )
+    )
   (if (-> this use-egg-hud)
       (set! (-> this hud-egg) (ppointer->handle (process-spawn hud-gruntegg :init hud-init-by-other :to arg0)))
       )
