@@ -29,6 +29,11 @@
    (num-spawned        int32)
    (alive-count        int32)
    (formation-timer    time-frame)
+   (first-wave-max-count int32) ;; added - count the number of elements inside the 'first-wave' lump
+   (second-wave-max-count int32) ;; added - count the number of elements inside the 'second-wave' lump
+   (third-wave-max-count int32) ;; added - count the number of elements inside the 'third-wave' lump
+   (fourth-wave-max-count int32) ;; added - count the number of elements inside the 'fourth-wave' lump
+   (fifth-wave-max-count  int32) ;; added - count the number of elements inside the 'fifth-wave' lump
    )
   (:state-methods
     idle
@@ -38,6 +43,7 @@
   (:methods
     (hover-enemy-manager-init! (_type_ (array hover-enemy-battle-command)) none)
     (spawn-enemy (_type_ uint) none)
+    (spawn-custom-level-enemy (_type_ uint) none) ;; added - handle with entities with no 'actor-groups'
     )
   )
 
@@ -175,7 +181,12 @@
       (dotimes (s5-0 (-> gp-0 length))
         (case (-> gp-0 s5-0 command)
           (('spawn)
-           (spawn-enemy self (-> gp-0 s5-0 wave))
+           (when (and (-> self actor-group) (nonzero? (-> self actor-group-count))) ;; handle with vanilla entities that have 'actor-groups'
+            (spawn-enemy self (-> gp-0 s5-0 wave))
+            )
+           (when (and (= (-> self actor-group) #f) (zero? (-> self actor-group-count))) ;; added - when there's no 'actor-groups'
+            (spawn-custom-level-enemy self (-> gp-0 s5-0 wave)) ;; use the hack way to spawn hover enemies in custom levels 
+            )
            )
           (('wait)
            )
@@ -234,6 +245,173 @@
   (none)
   )
 
+;; added - the method responsible to handle with the hack to spawn hover enemies in custom levels
+;; you can add up to 5 waves for your custom hover enemy battle
+(defmethod spawn-custom-level-enemy ((this hover-enemy-manager) (arg0 uint))
+  (cond
+    ((= (the-as int arg0) 0) ;; first-wave
+      (when (< arg0 (the-as uint (-> this first-wave-max-count)))
+        (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
+          (dotimes (i (-> this first-wave-max-count)) ;; iterate through 'i' while he is less than 'first-wave-max-count'
+            (set! entity (entity-actor-lookup (-> this entity) 'first-wave i)) ;; find the entity stored inside 'first-wave' lump at the index 'i'
+            (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
+            (let* ((s2-0 (-> (the-as entity-actor entity) etype))
+                  (s3-0 (new 'stack-no-clear 'transformq))
+                  )
+              (set! (-> s3-0 trans quad) (-> entity extra trans quad))
+              (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
+              (set! (-> s3-0 scale x) (the-as float entity))
+              (set! (-> s3-0 scale y) (the-as float #f))
+              (set! (-> s3-0 scale z) (the-as float #t))
+              (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
+                (when (when s1-1
+                        (let ((t9-2 (method-of-type process activate)))
+                          (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
+                          )
+                        (run-now-in-process s1-1 enemy-init-by-other this s3-0)
+                        (-> s1-1 ppointer)
+                        )
+                  (+! (-> this alive-count) 1)
+                  (+! (-> this num-spawned) 1)
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    ((= (the-as int arg0) 1) ;; second-wave
+      (when (< arg0 (the-as uint (-> this second-wave-max-count)))
+        (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
+          (dotimes (i (-> this second-wave-max-count)) ;; iterate through 'i' while he is less than 'second-wave-max-count'
+            (set! entity (entity-actor-lookup (-> this entity) 'second-wave i)) ;; find the entity stored inside 'second-wave' lump at the index 'i'
+            (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
+            (let* ((s2-0 (-> (the-as entity-actor entity) etype))
+                  (s3-0 (new 'stack-no-clear 'transformq))
+                  )
+              (set! (-> s3-0 trans quad) (-> entity extra trans quad))
+              (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
+              (set! (-> s3-0 scale x) (the-as float entity))
+              (set! (-> s3-0 scale y) (the-as float #f))
+              (set! (-> s3-0 scale z) (the-as float #t))
+              (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
+                (when (when s1-1
+                        (let ((t9-2 (method-of-type process activate)))
+                          (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
+                          )
+                        (run-now-in-process s1-1 enemy-init-by-other this s3-0)
+                        (-> s1-1 ppointer)
+                        )
+                  (+! (-> this alive-count) 1)
+                  (+! (-> this num-spawned) 1)
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    ((= (the-as int arg0) 2) ;; third-wave
+      (when (< arg0 (the-as uint (-> this third-wave-max-count)))
+        (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
+          (dotimes (i (-> this third-wave-max-count)) ;; iterate through 'i' while he is less than 'third-wave-max-count'
+            (set! entity (entity-actor-lookup (-> this entity) 'third-wave i)) ;; find the entity stored inside 'third-wave' lump at the index 'i'
+            (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
+            (let* ((s2-0 (-> (the-as entity-actor entity) etype))
+                  (s3-0 (new 'stack-no-clear 'transformq))
+                  )
+              (set! (-> s3-0 trans quad) (-> entity extra trans quad))
+              (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
+              (set! (-> s3-0 scale x) (the-as float entity))
+              (set! (-> s3-0 scale y) (the-as float #f))
+              (set! (-> s3-0 scale z) (the-as float #t))
+              (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
+                (when (when s1-1
+                        (let ((t9-2 (method-of-type process activate)))
+                          (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
+                          )
+                        (run-now-in-process s1-1 enemy-init-by-other this s3-0)
+                        (-> s1-1 ppointer)
+                        )
+                  (+! (-> this alive-count) 1)
+                  (+! (-> this num-spawned) 1)
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    ((= (the-as int arg0) 3) ;; fourth-wave
+      (when (< arg0 (the-as uint (-> this fourth-wave-max-count)))
+        (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
+          (dotimes (i (-> this fourth-wave-max-count)) ;; iterate through 'i' while he is less than 'fourth-wave-max-count'
+            (set! entity (entity-actor-lookup (-> this entity) 'fourth-wave i)) ;; find the entity stored inside 'fourth-wave' lump at the index 'i'
+            (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
+            (let* ((s2-0 (-> (the-as entity-actor entity) etype))
+                  (s3-0 (new 'stack-no-clear 'transformq))
+                  )
+              (set! (-> s3-0 trans quad) (-> entity extra trans quad))
+              (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
+              (set! (-> s3-0 scale x) (the-as float entity))
+              (set! (-> s3-0 scale y) (the-as float #f))
+              (set! (-> s3-0 scale z) (the-as float #t))
+              (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
+                (when (when s1-1
+                        (let ((t9-2 (method-of-type process activate)))
+                          (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
+                          )
+                        (run-now-in-process s1-1 enemy-init-by-other this s3-0)
+                        (-> s1-1 ppointer)
+                        )
+                  (+! (-> this alive-count) 1)
+                  (+! (-> this num-spawned) 1)
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    ((= (the-as int arg0) 4) ;; fifth-wave
+      (when (< arg0 (the-as uint (-> this fifth-wave-max-count)))
+        (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
+          (dotimes (i (-> this fifth-wave-max-count)) ;; iterate through 'i' while he is less than 'fifth-wave-max-count'
+            (set! entity (entity-actor-lookup (-> this entity) 'fifth-wave i)) ;; find the entity stored inside 'fifth-wave' lump at the index 'i'
+            (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
+            (let* ((s2-0 (-> (the-as entity-actor entity) etype))
+                  (s3-0 (new 'stack-no-clear 'transformq))
+                  )
+              (set! (-> s3-0 trans quad) (-> entity extra trans quad))
+              (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
+              (set! (-> s3-0 scale x) (the-as float entity))
+              (set! (-> s3-0 scale y) (the-as float #f))
+              (set! (-> s3-0 scale z) (the-as float #t))
+              (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
+                (when (when s1-1
+                        (let ((t9-2 (method-of-type process activate)))
+                          (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
+                          )
+                        (run-now-in-process s1-1 enemy-init-by-other this s3-0)
+                        (-> s1-1 ppointer)
+                        )
+                  (+! (-> this alive-count) 1)
+                  (+! (-> this num-spawned) 1)
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+      (else
+        #f
+        )
+    )
+  0
+  (none)
+  )
+
 (defmethod relocate ((this hover-enemy-manager) (offset int))
   (when (-> this formation)
     (if (nonzero? (-> this formation))
@@ -266,9 +444,64 @@
         )
       )
     )
+  (let ((v1-6 (res-lump-data (-> this entity) 'first-wave pointer :tag-ptr (& sv-16)))) ;; added - count the amount of elements from 'first-wave' lump
+    (cond
+      ((and v1-6 (nonzero? (-> sv-16 elt-count)))
+       (set! (-> this first-wave-max-count) (the-as int (-> sv-16 elt-count)))
+       )
+      (else
+        (set! (-> this first-wave-max-count) 0)
+        0
+        )
+      )
+    )
+  (let ((v1-7 (res-lump-data (-> this entity) 'second-wave pointer :tag-ptr (& sv-16)))) ;; added - count the amount of elements from 'second-wave' lump
+    (cond
+      ((and v1-7 (nonzero? (-> sv-16 elt-count)))
+       (set! (-> this second-wave-max-count) (the-as int (-> sv-16 elt-count)))
+       )
+      (else
+        (set! (-> this second-wave-max-count) 0)
+        0
+        )
+      )
+    )
+  (let ((v1-8 (res-lump-data (-> this entity) 'third-wave pointer :tag-ptr (& sv-16)))) ;; added - count the amount of elements from 'third-wave' lump
+    (cond
+      ((and v1-8 (nonzero? (-> sv-16 elt-count)))
+       (set! (-> this third-wave-max-count) (the-as int (-> sv-16 elt-count)))
+       )
+      (else
+        (set! (-> this third-wave-max-count) 0)
+        0
+        )
+      )
+    )
+  (let ((v1-9 (res-lump-data (-> this entity) 'fourth-wave pointer :tag-ptr (& sv-16)))) ;; added - count the amount of elements from 'fourth-wave' lump
+    (cond
+      ((and v1-9 (nonzero? (-> sv-16 elt-count)))
+       (set! (-> this fourth-wave-max-count) (the-as int (-> sv-16 elt-count)))
+       )
+      (else
+        (set! (-> this fourth-wave-max-count) 0)
+        0
+        )
+      )
+    )
+  (let ((v1-10 (res-lump-data (-> this entity) 'fifth-wave pointer :tag-ptr (& sv-16)))) ;; added - count the amount of elements from 'fifth-wave' lump
+    (cond
+      ((and v1-10 (nonzero? (-> sv-16 elt-count)))
+       (set! (-> this fifth-wave-max-count) (the-as int (-> sv-16 elt-count)))
+       )
+      (else
+        (set! (-> this fifth-wave-max-count) 0)
+        0
+        )
+      )
+    )
   (set! (-> this total-to-spawn) 0)
   (set! (-> this num-spawned) 0)
-  (when (-> this command-table)
+  (when (and (-> this command-table) (-> this actor-group) (nonzero? (-> this actor-group-count))) ;; handle with vanilla entities that have 'actor-groups'
     (let ((v1-13 (-> this command-table)))
       (dotimes (a0-6 (-> v1-13 length))
         (if (= (-> v1-13 a0-6 command) 'spawn)
@@ -277,6 +510,34 @@
         )
       )
     )
+  (when (and (-> this command-table) (= (-> this actor-group) #f) (zero? (-> this actor-group-count))) ;; added - store the amount of enemies from each wave in 'total-to-spawn' var
+    (let ((v1-13 (-> this command-table)))
+      (dotimes (a0-6 (-> v1-13 length))
+        (if (= (-> v1-13 a0-6 command) 'spawn)
+            (cond
+              ((= (-> v1-13 a0-6 wave) (the-as int 0))
+                (+! (-> this total-to-spawn) (-> this first-wave-max-count))
+                )
+              ((= (-> v1-13 a0-6 wave) (the-as int 1))
+                (+! (-> this total-to-spawn) (-> this second-wave-max-count))
+                )
+              ((= (-> v1-13 a0-6 wave) (the-as int 2))
+                (+! (-> this total-to-spawn) (-> this third-wave-max-count))
+                )
+              ((= (-> v1-13 a0-6 wave) (the-as int 3))
+                (+! (-> this total-to-spawn) (-> this fourth-wave-max-count))
+                )
+              ((= (-> v1-13 a0-6 wave) (the-as int 4))
+                (+! (-> this total-to-spawn) (-> this fifth-wave-max-count))
+                )
+              (else
+                #f
+                )
+              )
+            )
+          )
+        )
+      )
   (set! (-> this formation) #f)
   (set-time! (-> this formation-timer))
   (set! (-> this alive-count) 0)
