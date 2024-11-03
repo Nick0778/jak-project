@@ -1,0 +1,26 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; basically this will allocate the custom nav-network in memory while the level is being loaded
+
+(declare-type nav-network basic)
+(define-extern *nav-network* nav-network)
+
+(defun hover-test-login ()
+  (set! *nav-network* (new 'loading-level 'nav-network)) 
+  (nav-network-method-9 *nav-network*)
+  0
+  (none)
+  )
+
+(defun hover-test-deactivate ()
+  (set! *nav-network* (the-as nav-network 0))
+  0
+  (none)
+  )
+
+(defun hover-test-activate ((arg0 level))
+  (nav-network-method-10 *nav-network* arg0 *hover-test-adjacency*)
+  0
+  (none)
+  )
