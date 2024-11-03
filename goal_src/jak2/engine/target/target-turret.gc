@@ -572,6 +572,22 @@
   (none)
   )
 
+;; added the HUD stuff for hover-test
+;; this will prevent the game to crash after entering in the turret
+;; no idea how to make the game use turret's HUD textures from hover-test 
+(deftype hud-strip-turret-health (hud-turret-health)
+  ()
+  )
+
+
+(defmethod init-callback ((this hud-strip-turret-health))
+  (set! (-> this level) (level-get *level* 'strip))
+  (init-turret-hud this "drillmid-minimap")
+  ((method-of-type hud init-callback) this)
+  0
+  (none)
+  )
+
 (deftype turret-info (basic)
   ((process   (pointer process))
    (handle    handle)
