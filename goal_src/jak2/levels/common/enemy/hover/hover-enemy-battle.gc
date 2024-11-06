@@ -250,30 +250,28 @@
 (defmethod spawn-custom-level-enemy ((this hover-enemy-manager) (arg0 uint))
   (cond
     ((= (the-as int arg0) 0) ;; first-wave
-      (when (< arg0 (the-as uint (-> this first-wave-max-count)))
-        (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
-          (dotimes (i (-> this first-wave-max-count)) ;; iterate through 'i' while he is less than 'first-wave-max-count'
-            (set! entity (entity-actor-lookup (-> this entity) 'first-wave i)) ;; find the entity stored inside 'first-wave' lump at the index 'i'
-            (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
-            (let* ((s2-0 (-> (the-as entity-actor entity) etype))
-                  (s3-0 (new 'stack-no-clear 'transformq))
-                  )
-              (set! (-> s3-0 trans quad) (-> entity extra trans quad))
-              (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
-              (set! (-> s3-0 scale x) (the-as float entity))
-              (set! (-> s3-0 scale y) (the-as float #f))
-              (set! (-> s3-0 scale z) (the-as float #t))
-              (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
-                (when (when s1-1
-                        (let ((t9-2 (method-of-type process activate)))
-                          (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
-                          )
-                        (run-now-in-process s1-1 enemy-init-by-other this s3-0)
-                        (-> s1-1 ppointer)
+      (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
+        (dotimes (i (-> this first-wave-max-count)) ;; iterate through 'i' while he is less than 'first-wave-max-count'
+          (set! entity (entity-actor-lookup (-> this entity) 'first-wave i)) ;; find the entity stored inside 'first-wave' lump at the index 'i'
+          (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
+          (let* ((s2-0 (-> (the-as entity-actor entity) etype))
+                (s3-0 (new 'stack-no-clear 'transformq))
+                )
+            (set! (-> s3-0 trans quad) (-> entity extra trans quad))
+            (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
+            (set! (-> s3-0 scale x) (the-as float entity))
+            (set! (-> s3-0 scale y) (the-as float #f))
+            (set! (-> s3-0 scale z) (the-as float #t))
+            (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
+              (when (when s1-1
+                      (let ((t9-2 (method-of-type process activate)))
+                        (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
                         )
-                  (+! (-> this alive-count) 1)
-                  (+! (-> this num-spawned) 1)
-                  )
+                      (run-now-in-process s1-1 enemy-init-by-other this s3-0)
+                      (-> s1-1 ppointer)
+                      )
+                (+! (-> this alive-count) 1)
+                (+! (-> this num-spawned) 1)
                 )
               )
             )
@@ -281,30 +279,28 @@
         )
       )
     ((= (the-as int arg0) 1) ;; second-wave
-      (when (< arg0 (the-as uint (-> this second-wave-max-count)))
-        (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
-          (dotimes (i (-> this second-wave-max-count)) ;; iterate through 'i' while he is less than 'second-wave-max-count'
-            (set! entity (entity-actor-lookup (-> this entity) 'second-wave i)) ;; find the entity stored inside 'second-wave' lump at the index 'i'
-            (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
-            (let* ((s2-0 (-> (the-as entity-actor entity) etype))
-                  (s3-0 (new 'stack-no-clear 'transformq))
-                  )
-              (set! (-> s3-0 trans quad) (-> entity extra trans quad))
-              (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
-              (set! (-> s3-0 scale x) (the-as float entity))
-              (set! (-> s3-0 scale y) (the-as float #f))
-              (set! (-> s3-0 scale z) (the-as float #t))
-              (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
-                (when (when s1-1
-                        (let ((t9-2 (method-of-type process activate)))
-                          (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
-                          )
-                        (run-now-in-process s1-1 enemy-init-by-other this s3-0)
-                        (-> s1-1 ppointer)
+      (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
+        (dotimes (i (-> this second-wave-max-count)) ;; iterate through 'i' while he is less than 'second-wave-max-count'
+          (set! entity (entity-actor-lookup (-> this entity) 'second-wave i)) ;; find the entity stored inside 'second-wave' lump at the index 'i'
+          (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
+          (let* ((s2-0 (-> (the-as entity-actor entity) etype))
+                (s3-0 (new 'stack-no-clear 'transformq))
+                )
+            (set! (-> s3-0 trans quad) (-> entity extra trans quad))
+            (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
+            (set! (-> s3-0 scale x) (the-as float entity))
+            (set! (-> s3-0 scale y) (the-as float #f))
+            (set! (-> s3-0 scale z) (the-as float #t))
+            (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
+              (when (when s1-1
+                      (let ((t9-2 (method-of-type process activate)))
+                        (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
                         )
-                  (+! (-> this alive-count) 1)
-                  (+! (-> this num-spawned) 1)
-                  )
+                      (run-now-in-process s1-1 enemy-init-by-other this s3-0)
+                      (-> s1-1 ppointer)
+                      )
+                (+! (-> this alive-count) 1)
+                (+! (-> this num-spawned) 1)
                 )
               )
             )
@@ -312,30 +308,28 @@
         )
       )
     ((= (the-as int arg0) 2) ;; third-wave
-      (when (< arg0 (the-as uint (-> this third-wave-max-count)))
-        (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
-          (dotimes (i (-> this third-wave-max-count)) ;; iterate through 'i' while he is less than 'third-wave-max-count'
-            (set! entity (entity-actor-lookup (-> this entity) 'third-wave i)) ;; find the entity stored inside 'third-wave' lump at the index 'i'
-            (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
-            (let* ((s2-0 (-> (the-as entity-actor entity) etype))
-                  (s3-0 (new 'stack-no-clear 'transformq))
-                  )
-              (set! (-> s3-0 trans quad) (-> entity extra trans quad))
-              (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
-              (set! (-> s3-0 scale x) (the-as float entity))
-              (set! (-> s3-0 scale y) (the-as float #f))
-              (set! (-> s3-0 scale z) (the-as float #t))
-              (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
-                (when (when s1-1
-                        (let ((t9-2 (method-of-type process activate)))
-                          (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
-                          )
-                        (run-now-in-process s1-1 enemy-init-by-other this s3-0)
-                        (-> s1-1 ppointer)
+      (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
+        (dotimes (i (-> this third-wave-max-count)) ;; iterate through 'i' while he is less than 'third-wave-max-count'
+          (set! entity (entity-actor-lookup (-> this entity) 'third-wave i)) ;; find the entity stored inside 'third-wave' lump at the index 'i'
+          (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
+          (let* ((s2-0 (-> (the-as entity-actor entity) etype))
+                (s3-0 (new 'stack-no-clear 'transformq))
+                )
+            (set! (-> s3-0 trans quad) (-> entity extra trans quad))
+            (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
+            (set! (-> s3-0 scale x) (the-as float entity))
+            (set! (-> s3-0 scale y) (the-as float #f))
+            (set! (-> s3-0 scale z) (the-as float #t))
+            (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
+              (when (when s1-1
+                      (let ((t9-2 (method-of-type process activate)))
+                        (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
                         )
-                  (+! (-> this alive-count) 1)
-                  (+! (-> this num-spawned) 1)
-                  )
+                      (run-now-in-process s1-1 enemy-init-by-other this s3-0)
+                      (-> s1-1 ppointer)
+                      )
+                (+! (-> this alive-count) 1)
+                (+! (-> this num-spawned) 1)
                 )
               )
             )
@@ -343,30 +337,28 @@
         )
       )
     ((= (the-as int arg0) 3) ;; fourth-wave
-      (when (< arg0 (the-as uint (-> this fourth-wave-max-count)))
-        (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
-          (dotimes (i (-> this fourth-wave-max-count)) ;; iterate through 'i' while he is less than 'fourth-wave-max-count'
-            (set! entity (entity-actor-lookup (-> this entity) 'fourth-wave i)) ;; find the entity stored inside 'fourth-wave' lump at the index 'i'
-            (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
-            (let* ((s2-0 (-> (the-as entity-actor entity) etype))
-                  (s3-0 (new 'stack-no-clear 'transformq))
-                  )
-              (set! (-> s3-0 trans quad) (-> entity extra trans quad))
-              (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
-              (set! (-> s3-0 scale x) (the-as float entity))
-              (set! (-> s3-0 scale y) (the-as float #f))
-              (set! (-> s3-0 scale z) (the-as float #t))
-              (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
-                (when (when s1-1
-                        (let ((t9-2 (method-of-type process activate)))
-                          (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
-                          )
-                        (run-now-in-process s1-1 enemy-init-by-other this s3-0)
-                        (-> s1-1 ppointer)
+      (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
+        (dotimes (i (-> this fourth-wave-max-count)) ;; iterate through 'i' while he is less than 'fourth-wave-max-count'
+          (set! entity (entity-actor-lookup (-> this entity) 'fourth-wave i)) ;; find the entity stored inside 'fourth-wave' lump at the index 'i'
+          (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
+          (let* ((s2-0 (-> (the-as entity-actor entity) etype))
+                (s3-0 (new 'stack-no-clear 'transformq))
+                )
+            (set! (-> s3-0 trans quad) (-> entity extra trans quad))
+            (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
+            (set! (-> s3-0 scale x) (the-as float entity))
+            (set! (-> s3-0 scale y) (the-as float #f))
+            (set! (-> s3-0 scale z) (the-as float #t))
+            (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
+              (when (when s1-1
+                      (let ((t9-2 (method-of-type process activate)))
+                        (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
                         )
-                  (+! (-> this alive-count) 1)
-                  (+! (-> this num-spawned) 1)
-                  )
+                      (run-now-in-process s1-1 enemy-init-by-other this s3-0)
+                      (-> s1-1 ppointer)
+                      )
+                (+! (-> this alive-count) 1)
+                (+! (-> this num-spawned) 1)
                 )
               )
             )
@@ -374,39 +366,37 @@
         )
       )
     ((= (the-as int arg0) 4) ;; fifth-wave
-      (when (< arg0 (the-as uint (-> this fifth-wave-max-count)))
-        (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
-          (dotimes (i (-> this fifth-wave-max-count)) ;; iterate through 'i' while he is less than 'fifth-wave-max-count'
-            (set! entity (entity-actor-lookup (-> this entity) 'fifth-wave i)) ;; find the entity stored inside 'fifth-wave' lump at the index 'i'
-            (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
-            (let* ((s2-0 (-> (the-as entity-actor entity) etype))
-                  (s3-0 (new 'stack-no-clear 'transformq))
-                  )
-              (set! (-> s3-0 trans quad) (-> entity extra trans quad))
-              (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
-              (set! (-> s3-0 scale x) (the-as float entity))
-              (set! (-> s3-0 scale y) (the-as float #f))
-              (set! (-> s3-0 scale z) (the-as float #t))
-              (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
-                (when (when s1-1
-                        (let ((t9-2 (method-of-type process activate)))
-                          (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
-                          )
-                        (run-now-in-process s1-1 enemy-init-by-other this s3-0)
-                        (-> s1-1 ppointer)
+      (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
+        (dotimes (i (-> this fifth-wave-max-count)) ;; iterate through 'i' while he is less than 'fifth-wave-max-count'
+          (set! entity (entity-actor-lookup (-> this entity) 'fifth-wave i)) ;; find the entity stored inside 'fifth-wave' lump at the index 'i'
+          (format #t "entity[~d]: ~s~%" i entity) ;; print the array on terminal
+          (let* ((s2-0 (-> (the-as entity-actor entity) etype))
+                (s3-0 (new 'stack-no-clear 'transformq))
+                )
+            (set! (-> s3-0 trans quad) (-> entity extra trans quad))
+            (quaternion-copy! (-> s3-0 quat) (-> (the-as entity-actor entity) quat))
+            (set! (-> s3-0 scale x) (the-as float entity))
+            (set! (-> s3-0 scale y) (the-as float #f))
+            (set! (-> s3-0 scale z) (the-as float #t))
+            (let ((s1-1 (get-process *default-dead-pool* s2-0 #x4000)))
+              (when (when s1-1
+                      (let ((t9-2 (method-of-type process activate)))
+                        (t9-2 s1-1 this (symbol->string (-> s2-0 symbol)) (the-as pointer #x70004000))
                         )
-                  (+! (-> this alive-count) 1)
-                  (+! (-> this num-spawned) 1)
-                  )
+                      (run-now-in-process s1-1 enemy-init-by-other this s3-0)
+                      (-> s1-1 ppointer)
+                      )
+                (+! (-> this alive-count) 1)
+                (+! (-> this num-spawned) 1)
                 )
               )
             )
           )
         )
       )
-      (else
-        #f
-        )
+    (else
+      #f
+      )
     )
   0
   (none)

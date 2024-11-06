@@ -17,6 +17,9 @@
    (hud-cgh-event    symbol)
    (egg-timer        time-frame)
    (cgh-timer        time-frame)
+   (wasp-timer       time-frame) ;; added - for wasp counting stuff
+   (use-wasp-hud     symbol) ;; added - for wasp counting stuff
+   (hud-wasp         handle) ;; added - for wasp counting stuff
    )
   )
 
@@ -345,10 +348,12 @@
     (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x1 :time (seconds 2) :alive-count 2)
     (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x2 :time (seconds 2) :alive-count 2)
     (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x3 :time (seconds 2) :alive-count 2)
+    (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x4 :time (seconds 4))
     (new 'static 'hover-enemy-battle-command :command 'spawn :time (seconds 1) :alive-count 2)
     (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x3 :alive-count 3)
     (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x2 :time (seconds 2) :alive-count 2)
     (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x1 :alive-count 3)
+    (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x4)
     )
   )
 
@@ -364,6 +369,7 @@
     (set! (-> *game-info* counter) 0.0)
     (set! (-> self egg-timer) 0)
     (set! (-> self cgh-timer) 0)
+    (set! (-> self wasp-timer) 0) ;; added - for wasp counting stuff
     (if (and (handle->process (-> self hover-battle)) (zero? (-> self path-event)))
         (send-event (handle->process (-> self hover-battle)) 'trigger)
         )
@@ -392,6 +398,7 @@
       )
     (send-event (handle->process (-> self hud-egg)) 'hide-and-die)
     (send-event (handle->process (-> self hud-cgh)) 'hide-and-die)
+    (send-event (handle->process (-> self hud-wasp)) 'hide-and-die) ;; added - for wasp counting stuff
     (let ((a1-3 (new 'stack-no-clear 'event-message-block)))
       (set! (-> a1-3 from) (process->ppointer self))
       (set! (-> a1-3 num-params) 1)
@@ -479,6 +486,35 @@
           (set! (-> self cgh-timer) (+ (current-time) (the int (* 300.0 (rand-vu-float-range 0.2 0.4)))))
           )
       )
+    ;; added - for wasp counting stuff
+    (when (and (-> self use-wasp-hud) (< (-> self wasp-timer) (current-time)) (handle->process (-> self hover-battle)))
+      ;(if (= (-> *game-info* counter) 0.0)
+          ;(set! (-> self hud-cgh-event) 'force-hide)
+          ;)
+      0
+      (let ((a1-4 (new 'stack-no-clear 'event-message-block)))
+        (set! (-> a1-4 from) (process->ppointer self))
+        (set! (-> a1-4 num-params) 0)
+        (set! (-> a1-4 message) 'total-to-spawn?)
+        (let ((gp-1 (the-as int (send-event-function (handle->process (-> self hover-battle)) a1-4)))
+              (a1-5 (new 'stack-no-clear 'event-message-block))
+              )
+          (set! (-> a1-5 from) (process->ppointer self))
+          (set! (-> a1-5 num-params) 0)
+          (set! (-> a1-5 message) 'num-spawned?)
+          ;; NOTE: added int casts
+          (let ((gp-2 (- gp-1 (the-as int (send-event-function (handle->process (-> self hover-battle)) a1-5)))))
+            (set! (-> *game-info* counter)
+                  (the float (+ gp-2 (the-as int (send-event (handle->process (-> self hover-battle)) 'num-alive?))))
+                  )
+            )
+          )
+        )
+      (if (= (-> *game-info* counter) 0.0)
+          (set! (-> self wasp-timer) (+ (current-time) (seconds 4)))
+          (set! (-> self wasp-timer) (+ (current-time) (the int (* 300.0 (rand-vu-float-range 0.2 0.4)))))
+          )
+      )
     (none)
     )
   )
@@ -505,6 +541,7 @@
              )
        (set! (-> this use-egg-hud) #t)
        (set! (-> this use-cgh-hud) #f)
+       (set! (-> this use-wasp-hud) #f) ;; added - Do not change it to #t, otherwise the game will crash when you enter in the turret!
        )
       ((= (the-as uint v1-1) 1)
        (set! (-> this hover-battle)
@@ -512,6 +549,7 @@
              )
        (set! (-> this use-egg-hud) #t)
        (set! (-> this use-cgh-hud) #f)
+       (set! (-> this use-wasp-hud) #f) ;; added - Do not change it to #t, otherwise the game will crash when you enter in the turret!
        )
       ((= (the-as uint v1-1) 2)
        (set! (-> this hover-battle)
@@ -519,6 +557,7 @@
              )
        (set! (-> this use-egg-hud) #t)
        (set! (-> this use-cgh-hud) #f)
+       (set! (-> this use-wasp-hud) #f) ;; added - Do not change it to #t, otherwise the game will crash when you enter in the turret!
        )
       ((= (the-as uint v1-1) 3)
        (set! (-> this path-event) *turret-13-path*)
@@ -527,16 +566,19 @@
              )
        (set! (-> this use-egg-hud) #f)
        (set! (-> this use-cgh-hud) #t)
+       (set! (-> this use-wasp-hud) #f) ;; added - Do not change it to #t, otherwise the game will crash when you enter in the turret!
        )
       ((= (the-as uint v1-1) 4)
        (set! (-> this path-event) *turret-14-path*)
        (set! (-> this use-egg-hud) #f)
        (set! (-> this use-cgh-hud) #f)
+       (set! (-> this use-wasp-hud) #f) ;; added - Do not change it to #t, otherwise the game will crash when you enter in the turret!
        )
       ((= (the-as uint v1-1) 5)
        (set! (-> this path-event) *turret-15-path*)
        (set! (-> this use-egg-hud) #f)
        (set! (-> this use-cgh-hud) #f)
+       (set! (-> this use-wasp-hud) #f) ;; added - Do not change it to #t, otherwise the game will crash when you enter in the turret!
        )
       (else ;; added - handle with the custom hover battle 
         (set! (-> this hover-battle)
@@ -544,6 +586,7 @@
              )
         (set! (-> this use-egg-hud) #f)
         (set! (-> this use-cgh-hud) #f)
+        (set! (-> this use-wasp-hud) #t) ;; added - this will make "hud-wasp" spawn when you enter in example turret
         )
       )
     )
@@ -552,6 +595,7 @@
     )
   (set! (-> this hud-egg) (the-as handle #f))
   (set! (-> this hud-cgh) (the-as handle #f))
+  (set! (-> this hud-wasp) (the-as handle #f)) ;; added - for wasp counting stuff
   (set! (-> this hover-formation) (the-as hover-formation (entity-actor-lookup arg0 'formation-actor 0)))
   (if (or (name= (-> this name) "turret-14") (name= (-> this name) "turret-15"))
       (set! (-> this shot-timeout) (seconds 2.667))
@@ -594,6 +638,9 @@
     (set! (-> this hud-cgh) (ppointer->handle (process-spawn hud-crimsonhover :init hud-init-by-other :to arg0)))
     (set! (-> this hud-cgh-event) 'force-hide)
     )
+  (if (-> this use-wasp-hud) ;; added - for wasp counting stuff
+      (set! (-> this hud-wasp) (ppointer->handle (process-spawn hud-wasp :init hud-init-by-other :to arg0)))
+      )
   0
   (none)
   )
@@ -604,6 +651,9 @@
       )
   (if (-> this use-cgh-hud)
       (send-event (handle->process (-> this hud-cgh)) (-> this hud-cgh-event))
+      )
+  (if (-> this use-wasp-hud) ;; added - for wasp counting stuff
+      (send-event (handle->process (-> this hud-wasp)) 'force-show)
       )
   (call-parent-method this)
   (none)
