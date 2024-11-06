@@ -333,7 +333,7 @@
 
 ;; added - here is the array of hover-enemy-battle-command used as a example.
 ;; here you set up the commands for you hover battle, like the wave that should be used, 
-  ;; the delay time between a wave to another and the 'alive-count' of enemies you want from the wave.
+  ;; the delay time for spawning the enemies and the 'alive-count' of enemies you want for spawning the next wave.
 
 ;; NOTE:
   ; :wave #x0 or not adding anything between 'spawn and :time - first-wave lump
@@ -356,7 +356,6 @@
     (new 'static 'hover-enemy-battle-command :command 'spawn :wave #x4)
     )
   )
-
 
 (defstate active (turret)
   :virtual #t
