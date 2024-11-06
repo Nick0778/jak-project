@@ -15839,9 +15839,9 @@
     :buttom-height (meters -10000000)
     :run-packages '("common")
     :wait-for-load #t
-    :login-func 'hover-test-login
-    :activate-func 'hover-test-activate
-    :deactivate-func 'hover-test-deactivate
+    :login-func 'hover-test-login ;; call the function responsible to allocate custom nav-network in memory while the level is being loaded.
+    :activate-func 'hover-test-activate ;; call the function responsible to allocate custom nav-network in memory while the level is being loaded.
+    :deactivate-func 'hover-test-deactivate ;; call the function responsible to remove custom nav-network from memory.
     :kill-func #f
     :borrow-level (new 'static 'array symbol 2 #f #f)
     :borrow-display? (new 'static 'array symbol 2 #f #f)

@@ -87,7 +87,7 @@
         "vis-dist": ["meters", 200.0],
         "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"]
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
       }
     },
 
@@ -104,7 +104,7 @@
         "vis-dist": ["meters", 200.0],
         "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"]
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
       }
     },
 
@@ -121,7 +121,7 @@
         "vis-dist": ["meters", 200.0],
         "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"]
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
       }
     },
 
@@ -138,7 +138,7 @@
         "vis-dist": ["meters", 200.0],
         "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"]
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
       }
     },
 
@@ -155,7 +155,7 @@
         "vis-dist": ["meters", 200.0],
         "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"]
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
       }
     },
 
@@ -172,7 +172,7 @@
         "vis-dist": ["meters", 200.0],
         "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"]
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
       }
     },
 
@@ -189,7 +189,7 @@
         "vis-dist": ["meters", 200.0],
         "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"]
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
       }
     },
 
@@ -206,7 +206,41 @@
         "vis-dist": ["meters", 200.0],
         "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"]
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
+      }
+    },
+
+    {
+      "aid": 90000,
+      "trans": [2535.10, 158.23, -76.32], // translation
+      "etype": "wasp",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [2535.10, 158.23, -76.32, 10], // bounding sphere
+      "lump": {
+        "name": "wasp-9",
+        "vis-dist": ["meters", 200.0],
+        "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
+        "options": ["uint32", 256],
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
+      }
+    },
+
+    {
+      "aid": 100000,
+      "trans": [2526.53, 156.85, -79.39], // translation
+      "etype": "wasp",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [2526.53, 156.85, -79.39, 10], // bounding sphere
+      "lump": {
+        "name": "wasp-10",
+        "vis-dist": ["meters", 200.0],
+        "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
+        "options": ["uint32", 256],
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle 
       }
     },
 
@@ -226,7 +260,8 @@
         "first-wave": ["uint32", 30000, 60000], // (wasp-3, wasp-6)
         "second-wave": ["uint32", 10000, 20000, 30000], // (wasp-1, wasp-2, wasp-3)
         "third-wave": ["uint32", 50000, 40000], // (wasp-5, wasp-4)
-        "fourth-wave": ["uint32", 70000, 80000, 30000, 60000] // (wasp-7, wasp-8, wasp-3, wasp-6)
+        "fourth-wave": ["uint32", 70000, 80000, 30000, 60000], // (wasp-7, wasp-8, wasp-3, wasp-6)
+        "fifth-wave": ["uint32", 90000, 100000] // (wasp-9, wasp-10)
       }
     },
 
