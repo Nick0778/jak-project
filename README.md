@@ -17,7 +17,7 @@ Here I'm going to list all the files that you have to take a look, so you can un
 - `goal_scr/jak2/engine/target/target-turret.gc` **this file have some important defenitions for the turret.**
 - `goal_scr/jak2/levels/drill/drill-turret.gc` **this file have some required definitions for the turret to handle with your custom hover battle.**
 - `goal_scr/jak2/levels/common/enemy/hover/hover-nav-network.gc` **this file contains an example of the definitions of the Adjancencies list required for allowing hover enemies to move through them. (This will be discused later!)**
-- `goal_scr/jak2/levels/hover-test/hover-test-setup.gc.gc` **an extra code added to alloc the example hover-nav-network in memory while the custom level is being loaded. (This will be discused later!)**
+- `goal_scr/jak2/levels/hover-test/hover-test-setup.gc` **an extra code added to alloc the example hover-nav-network in memory while the custom level is being loaded. (This will be discused later!)**
 
 ### Creating your own custom hover battle
 
@@ -90,7 +90,35 @@ and:
 
 ![png8](https://github.com/user-attachments/assets/f62e77b1-e16c-429a-91e7-f0666bff3d8c)
 
-These stuff are what I added for handling with the example custom hover battle. Basically, that's the same process you need to do in this file in case you want to add a new custom hover battle. The first image shows an array responsible in controlling the hover battle, so, check out the comments I wrote in there for better understanding that. Also, in the second image, is showing a small code I added inside a `cond` from `turret-init!` method, which is very important! This is responsible to spawn the hover battle and spawn the counter HUD. But, it's important to mention for not changing `use-egg-hud` or `use-cgh-hud` to `#t` when you don't have the levels that contains these HUD definitions loaded, otherwise, the game will crash! The same applies for `use-wasp-hud` which is a custom HUD that I added for this example in: `goal_scr/jak2/levels/hover-test/hover-test-setup.gc.gc`, so if you don't have this file included inside your custom level `.gd` file, the game will crash!      
+These stuff are what I added for handling with the example custom hover battle. Basically, that's the same process you need to do in this file in case you want to add a new custom hover battle. The first image shows an array responsible in controlling the hover battle, so, check out the comments I wrote in there for better understanding that. Also, in the second image, is showing a small code I added inside a `cond` from `turret-init!` method, which is very important! This is responsible to spawn the hover battle and spawn the counter HUD. But, it's important to mention for not changing `use-egg-hud` or `use-cgh-hud` to `#t` when you don't have the levels that contains these HUD definitions loaded, otherwise, the game will crash! The same applies for `use-wasp-hud` which is a custom HUD that I added for this example in: `goal_scr/jak2/levels/hover-test/hover-test-setup.gc.gc`, so if you don't have this file included inside your custom level `.gd` file, the game will crash!
+
+### Adding a custom hover-nav-network
+
+An `hover-nav-network` is basically a nav mesh for hover enemies, but unlike nav meshes, they are defined in: `goal_scr/jak2/levels/hover-test/hover-test-setup.gc`, so you can define your own `hover-nav-network` in there. Also, the following image is showing a visual representation of a `hover-nav-network` in game:
+
+![png4](https://github.com/user-attachments/assets/16c4ffe4-6316-4ff6-af2b-2b751c7fba56)
+
+For enabling the visual representation from `hover-nav-network`, go to: `Actor/Hover Marks/Nav Network`.
+
+Now, I will show part of the example I made of an `hover-nav-network` used in the example hover battle through code:
+
+![png12](https://github.com/user-attachments/assets/4368c331-f0d7-421e-a867-ecbec33ee831)
+
+Also, in case you are confused and want to understand better about `hover-nav-network` and how they really work, I recommend you to check this: https://en.m.wikipedia.org/wiki/Adjacency_list. This explains about `Adjacency List` which is basically what `hover-nav-network` are. It's interesting to check them in game and analyze in code for better understanding how they are defined.
+
+Next, the following images shows the example I made for allocating the `hover-nav-network` used in the example hover battle in memory, while the level is being loaded.
+
+In order to do this, the logic will be this:
+
+`goal_scr/jak2/engine/level/level-info.gc`
+
+![png13](https://github.com/user-attachments/assets/3f2f8ee3-4810-4cc8-82dc-75ef92ef3896)
+
+`goal_scr/jak2/levels/hover-test/hover-test-setup.gc`
+
+![png14](https://github.com/user-attachments/assets/dfaf15a1-7401-4aeb-a942-fcf3aaf5404e)
+
+**Note: You need to obligatory define your `hover-nav-network` in your custom level, otherwise, the game will crash!**
 
 <p align="center">
   <img width="500" height="100%" src="./docs/img/logo-text-colored-new.png">
