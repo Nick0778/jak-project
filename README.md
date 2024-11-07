@@ -2,7 +2,7 @@
 
 ### About
 
-This branch have the purpose of allowing the user to make custom hover battles, like those from Drill Platform turrets missions, in custom levels, due to the fact that custom levels don't support `actor-groups`, which is an array of entities references that stores actors and the approach used in the game for setting up the hover battle. So, I made a diferent approach that makes it possible to have hover battles in custom levels. In the following topics I'm going to discuss about its usage and some extra stuff. 
+This branch have the purpose of allowing the user to make custom hover battles, like those from Drill Platform turrets missions, in custom levels, due to the fact that custom levels don't support `actor-groups`, which is an array of entities references that stores actors and the approach used in the game for setting up the hover battle actors. So, I made a diferent approach that makes it possible to have hover battles in custom levels. In the following topics I'm going to discuss about its usage and some extra stuff. 
 
 It's important to mention that I made a example of custom hover battle in this branch, so it's intersting to you take a look in that in order to better understand how to set up your own custom hover battle in your custom level! 
 
