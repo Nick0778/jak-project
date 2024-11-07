@@ -35,13 +35,19 @@ Now, I'm going to explain how you should define all the hover enemies actors you
 
 Basically, in this case, each `Group` from these `actor-groups` represents a wave from the hover battle and each one of these waves stores all the entities used in each of them. But, the approach used in this hack will be a bit diferent, as we can't define `actor-groups` in custom levels yet. So, instead of them, we are going to use the following logic:
 
-![png2](https://github.com/user-attachments/assets/c98be1e3-5c68-4b90-962e-1fa0f0a51fbf)
+![png2](https://github.com/user-attachments/assets/2e0ce855-8d04-4614-b384-106ac19b8b6e)
 
-As you can see, we have to define: `first-wave`, `second-wave`, `third-wave`, `fourth-wave` and * `fifth-wave` * (I didn't added in this example but you can add it too!), depending of how many waves you want, but for now, **you can add up to 5 waves!**
+As you can see, we have to define: `first-wave`, `second-wave`, `third-wave`, `fourth-wave` and `fifth-wave`, depending of how many waves you want, but for now, **you can add up to 5 waves!**
+
+Okay, but, how should the hover enemies entities added in your custom level `.jsonc` file be set up? Well, following the next steps you will understand how to do that:
+
+First, in your custom level `.jsonc` file, in order to add a `wasp` entity, for example, it should look something like this:
+
+![png9](https://github.com/user-attachments/assets/c7e608c2-421c-4ecd-916f-28738f2747c6)
 
 In order to add them you have to follow this logic here:
 
-![png3](https://github.com/user-attachments/assets/b229301b-90e1-4c2b-9102-1c2f868a6ab2)
+![png3](https://github.com/user-attachments/assets/b67ce824-d6ab-4d2c-bae3-b62c1338f5da)
 
 So, you have to pass the `aid`s from your entities in there for referencing each of them.
 
