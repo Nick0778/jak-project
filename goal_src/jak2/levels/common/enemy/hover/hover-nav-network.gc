@@ -3135,7 +3135,7 @@
 (define *nestb-adjacency* (new 'static 'boxed-array :type nav-network-info))
 
 ;; added - custom nav-network used in hover-test custom level
-(define *lmhattck-adjacency* (new 'static 'boxed-array :type nav-network-info
+(define *hover-test-adjacency* (new 'static 'boxed-array :type nav-network-info
                             (new 'static 'nav-network-info
                               :pos (new 'static 'vector :x (meters 2550.20) :y (meters 134.12) :z (meters -105.45) :w 1.0)
                               :path-node (new 'static 'nav-network-path-node :parent #f)
