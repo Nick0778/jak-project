@@ -2,7 +2,7 @@
 
 ### About
 
-This branch have the purpose of allowing the user to make custom hover battles, like those from Drill Platform turrets missions, in custom levels, due to the fact that custom levels don't support `actor-groups`, which is an array of entities references and the approach used in the game for setting up the hover battle. So, I made a diferent approach that makes it possible to have hover battles in custom levels. In the following topics I'm going to discuss about its usage and some extra stuff. 
+This branch have the purpose of allowing the user to make custom hover battles, like those from Drill Platform turrets missions, in custom levels, due to the fact that custom levels don't support `actor-groups`, which is an array of entities references that stores actors and the approach used in the game for setting up the hover battle actors. So, I made a diferent approach that makes it possible to have hover battles in custom levels. In the following topics I'm going to discuss about its usage and some extra stuff. 
 
 It's important to mention that I made a example of custom hover battle in this branch, so it's intersting to you take a look in that in order to better understand how to set up your own custom hover battle in your custom level! 
 
@@ -35,20 +35,47 @@ Now, I'm going to explain how you should define all the hover enemies actors you
 
 Basically, in this case, each `Group` from these `actor-groups` represents a wave from the hover battle and each one of these waves stores all the entities used in each of them. But, the approach used in this hack will be a bit diferent, as we can't define `actor-groups` in custom levels yet. So, instead of them, we are going to use the following logic:
 
-![png2](https://github.com/user-attachments/assets/c98be1e3-5c68-4b90-962e-1fa0f0a51fbf)
+![png2](https://github.com/user-attachments/assets/2e0ce855-8d04-4614-b384-106ac19b8b6e)
 
-As you can see, we have to define: `first-wave`, `second-wave`, `third-wave`, `fourth-wave` and * `fifth-wave` * (I didn't added in this example but you can add it too!), depending of how many waves you want, but for now, **you can add up to 5 waves!**
+As you can see, we have to define: `first-wave`, `second-wave`, `third-wave`, `fourth-wave` and `fifth-wave`, depending of how many waves you want, but for now, **you can add up to 5 waves!**
+
+Okay, but, how should the hover enemies actors added in your custom level `.jsonc` file be set up? Well, following the next steps you will understand how to do that:
+
+First, in your custom level `.jsonc` file, in order to add a `wasp` actor, for example, it should look something like this:
+
+![png9](https://github.com/user-attachments/assets/c7e608c2-421c-4ecd-916f-28738f2747c6)
+
+After that, you have to add the `hover-formation` actor too, as well as pass its `aid` inside your `wasp` actor `alt-actor` in order to reference `wasp` to the `hover-formation` actor:
+
+![png10](https://github.com/user-attachments/assets/e64325af-bb2c-480d-85bc-0cf5db398c43)
+
+Also, inside the `hover-formation` actor, you have to add a `alt-actor` passing the `aid` from the turret actor, which its setup will be explained soon.
+
+**Note: I recommend you to add an `"aid": id value` in every actor from your custom level, like you could see in the images above. If you don't add it, this may cause some kind of issue, because custom level actors have a really small `aid` as default and maybe this can cause some conflict with another actor and if you change/remove from some position, this will change the `aid` from others. So, make sure to add it for every entity, and add a higher value, like: `10000`, for example.**
+
+For last, you have to add the turret actor in your `.jsonc` file and add some important stuff in there.
 
 In order to add them you have to follow this logic here:
 
-![png3](https://github.com/user-attachments/assets/b229301b-90e1-4c2b-9102-1c2f868a6ab2)
+![png3](https://github.com/user-attachments/assets/b67ce824-d6ab-4d2c-bae3-b62c1338f5da)
 
-So, you have to pass the `aid`s from your entities in there for referencing each of them.
+So, you have to pass the `aid`s from your hover actors in there for referencing each of them. You don't necessary need to add all the five waves, you can add how many you want, for example, if you want two waves, then add `first-wave` and `second-wave` by passing the actors `aid` that you want for each of them. 
 
 **Note: I highly recommend you to check out the example I made of a custom hover battle, so, go to: `custom_assets/jak2/levels/hover-test/hover-test.jsonc` in order to understand the process of setting up your custom hover battle in your custom level!**
 
+After setting up all the necessary actors, now you need to go to: `goal_scr/jak2/levels/drill/drill-turret.gc` and add some required stuff for making your custom hover battle working.
 
-Here I'm going to list all the files that you have to take a look, so you can understand how this hack really works and what you have to do in order to add a custom hover battle in your custom levels. It's important to mention that all these files have comments for better comphrension:
+Well, after accessing the file, I recomend you checking the following:
+
+![png7](https://github.com/user-attachments/assets/a22633ad-33bb-407b-9fc6-b48f18054971)
+
+and:
+
+![png8](https://github.com/user-attachments/assets/f62e77b1-e16c-429a-91e7-f0666bff3d8c)
+
+These stuff are what I added for handling with the example custom hover battle. Basically, that's the same process you need to do in this file in case you want to add a new custom hover battle. The first image shows an array responsible in controlling the hover battle, so please, check out the coments I wrote in there for better understanding this. Also, in the second image, is showing a small code I added inside a `cond` from `turret-init!` method, which is very important! This is responsible to spawn the hover battle and spawn the counter HUD, in case you want to display it. But, it's important to mention for not changing `use-egg-hud` or `use-cgh-hud` to `#t` when you don't have the levels that contains these HUD definitions loaded, otherwise, the game will crash! The same applies for `use-wasp-hud` which is a custom HUD that I added in: `goal_scr/jak2/levels/hover-test/hover-test-setup.gc.gc`, so if you don't have this file included inside your custom level `.gd` file, the game will crash!      
+
+Well, now I'm going to list all the files that you have to take a look, so you can understand how this hack really works and what you have to do in order to add a custom hover battle in your custom levels. It's important to mention that all these files have comments for better comphrension:
 
 - `custom_assets/jak2/levels/hover-test/hover-test.gd` **this file have all the necessary code that should be used.**
 - `custom_assets/jak2/levels/hover-test/hover-test.jsonc` **this file have all the entities and their necessary setup in order to make the custom hover battle working.**
