@@ -258,7 +258,6 @@ xcode-select --install
 #### Intel Based
 
 ```bash
-brew install go-task/tap/go-task
 brew install cmake nasm ninja go-task clang-format
 cmake -B build --preset=Release-macos-clang
 cmake --build build --parallel $((`sysctl -n hw.logicalcpu`))
@@ -269,7 +268,6 @@ cmake --build build --parallel $((`sysctl -n hw.logicalcpu`))
 **Not Supported at This Time**
 
 ```bash
-brew install go-task/tap/go-task
 brew install cmake ninja go-task clang-format
 cmake -B build --preset=Release-macos-clang
 cmake --build build --parallel $((`sysctl -n hw.logicalcpu`))
