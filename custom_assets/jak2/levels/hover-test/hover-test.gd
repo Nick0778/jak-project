@@ -17,7 +17,7 @@
   "target-turret-shot.o"
   "target-turret.o"
   "drill-turret.o"
-  "hover-test-setup.o"
+  "hover-test-setup.o" ;; custom code wich handles with some important stuff in this example.
   "drill-turret-ext-ag.go"
   "jak-turret+0-ag.go"
   "wasp-ag.go"
