@@ -122,6 +122,14 @@ In order to do this, the logic will be this:
 
 ![png15](https://github.com/user-attachments/assets/507e4e13-c9a8-4e10-89ba-0b5dd6248c4f)
 
+### Testing the example from this branch
+
+For testing the custom hover battle made as an example, go to `Strip Mine` after beating Kor at this place here:
+
+![png5](https://github.com/user-attachments/assets/c2e7eaf5-098e-46c4-872f-80a3ae3ff936)
+
+So, that's it! I hope you enjoy it!
+
 <p align="center">
   <img width="500" height="100%" src="./docs/img/logo-text-colored-new.png">
 </p>
