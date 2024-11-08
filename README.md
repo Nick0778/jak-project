@@ -60,11 +60,11 @@ First, in your custom level `.gd` file, you must include the following codes:
 
 Next, in your custom level `.jsonc` file, in order to add a `wasp` actor, for example, it should look something like this:
 
-![png9](https://github.com/user-attachments/assets/c7e608c2-421c-4ecd-916f-28738f2747c6)
+![png9](https://github.com/user-attachments/assets/6707e5fd-4720-4263-a46b-e8cbd9fd571e)
 
 After that, you have to add the `hover-formation` actor too, as well as pass its `aid` inside your `wasp` actor `alt-actor` in order to reference `wasp` to the `hover-formation` actor:
 
-![png10](https://github.com/user-attachments/assets/e64325af-bb2c-480d-85bc-0cf5db398c43)
+![png10](https://github.com/user-attachments/assets/34632702-bb1d-4668-ac2d-69039d7e510b)
 
 Also, inside the `hover-formation` actor, you have to add a `alt-actor` passing the `aid` from the turret actor, which its setup will be explained soon.
 
@@ -74,9 +74,9 @@ For last, you have to add the turret actor in your `.jsonc` file and add some im
 
 In order to add them you have to follow this logic here:
 
-![png3](https://github.com/user-attachments/assets/55d3331a-6f46-414d-b816-5d110f29e79f)
+![png3](https://github.com/user-attachments/assets/3b93f248-81cc-4ad7-a3de-7e2b76f3d1b6)
 
-So, you have to pass the `aid`s from your hover actors in there for referencing each of these waves. You don't necessary need to add all the five waves, you can add how many you want, for example, if you want two waves, then add `first-wave` and `second-wave` by passing the actors `aid` that you want for each of them. 
+So, you have to pass the `aid`s from your hover actors in each one of these waves. You don't necessary need to add all the five waves, you can add how many you want, for example, if you want two waves, then add `first-wave` and `second-wave` by passing the actors `aid` that you want for each of them. 
 
 **Note: I highly recommend you to check out the example I made of a custom hover battle, so, go to: `custom_assets/jak2/levels/hover-test/hover-test.jsonc` in order to understand the process of setting up your custom hover battle in your custom level!**
 
@@ -90,7 +90,7 @@ and:
 
 ![png8](https://github.com/user-attachments/assets/f62e77b1-e16c-429a-91e7-f0666bff3d8c)
 
-These stuff are what I added for handling with the example custom hover battle. Basically, that's the same process you need to do in this file in case you want to add a new custom hover battle. The first image shows an array responsible in controlling the hover battle, so, check out the comments I wrote in there for better understanding that. Also, in the second image, is showing a small code I added inside a `cond` from `turret-init!` method, which is very important! This is responsible to spawn the hover battle and spawn the counter HUD. But, it's important to mention for not changing `use-egg-hud` or `use-cgh-hud` to `#t` when you don't have the levels that contains these HUD definitions loaded, otherwise, the game will crash! The same applies for `use-wasp-hud` which is a custom HUD that I added for this example in: `goal_scr/jak2/levels/hover-test/hover-test-setup.gc.gc`, so if you don't have this file included inside your custom level `.gd` file, the game will crash!
+These stuff are what I added for handling with the example custom hover battle. Basically, that's the same process you need to do in this file in case you want to add a new custom hover battle. The first image shows an array responsible in controlling the hover battle, which I recommend you to check out the comments I wrote in there for better understanding that. Also, in the second image, is showing a small code I added inside a `cond` structure from `turret-init!` method, which is very important! This is responsible to spawn the hover battle and spawn the counter HUD. But, it's important to mention for not changing `use-egg-hud` or `use-cgh-hud` to `#t` when you don't have the levels that contains these HUD definitions loaded, otherwise, the game will crash! The same applies for `use-wasp-hud` which is a custom HUD that I added for this example in: `goal_scr/jak2/levels/hover-test/hover-test-setup.gc.gc`, so if you don't have this file included inside your custom level `.gd` file, the game will crash!
 
 ### Adding a custom hover-nav-network
 
@@ -98,9 +98,9 @@ An `hover-nav-network` is basically a nav mesh for hover enemies, but unlike nav
 
 ![png4](https://github.com/user-attachments/assets/16c4ffe4-6316-4ff6-af2b-2b751c7fba56)
 
-For enabling the visual representation from `hover-nav-network`, in the Debug Menu, go to: `Actor/Hover Marks/Nav Network`.
+For enabling the visual representation from `hover-nav-network`, check out the **Debug Menu** in `Actor/Hover Marks/Nav Network`.
 
-Now, I will show part of the example I made of an `hover-nav-network` used in the example hover battle through code:
+The structure of an `hover-nav-network` through code is as follows:
 
 ![png12](https://github.com/user-attachments/assets/4368c331-f0d7-421e-a867-ecbec33ee831)
 
@@ -108,7 +108,7 @@ Also, in case you are confused and want to understand better about `hover-nav-ne
 
 Next, the following images shows the example I made for allocating the `hover-nav-network` used in the example hover battle in memory, while the level is being loaded.
 
-In order to do this, the logic will be this:
+To do this, the logic will be this:
 
 `goal_scr/jak2/engine/level/level-info.gc`
 
@@ -118,13 +118,15 @@ In order to do this, the logic will be this:
 
 ![png14](https://github.com/user-attachments/assets/dfaf15a1-7401-4aeb-a942-fcf3aaf5404e)
 
-**Note: You need to obligatory define your `hover-nav-network` in your custom level, otherwise, the game will crash! Nonetheless, if you don't want to define all the nodes from your `hover-nav-network` and allow the hover enemies to move around the level freely, you can just do the following, but obviously using a different name:**
+**Note: You need to obligatory define your `hover-nav-network` in your custom level, otherwise, the game will crash! Nonetheless, if you don't want to define the nodes from your `hover-nav-network`, you can just do the following, but obviously using a different name:** 
 
 ![png15](https://github.com/user-attachments/assets/507e4e13-c9a8-4e10-89ba-0b5dd6248c4f)
 
+This will allow the hover enemies to move around the level freely, but they will follow and attack you normally.
+
 ### Testing the example from this branch
 
-For testing the custom hover battle made as an example, go to `Strip Mine` after beating Kor at this place here:
+For testing the custom hover battle made as an example, go to `Strip Mine` after beating Kor, at this place here:
 
 ![png5](https://github.com/user-attachments/assets/c2e7eaf5-098e-46c4-872f-80a3ae3ff936)
 
