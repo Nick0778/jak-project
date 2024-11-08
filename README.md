@@ -104,7 +104,7 @@ Now, I will show part of the example I made of an `hover-nav-network` used in th
 
 ![png12](https://github.com/user-attachments/assets/4368c331-f0d7-421e-a867-ecbec33ee831)
 
-Also, in case you are confused and want to understand better about `hover-nav-network` and how they really work, I recommend you to check this: https://en.m.wikipedia.org/wiki/Adjacency_list. This explains about `Adjacency List` which is basically what `hover-nav-network` are. It's interesting to check them in game and analyze in code for better understanding how they are defined.
+Also, in case you are confused and want to understand better about `hover-nav-network` and how they really work, I recommend you to check this: https://en.m.wikipedia.org/wiki/Adjacency_list. This explains about `Adjacency List` which is basically what `hover-nav-network` are. It's interesting to check them in game and analyze in code for better understanding how they are defined. Another useful thing is the following: https://www.calculatorsoup.com/calculators/geometry-solids/distance-two-points.php. This is an calculator used for calculating the distance between two 3D points, which can be useful for setting the distance between two coordinates in those `:dist` from `hover-nav-network`. 
 
 Next, the following images shows the example I made for allocating the `hover-nav-network` used in the example hover battle in memory, while the level is being loaded.
 
@@ -118,7 +118,9 @@ In order to do this, the logic will be this:
 
 ![png14](https://github.com/user-attachments/assets/dfaf15a1-7401-4aeb-a942-fcf3aaf5404e)
 
-**Note: You need to obligatory define your `hover-nav-network` in your custom level, otherwise, the game will crash!**
+**Note: You need to obligatory define your `hover-nav-network` in your custom level, otherwise, the game will crash! Nonetheless, if you don't want to define all the nodes from your `hover-nav-network` and allow the hover enemies to move around the level freely, you can just do the following, but obviously using a different name:**
+
+![png15](https://github.com/user-attachments/assets/507e4e13-c9a8-4e10-89ba-0b5dd6248c4f)
 
 <p align="center">
   <img width="500" height="100%" src="./docs/img/logo-text-colored-new.png">
