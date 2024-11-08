@@ -98,7 +98,7 @@ An `hover-nav-network` is basically a nav mesh for hover enemies, but unlike nav
 
 ![png4](https://github.com/user-attachments/assets/16c4ffe4-6316-4ff6-af2b-2b751c7fba56)
 
-For enabling the visual representation from `hover-nav-network`, go to: `Actor/Hover Marks/Nav Network`.
+For enabling the visual representation from `hover-nav-network`, in the Debug Menu, go to: `Actor/Hover Marks/Nav Network`.
 
 Now, I will show part of the example I made of an `hover-nav-network` used in the example hover battle through code:
 
