@@ -75,7 +75,7 @@
 
   "actors" : [
     {
-      "aid": 10000,
+      "aid": 10000, // the ID of this actor
       "trans": [2464.40, 70.72, 38.25], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -92,7 +92,7 @@
     },
 
     {
-      "aid": 20000,
+      "aid": 20000, // the ID of this actor
       "trans": [2370.88, 101.97, -110.67], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -109,7 +109,7 @@
     },
 
     {
-      "aid": 30000,
+      "aid": 30000, // the ID of this actor
       "trans": [2406.08, 80.72, 5.27], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -126,7 +126,7 @@
     },
 
     {
-      "aid": 40000,
+      "aid": 40000, // the ID of this actor
       "trans": [2478.03, 77.62, 40.81], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -143,7 +143,7 @@
     },
 
     {
-      "aid": 50000,
+      "aid": 50000, // the ID of this actor
       "trans": [2350.00, 124.74, -69.20], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -160,7 +160,7 @@
     },
 
     {
-      "aid": 60000,
+      "aid": 60000, // the ID of this actor
       "trans": [2406.92, 82.99, -0.34], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -177,7 +177,7 @@
     },
 
     {
-      "aid": 70000,
+      "aid": 70000, // the ID of this actor
       "trans": [2493.56, 95.74, -129.08], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -194,7 +194,7 @@
     },
 
     {
-      "aid": 80000,
+      "aid": 80000, // the ID of this actor
       "trans": [2557.83, 75.99, 45.89], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -211,7 +211,7 @@
     },
 
     {
-      "aid": 90000,
+      "aid": 90000, // the ID of this actor
       "trans": [2535.10, 158.23, -76.32], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -228,7 +228,7 @@
     },
 
     {
-      "aid": 100000,
+      "aid": 100000, // the ID of this actor
       "trans": [2526.53, 156.85, -79.39], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -245,7 +245,7 @@
     },
 
     {
-      "aid": 200000,
+      "aid": 200000, // the ID of this actor
       "trans": [2568.04, 124.99, -100.85], // translation
       "etype": "turret",  // actor type
       "game_task": 0, // associated game task (for powercells, etc)
@@ -266,7 +266,7 @@
     },
 
     {
-      "aid": 300000,
+      "aid": 300000, // the ID of this actor
       "trans": [2568.04, 124.99, -100.85], // translation
       "etype": "hover-formation",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
