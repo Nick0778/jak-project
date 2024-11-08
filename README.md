@@ -104,7 +104,7 @@ Now, I will show part of the example I made of an `hover-nav-network` used in th
 
 ![png12](https://github.com/user-attachments/assets/4368c331-f0d7-421e-a867-ecbec33ee831)
 
-Also, in case you are confused and want to understand better about `hover-nav-network` and how they really work, I recommend you to check this: https://en.m.wikipedia.org/wiki/Adjacency_list. This explains about `Adjacency List` which is basically what `hover-nav-network` are. It's interesting to check them in game and analyze in code for better understanding how they are defined. Another useful thing is the following: https://www.calculatorsoup.com/calculators/geometry-solids/distance-two-points.php. This is an calculator used for calculating the distance between two 3D points, which can be useful for setting the distance between two coordinates in those `:dist` from `hover-nav-network`. 
+Also, in case you are confused and want to understand better about `hover-nav-network` and how they really work, I recommend you to check this: https://en.m.wikipedia.org/wiki/Adjacency_list. This explains about `Adjacency List` which is basically what `hover-nav-network` is. It's interesting to check them in game and analyze in code for better understanding how they are defined. Another useful thing is the following: https://www.calculatorsoup.com/calculators/geometry-solids/distance-two-points.php. This is an calculator used for calculating the distance between two 3D points, which can be useful for setting the distance between two coordinates in those `:dist` from `hover-nav-network`. 
 
 Next, the following images shows the example I made for allocating the `hover-nav-network` used in the example hover battle in memory, while the level is being loaded.
 
