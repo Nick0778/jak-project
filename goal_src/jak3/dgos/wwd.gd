@@ -45,6 +45,7 @@
   "wascity-ocean.o"
   "tizard.o"
   "dogat.o"
+  "chickalope.o"
   "tpage-873.go"
   "tpage-874.go"
   "tpage-1956.go"
