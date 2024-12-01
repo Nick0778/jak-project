@@ -498,7 +498,10 @@
           "tpl-hide-sunken-brick-01.mb"
           "tpl-hide-collision-01.mb"
           )
-       (task-node-closed? (game-task-node temple-defend-introduction))
+       ;(task-node-closed? (game-task-node temple-defend-introduction))
+       (and (task-node-closed? (game-task-node temple-defend-introduction))
+            (not (task-node-closed? (game-task-node desert-final-boss-resolution)))
+            )
        this
        )
      (prototypes-game-visible-set!
@@ -3435,3 +3438,159 @@
       (lookup-text! *common-text* (text-id discord-rpc-not-in-mission) #f)
     )
   )
+
+;;This returns true or false if jak is within a bubble defined by coordiantes and width
+(defun in-bubble? ((x float) (y float) (z float) (w float))
+  (<= 
+    (vector-vector-distance 
+      (target-pos 0) 
+      (set-vector! (new-stack-vector0) x y z 1.0)
+      )
+    (/ w 2.0)
+    )
+  )
+
+(defun in-bubble-m? ((x float) (y float) (z float) (w float))
+  (in-bubble? (meters x) (meters y) (meters z) (meters w))
+  )
+
+
+(process-spawn-function process
+  (lambda :behavior process ()
+    (loop
+      (when (task-closed? "desert-final-boss-resolution") 
+        (when (and (entity-by-name "cty-door-3") (= (-> (level-get-target-inside *level*) name) 'ctyslumc))
+
+          ;; on-notice
+          (set! (cdr (res-lump-struct (entity-by-name "cty-door-3") 'on-notice pair)) 
+            '(((and (task-closed? "city-win-introduction") (not (task-closed? "city-win-resolution")) (or (eq? (level-status? 'lfacrm1) 'loaded) (eq? (level-status? 'lfacrm1) 'active))) '(ctyslumc factorya)) ((and (task-closed? "city-win-resolution") (< (send-event self 'distance) 60480)) '(ctyslumc towerc))))
+
+          ;; on-cross
+          (set! (cdr (res-lump-struct (entity-by-name "cty-door-3") 'on-cross pair)) 
+            '((and (task-closed? "city-win-introduction") (not (task-closed? "city-win-resolution")) (< (send-event self 'distance) 60480)) (scene-play "factory-return-intro")))
+
+          ;; on-activate
+          (set! (cdr (res-lump-struct (entity-by-name "cty-door-3") 'on-activate pair)) 
+            '(((and (task-closed? "city-win-introduction") (not (task-closed? "city-win-resolution"))) (when (send-event self 'front) (want-load 'ctyslumc 'ctywide-ff 'factorya))) ((task-closed? "factory-sky-battle-resolution") (when (and (not (send-event self 'open?)) (send-event self 'front)) (want-load 'ctyslumc 'ctywide-ff 'freehq)))))
+          )
+        (when (and (entity-by-name "fac-elevator-a-1") (= (-> (level-get-target-inside *level*) name) 'factoryc))
+          (set! (cdr (res-lump-struct (entity-by-name "fac-elevator-a-1") 'on-notice pair))
+            '((when (task-closed? "city-win-resolution") (send-event self 'move-to 'bottom) (send-event self 'go-dormant))))
+          )
+        (when (and (entity-by-name "fac-elevator-a-2") (= (-> (level-get-target-inside *level*) name) 'factoryc))
+          (set! (cdr (res-lump-struct (entity-by-name "fac-elevator-a-2") 'on-notice pair))
+            '((when (task-closed? "city-win-resolution") (send-event self 'move-to 'top) (send-event self 'go-dormant))))
+          )
+        (when (entity-by-name "fac-warp-effect-1")
+          (add-data! (entity-by-name "fac-warp-effect-1") (new 'static 'res-tag :name 'on-notice :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") '("vinroom-warp" #f #f))))
+          )
+
+        ;; Temple to Eco Mine
+
+        (when (and (entity-by-name "tpl-mardoor-4") (= (-> (level-get-target-inside *level*) name) 'templea))
+          ;; on-notice
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-mardoor-4") 'on-notice pair)) 
+            '((and (task-closed? "desert-final-boss-resolution") (not (task-closed? "city-win-resolution"))) '(templea templec)))
+          )
+        (when (= (-> (level-get-target-inside *level*) name) 'templea)
+          (set! (-> (region-lookup-by-id 1372) on-enter) (the-as pair '(when (task-closed? "desert-final-boss-resolution") (want-load 'templea 'templeb 'templec) (want-display 'templeb 'display) (want-display 'templec 'display))))
+          (set! (-> (region-lookup-by-id 1372) on-exit) (the-as pair '(when (task-closed? "desert-final-boss-resolution") (want-display 'templec #f))))
+          )
+        (when (entity-by-name "tpl-door-a-15")
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-a-15") 'on-notice pair)) '((not (task-closed? "city-win-resolution")) '(templec)))
+          )
+        (when (entity-by-name "tpl-door-a-2")
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-a-2") 'on-notice pair)) '((not (task-closed? "city-win-resolution")) '(templeb templec)))
+          )
+        (when (entity-by-name "tpl-door-a-7")
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-a-7") 'on-notice pair)) '((and (task-closed? "temple-tests-oracle") (not (task-closed? "city-win-resolution"))) '(templeb)))
+          )
+        (when (entity-by-name "tpl-door-b-1")
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-b-1") 'on-notice pair)) '((and (task-closed? "temple-tests-oracle") (not (task-closed? "city-win-resolution"))) '(templea templeb templec)))
+          )
+        (when (entity-by-name "tpl-door-a-8")
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-a-8") 'on-notice pair)) '((not (task-closed? "city-win-resolution")) '(templea templeb templed)))
+          )
+        (when (entity-by-name "tpl-mardoor-5")
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-mardoor-5") 'on-notice pair)) '((not (task-closed? "city-win-resolution")) '(templed)))
+          )
+        (when (entity-by-name "min-elevator-6")
+          (set! (cdr (res-lump-struct (entity-by-name "min-elevator-6") 'on-notice pair)) '((task-closed? "mine-return-introduction") (when (and (not (send-event self 'query 'bottom?)) (not (task-closed? "mine-explore-resolution"))) (send-event self 'jump-to 'bottom)) (send-event self 'go-dormant)))
+          )
+        ;(when (entity-by-name "min-bomb-elevator-1")
+          ;(set! (cdr (res-lump-struct (entity-by-name "min-bomb-elevator-1") 'on-wait pair)) '((task-open? "mine-return-introduction") (send-event self 'use-camera "camera-288")))
+          ;)
+        (when (entity-by-name "com-airlock-inner-117")
+          (add-data! (entity-by-name "com-airlock-inner-117") (new 'static 'res-tag :name 'on-activate :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") (want-load 'mined 'minee) (want-display 'mined 'display) (want-display 'minee 'display))))
+          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-117") 'on-notice pair)) '((mined)))
+          )
+        (when (entity-by-name "com-airlock-outer-15")
+          (add-data! (entity-by-name "com-airlock-outer-15") (new 'static 'res-tag :name 'on-activate :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") (want-load 'ctywide 'ctygenb 'minee) (want-display 'ctywide 'display) (want-display 'ctygenb 'display) (want-display 'minee 'display))))
+          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-outer-15") 'on-notice pair)) '((ctygenb)))
+          (add-data! (entity-by-name "com-airlock-outer-15") (new 'static 'res-tag :name 'on-cross :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") (scene-play "minee-genb-entrance"))))
+          )
+        (when (entity-by-name "com-airlock-inner-103")
+          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-103") 'on-notice pair)) '((ctygenb)))
+          )
+        )
+
+        ;; Sewer locked airlock
+
+        #|
+        (when (entity-by-name "com-airlock-outer-40")
+          (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'on-notice :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") '(sewb))))
+          (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'next-actor :key-frame -1000000000.0 :elt-count 1 :elt-type uint32) (the pointer 40938))
+          (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 20.0000)))
+          (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'idle-distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 40.0000)))
+          )
+        (when (entity-by-name "com-airlock-inner-51")
+          (add-data! (entity-by-name "com-airlock-inner-51") (new 'static 'res-tag :name 'on-notice :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") '(sewb))))
+          (add-data! (entity-by-name "com-airlock-inner-51") (new 'static 'res-tag :name 'next-actor :key-frame -1000000000.0 :elt-count 1 :elt-type uint32) (the pointer 40939))
+          (add-data! (entity-by-name "com-airlock-inner-51") (new 'static 'res-tag :name 'distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 20.0000)))
+          (add-data! (entity-by-name "com-airlock-inner-51") (new 'static 'res-tag :name 'idle-distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 40.0000)))
+          )
+        |#
+
+        ;; Sewer Unused KG Hoppers
+
+        (when (entity-by-name "kg-hopper-32")
+          (set! (-> (the entity-actor (entity-by-name "kg-hopper-32")) extra kill-mask) (task-mask task3))
+          (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "kg-hopper-32") 5))) 67294)
+          )
+        (when (entity-by-name "kg-hopper-34")
+          (set! (-> (the entity-actor (entity-by-name "kg-hopper-34")) extra kill-mask) (task-mask task3))
+          (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "kg-hopper-34") 5))) 67294)
+          )
+        (when (entity-by-name "kg-hopper-36")
+          (set! (-> (the entity-actor (entity-by-name "kg-hopper-36")) extra kill-mask) (task-mask task3))
+          (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "kg-hopper-36") 5))) 67294)
+          )
+        (when (entity-by-name "kg-hopper-38")
+          (set! (-> (the entity-actor (entity-by-name "kg-hopper-38")) extra kill-mask) (task-mask task3))
+          (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "kg-hopper-38") 5))) 67294)
+          )
+        (when (entity-by-name "kg-hopper-40")
+          (set! (-> (the entity-actor (entity-by-name "kg-hopper-40")) extra kill-mask) (task-mask task3))
+          (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "kg-hopper-40") 5))) 67294)
+          )
+
+        ;(when (entity-by-name "sewer-elec-gate-3")
+          ;(set! (-> (the (pointer pair) (get-tag-index-data (entity-by-name "sewer-elec-gate-3") 1))) '(send-event "battle-2" 'trigger))
+          ;)
+
+        ;; Sewer Scoutbot
+
+        (when (entity-by-name "scoutbot-9")
+          (set! (-> (the entity-actor (entity-by-name "scoutbot-9")) extra kill-mask) (task-mask task3))
+          (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "scoutbot-9") 5))) 67294)
+          ;;(set! (-> (region-lookup-by-id 1094) on-enter) (the-as pair '(send-event "scoutbot-9" 'trigger)))
+          (add-data! (entity-by-name "scoutbot-9") (new 'static 'res-tag :name 'alt-actor :key-frame -1000000000.0 :elt-count 1 :elt-type uint32) (the pointer 67421))
+          )
+        (when (entity-by-name "sewer-elec-gate-4")
+          (set! (-> (the (pointer pair) (get-tag-index-data (entity-by-name "sewer-elec-gate-4") 0))) '(send-event "scoutbot-9" 'trigger))
+          )
+      (suspend)
+      )
+    )
+  )
+

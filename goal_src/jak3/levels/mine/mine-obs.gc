@@ -1271,7 +1271,7 @@
           ((the-as (function none) t9-0))
           )
       )
-    (when (task-node-closed? (game-task-node mine-blow-elevator))
+    (when (and (task-node-closed? (game-task-node mine-blow-elevator)) (not (task-node-closed? (game-task-node desert-final-boss-resolution))))
       (send-event self 'jump-to 'top)
       (go-virtual dormant)
       )
@@ -1936,7 +1936,7 @@
 
 ;; WARN: Return type mismatch int vs object.
 (defmethod go-initial-state ((this min-elec-gate))
-  (if (task-node-closed? (game-task-node mine-blow-elevator))
+  (if (and (task-node-closed? (game-task-node mine-blow-elevator)) (not (task-node-closed? (game-task-node desert-final-boss-resolution))))
       ((method-of-type elec-gate go-initial-state) this)
       (go (method-of-object this idle))
       )

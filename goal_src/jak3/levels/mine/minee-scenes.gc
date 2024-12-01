@@ -98,6 +98,99 @@
               )
             )
 
+(load-scene
+  (new 'static 'scene
+    :name "minee-genb-entrance"
+    :extra #f
+    :info #f
+    :scene-flags (scene-flags scf1 scf2 scf3 scf4 scf8)
+    :mask-to-clear (process-mask movie projectile)
+    :entity "scene-stage-163"
+    :art-group "scenecamera"
+    :anim "sewer-genb-entrance"
+    :parts 2
+    :command-list '((0 (kill "sew-elevator-42") (kill "sew-elevator-34") (kill "sew-elevator-44") (kill "sew-elevator-50") (kill "minee-elevator-1") (kill "minee-elevator-2"))
+      (2 (want-load 'sewa 'minee) (want-display 'minee 'display))
+      (10000
+        (restore "sew-elevator-42")
+        (restore "sew-elevator-34")
+        (restore "sew-elevator-44")
+        (restore "sew-elevator-50")
+        (save)
+        )
+      )
+    :cut-list '(129)
+    :wait-ground-time (seconds 1)
+    :actor (new 'static 'boxed-array :type scene-actor
+      (new 'static 'scene-actor
+        :name "scenecamera"
+        :level #f
+        :art-group "skel-scenecamera"
+        :prefix ""
+        :draw-frames '((min max))
+        :scissor-frames '()
+        :shadow-frames '((min max))
+        :cloth-reset-frames '()
+        :cloth-commands '()
+        :camera 4
+        :shadow-flags -1
+        :shadow-volume-joint #f
+        )
+      (new 'static 'scene-actor
+        :name "jakc-highres"
+        :level 'sewa
+        :art-group "skel-jakc-highres"
+        :prefix ""
+        :draw-frames '((min max))
+        :scissor-frames '()
+        :shadow-frames '((min max))
+        :cloth-reset-frames '((25 195))
+        :cloth-commands '()
+        :flags #x1
+        :shadow-flags -1
+        :shadow-volume-joint #f
+        :no-draw-seg #x380
+        )
+      (new 'static 'scene-actor
+        :name "sidekick-highres"
+        :level 'sewa
+        :art-group "skel-sidekick-highres"
+        :prefix ""
+        :draw-frames '((min max))
+        :scissor-frames '()
+        :shadow-frames '((min max))
+        :cloth-reset-frames '()
+        :cloth-commands '()
+        :flags #x1
+        :shadow-flags -1
+        :shadow-volume-joint #f
+        )
+      (new 'static 'scene-actor
+        :name "sew-elevator"
+        :level 'sewa
+        :art-group "skel-sew-elevator"
+        :prefix ""
+        :draw-frames '((min max))
+        :scissor-frames '()
+        :shadow-frames '((min max))
+        :cloth-reset-frames '()
+        :cloth-commands '()
+        :flags #x1
+        :shadow-flags -1
+        :shadow-volume-joint #f
+        )
+      )
+    :load-point "minee-genb"
+    :end-point "minee-entrance"
+    :borrow '()
+    :sfx-volume -1.0
+    :ambient-volume -1.0
+    :music-delay 1500.0
+    :on-running #f
+    :on-complete #f
+    )
+  )
+
 (defskelgroup skel-minee-elevator sew-elevator sew-elevator-lod0-jg sew-elevator-idle-ja
               ((sew-elevator-lod0-mg (meters 999999)))
               :bounds (static-spherem 0 0 6 10)

@@ -85,6 +85,10 @@
   "krimson-wall.o"
   "trail.o"
   "searchlight.o"
+  "bombbot-h.o"
+  "bombbot-path.o"
+  "bombbot.o"
+  "cty-destroy-kg-turret.o" ;; added
   "jak-pilot+0-ag.go"
   "jak-pilot-hcar+0-ag.go"
   "jak-pilot-gun+0-ag.go"

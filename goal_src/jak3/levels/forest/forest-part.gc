@@ -2695,3 +2695,10 @@
     (:userdata 4096.0)
     )
   )
+
+(defpartgroup group-flyingsaw-sparks
+  :id 1500
+  :flags (sp0 sp4)
+  :bounds (static-bspherem 0 0 0 10)
+  :parts ((sp-item 4925 :flags (sp7)) (sp-item 4926 :flags (sp7)))
+  )

@@ -1281,6 +1281,36 @@
             :play-continue "desert-bbush-desb-4"
             :kiosk-play-continue #f
             )
+          #|(new 'static 'game-task-info
+            :name "comb-travel-return"
+            :text-name (text-id progress-missions-comb-travel)
+            :pre-play-node (game-task-node comb-travel-return-introduction)
+            :kiosk-play-node (game-task-node comb-travel-return-resolution)
+            :pre-play-continue #f
+            :play-node (game-task-node comb-travel-return-resolution)
+            :play-continue "comba-elevator"
+            :kiosk-play-continue #f
+            )|#
+          #|(new 'static 'game-task-info
+            :name "mine-return"
+            :text-name (text-id progress-missions-mine-explore)
+            :pre-play-node (game-task-node mine-return-introduction)
+            :kiosk-play-node (game-task-node mine-return-introduction)
+            :pre-play-continue "minec-start"
+            :play-node (game-task-node mine-return-introduction)
+            :play-continue "minec-start"
+            :kiosk-play-continue "minec-start"
+            )|#
+          (new 'static 'game-task-info
+            :name "city-destroy-kg-turrets"
+            :text-name (text-id progress-missions-city-sniper-fight)
+            :pre-play-node (game-task-node city-destroy-kg-turrets-introduction)
+            :kiosk-play-node (game-task-node city-destroy-kg-turrets-resolution)
+            :pre-play-continue "ctyport-gungame"
+            :play-node (game-task-node city-destroy-kg-turrets-resolution)
+            :play-continue "ctyport-gungame"
+            :kiosk-play-continue #f
+            )  
           )
         )
   (set! (-> game-info sub-task-list)
@@ -9383,7 +9413,7 @@
             :flags (game-task-node-flag save-on-life act2)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node city-hijack-vehicle-resolution)
-              (game-task-node city-gun-course-2-resolution)
+              (game-task-node city-destroy-kg-turrets-resolution) ;; old - city-gun-course-2-resolution
               (game-task-node none)
               (game-task-node none)
               )
@@ -11143,7 +11173,7 @@
               :on-complete '(auto-save (quote auto-save))
               :on-fail #f
               )
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11214,7 +11244,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11285,7 +11315,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11356,7 +11386,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11427,7 +11457,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11498,7 +11528,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11587,7 +11617,7 @@
               :on-complete '(begin (talker-spawn "sam006"))
               :on-fail #f
               )
-            :borrow '((foresta 0 lforring display))
+            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -15150,7 +15180,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((stadiuma 0 lppatrol display))
+            :borrow '((factorya 0 lfaccar special) (factorya 1 lfacrm2 display))
             :open? #f
             :on-close #f
             :reset #f
@@ -23351,6 +23381,226 @@
               )
             :suck-death-count #xa5
             :command-index #x4b
+            :faction-commands '()
+            )
+          #|(new 'static 'game-task-node-info
+            :level 'comb
+            :task (game-task comb-travel-return)
+            :name "comb-travel-return-introduction"
+            :when-open #f
+            :flags (game-task-node-flag save-on-life)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node desert-final-boss-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open '(begin (task-close! "comb-travel-return-introduction"))
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x24
+            :faction-commands '()
+            )
+          (new 'static 'game-task-node-info
+            :level 'comb
+            :task (game-task comb-travel-return)
+            :name "comb-travel-return-resolution"
+            :when-open #f
+            :flags (game-task-node-flag close-task save-on-life)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node comb-travel-return-introduction)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager (new 'static 'task-manager-info
+              :level 'comba
+              :type-to-spawn 'task-manager-comb-travel
+              :intro-scene #f
+              :resolution-scene #f
+              :resolution-scene-continue #f
+              :final-node (game-task-node comb-travel-return-resolution)
+              :vehicle-type #x1b
+              :on-complete '(begin (want-continue "combn-start") (auto-save 'auto-save))
+              :on-fail #f
+              )
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset (new 'static 'task-reset-info
+              :restart-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message)
+                :fail (new 'static 'resetter-spec :continue "comba-sled" :reset-mode 'try :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                :reset-delay (seconds 6.5)
+                )
+              :quit-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset)
+                :fail (new 'static 'resetter-spec :continue "comba-sled" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                :reset-delay (seconds 6.5)
+                )
+              :fail-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset)
+                :fail (new 'static 'resetter-spec :continue "comba-sled" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                :reset-delay (seconds 6.5)
+                )
+              :death-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio no-slow-down)
+                :fail (new 'static 'resetter-spec :continue "comba-sled" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              )
+            :suck-death-count #xa5
+            :command-index #x24
+            :command-count #x1
+            :faction-commands '()
+            )|#
+          #|(new 'static 'game-task-node-info
+            :level 'mine
+            :task (game-task mine-return)
+            :name "mine-return-introduction"
+            :when-open #f
+            :flags (game-task-node-flag save-on-life)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node desert-final-boss-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager (new 'static 'task-manager-info
+              :level 'minea
+              :type-to-spawn 'mine-music-manager
+              :intro-scene #f
+              :resolution-scene #f
+              :resolution-scene-continue #f
+              :final-node (game-task-node mine-return-introduction)
+              :vehicle-type #x1b
+              :on-complete #f
+              :on-fail #f
+              )
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset (new 'static 'task-reset-info
+              :restart-info (new 'static 'resetter-params
+                :message (resetter-message mission-retry)
+                :flags (resetter-flag auto-reset text-message)
+                :fail (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                :retry (new 'static 'resetter-spec
+                  :continue "minec-start"
+                  :node (game-task-node mine-return-introduction)
+                  :reset-mode 'try
+                  :execute #f
+                  )
+                :reset-delay (seconds 6.5)
+                )
+              :quit-info (new 'static 'resetter-params
+                :message (resetter-message mission-retry)
+                :flags (resetter-flag auto-reset)
+                :fail (new 'static 'resetter-spec :continue #f :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec
+                  :continue "minec-start"
+                  :node (game-task-node mine-explore-introduction)
+                  :reset-mode 'try
+                  :execute #f
+                  )
+                :reset-delay (seconds 6.5)
+                )
+              :fail-info #f
+              :death-info #f
+              )
+            :suck-death-count #xa5
+            :command-index #x25
+            :faction-commands '()
+            )|#
+          (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task city-destroy-kg-turrets)
+            :name "city-destroy-kg-turrets-introduction"
+            :when-open #f
+            :flags (game-task-node-flag set-task-mask save-on-life act2)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node city-gun-course-2-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :task-mask (task-mask task4)
+            :on-open '(begin (task-close! "city-destroy-kg-turrets-introduction"))
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x24
+            :faction-commands '()
+            )
+          (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task city-destroy-kg-turrets)
+            :name "city-destroy-kg-turrets-resolution"
+            :when-open #f
+            :flags (game-task-node-flag close-task set-task-mask exclusive act2)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node city-destroy-kg-turrets-introduction)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :task-mask (task-mask task4)
+            :on-open #f
+            :manager (new 'static 'task-manager-info
+              :level 'lctyturret
+              :type-to-spawn 'task-manager-city-destroy-turret
+              :intro-scene #f
+              :resolution-scene #f
+              :resolution-scene-continue #f
+              :final-node (game-task-node city-destroy-kg-turrets-resolution)
+              :vehicle-type #x1b
+              :on-complete #f
+              :on-fail #f
+              )
+            :borrow '((ctywide 4 lctyturret display))
+            :open? #f
+            :on-close #f
+            :reset (new 'static 'task-reset-info
+              :restart-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message)
+                :fail (new 'static 'resetter-spec :continue "ctyinda-kg-start" :reset-mode 'try :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                :reset-delay (seconds 6.5)
+                )
+              :quit-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset)
+                :fail (new 'static 'resetter-spec :continue "ctyinda-kg-start" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                :reset-delay (seconds 6.5)
+                )
+              :fail-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset)
+                :fail (new 'static 'resetter-spec :continue "ctyinda-kg-start" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                :reset-delay (seconds 6.5)
+                )
+              :death-info (new 'static 'resetter-params
+                :message (resetter-message mission-retry)
+                :flags (resetter-flag auto-reset text-message no-audio no-slow-down)
+                :fail (new 'static 'resetter-spec :continue #f :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue "ctyinda-kg-start" :reset-mode 'try :execute #f)
+                )
+              )
+            :suck-death-count #xa5
+            :command-index #x2b
+            :description (text-id progress-missions-city-sniper-fight)
             :faction-commands '()
             )
           )

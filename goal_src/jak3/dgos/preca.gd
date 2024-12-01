@@ -20,6 +20,7 @@
   "precura-part.o"
   "precura-obs.o"
   "precura-obs2.o"
+  "prec-mine-shooter.o"
   "tpage-2632.go"
   "tpage-2638.go"
   "tpage-2634.go"

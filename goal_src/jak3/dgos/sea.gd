@@ -39,6 +39,8 @@
   "neo-juicer.o"
   "mh-wasp-part.o"
   "mh-wasp.o"
+  "scoutbot-part.o"
+  "scoutbot.o"
   "tpage-740.go"
   "tpage-741.go"
   "tpage-800.go"
