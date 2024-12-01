@@ -14844,4 +14844,28 @@
 (def-joint-node fac-robotank-explode-lod0-jg "j" 12)
 (def-joint-node fac-robotank-explode-lod0-jg "k" 13)
 
+(def-joint-node chickalope-lod0-jg "align" 1)
+(def-joint-node chickalope-lod0-jg "prejoint" 2)
+(def-joint-node chickalope-lod0-jg "main" 3)
+(def-joint-node chickalope-lod0-jg "tail_a" 4)
+(def-joint-node chickalope-lod0-jg "tail_b" 5)
+(def-joint-node chickalope-lod0-jg "head" 6)
+(def-joint-node chickalope-lod0-jg "L_thigh" 7)
+(def-joint-node chickalope-lod0-jg "L_knee" 8)
+(def-joint-node chickalope-lod0-jg "L_ankle" 9)
+(def-joint-node chickalope-lod0-jg "L_wing" 10)
+(def-joint-node chickalope-lod0-jg "R_wing" 11)
+(def-joint-node chickalope-lod0-jg "R_thigh" 12)
+(def-joint-node chickalope-lod0-jg "R_knee" 13)
+(def-joint-node chickalope-lod0-jg "R_ankle" 14)
+
+(def-joint-node cty-guard-turret-lod0-jg "align" 1)
+(def-joint-node cty-guard-turret-lod0-jg "prejoint" 2)
+(def-joint-node cty-guard-turret-lod0-jg "main" 3)
+(def-joint-node cty-guard-turret-lod0-jg "lidL" 4)
+(def-joint-node cty-guard-turret-lod0-jg "lidR" 5)
+(def-joint-node cty-guard-turret-lod0-jg "turret" 6)
+(def-joint-node cty-guard-turret-lod0-jg "gunsL" 7)
+(def-joint-node cty-guard-turret-lod0-jg "gunsR" 8)
+
 
