@@ -177,6 +177,33 @@
                               )
         )
 
+(define *flyingsaw_4-graph* (new 'static 'flyingsaw-graph
+                              :node-count #x4
+                              :node (new 'static 'inline-array flyingsaw-node 4
+                                (new 'static 'flyingsaw-node
+                                  :position (new 'static 'vector :x (meters -663.26) :y (meters 21.82) :z (meters 1236.73)) ;; -663.26, 21.82, 1236.73
+                                  :spark (new 'static 'vector :x (meters -663.26) :y (meters 21.82) :z (meters 1236.73))
+                                  :make-spark #t
+                                  )
+                                (new 'static 'flyingsaw-node
+                                  :position (new 'static 'vector :x (meters -680.77) :y (meters 21.82) :z (meters 1258.12))
+                                  :spark (new 'static 'vector :x (meters -680.77) :y (meters 21.82) :z (meters 1258.12)) ;; -680.77  25.20 1258.12
+                                  :make-spark #t
+                                  )
+                                (new 'static 'flyingsaw-node
+                                  :position (new 'static 'vector :x (meters -700.38) :y (meters 21.82) :z (meters 1241.63)) ;; -700.38  25.20 1241.63
+                                  :spark (new 'static 'vector :x (meters -700.38) :y (meters 21.82) :z (meters 1241.63))
+                                  :make-spark #t
+                                  )
+                                (new 'static 'flyingsaw-node
+                                  :position (new 'static 'vector :x (meters -680.06) :y (meters 21.82) :z (meters 1222.70)) ;; -680.06  25.20 1222.70
+                                  :spark (new 'static 'vector :x (meters -680.06) :y (meters 21.82) :z (meters 1222.70))
+                                  :make-spark #t
+                                  )
+                                )
+                              )
+        )
+
 (deftype flyingsaw (process-drawable)
   ((root                collide-shape       :override)
    (no-collision-timer  time-frame)
@@ -446,6 +473,9 @@
                              )
                             ((= (the-as uint v1-31) 3)
                              *flyingsaw_3-graph*
+                             )
+                            ((= (the-as uint v1-31) 4)
+                             *flyingsaw_4-graph*
                              )
                             (else
                               (the-as flyingsaw-graph #f)
