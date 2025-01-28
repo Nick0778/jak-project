@@ -279,7 +279,7 @@
   :trans (behavior ()
     (let ((v1-0 (-> self focus aware)))
       (cond
-        ((= v1-0 (enemy-aware ea4))
+        ((= v1-0 (enemy-aware flee))
          (go-flee self)
          )
         ((< (the-as int v1-0) 1)
@@ -429,17 +429,22 @@
   )
 
 (defmethod go-hostile ((this chickalope))
+  "Go to the hostile state, actively trying to attack the target."
   (set-time! (-> this scared-timer))
   (go (method-of-object this flee))
   )
 
-(defmethod enemy-method-108 ((this chickalope) (arg0 process-focusable))
+(defmethod should-flee-from? ((this chickalope) (arg0 process-focusable))
+  "Return if this enemy should flee from the process."
   (or (< (vector-vector-xz-distance (-> this root trans) (get-trans arg0 0)) 143360.0)
       (not (time-elapsed? (-> this scared-timer) (seconds 4)))
       )
   )
 
-(defmethod send-attack-to-all-tshapes ((this chickalope) (arg0 process-focusable) (arg1 event-message-block))
+(defmethod find-and-damage-attackers ((this chickalope) (arg0 process-focusable) (arg1 event-message-block))
+  "Find things that have attacked us, then deal damage back.
+   This is used for attacks that damage both the player and the enemy,
+   like hitting a guard with a jetboard."
   0
   )
 
@@ -494,7 +499,8 @@
   (none)
   )
 
-(defmethod enemy-method-50 ((this chickalope) (arg0 int))
+(defmethod update-collision-action ((this chickalope) (arg0 int))
+  "Change the collision for certain conditions (knocked, etc)"
   (let ((v1-0 arg0))
     (cond
       ((= v1-0 1)
@@ -522,7 +528,7 @@
     (the-as skeleton-group (art-group-get-by-name *level* "skel-chickalope" (the-as (pointer level) #f)))
     (the-as pair 0)
     )
-  (init-enemy-defaults! this *chickalope-nav-enemy-info*)
+  (setup-enemy! this *chickalope-nav-enemy-info*)
   (set-vector! (-> this root scale) 2.5 2.5 2.5 1.0)
   (quaternion->matrix (-> this rotation-matrix) (-> this root quat))
   (logior! (-> this skel status) (joint-control-status sync-math))

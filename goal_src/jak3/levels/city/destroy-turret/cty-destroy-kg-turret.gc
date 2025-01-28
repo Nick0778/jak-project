@@ -570,7 +570,7 @@
   :virtual #t
   :event kg-turbo-turret-event-handler
   :enter (behavior ()
-    (try-update-focus (-> self focus) *target*)
+    (focus-on! (-> self focus) *target*)
     (ja-channel-push! 1 0)
     (ja-no-eval :group! cty-guard-turret-idle-ja :num! zero)
     (transform-post)
@@ -1265,7 +1265,8 @@
     )
   )
 
-(defmethod go-idle2 ((this destroy-turret-bombbot))
+(defmethod go-fallback-init ((this destroy-turret-bombbot))
+  "If there's no specific settings for initial state, go to this state after spawning."
   (go (method-of-object this hostile))
   )
 
