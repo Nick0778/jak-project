@@ -1,11 +1,12 @@
 #include "MercExtract.h"
 
 #include "common/log/log.h"
+#include "common/util/gltf_util.h"
 
 #include "goalc/build_level/common/gltf_mesh_extract.h"
 
 void extract(const std::string& name,
-             MercExtractData& out,
+             gltf_util::MercExtractData& out,
              const tinygltf::Model& model,
              const std::vector<gltf_util::NodeWithTransform>& all_nodes,
              u32 index_offset,
@@ -16,6 +17,11 @@ void extract(const std::string& name,
   std::map<int, tfrag3::MercDraw> draw_by_material;
   int mesh_count = 0;
   int prim_count = 0;
+  int joints = 3;
+  auto skin_idx = find_single_skin(model, all_nodes);
+  if (skin_idx) {
+    joints += gltf_util::get_joint_count(model, *skin_idx);
+  }
 
   for (const auto& n : all_nodes) {
     const auto& node = model.nodes[n.node_idx];
@@ -84,47 +90,42 @@ void extract(const std::string& name,
   }
 
   tfrag3::MercEffect e;
+  tfrag3::MercEffect envmap_eff;
+  envmap_eff.has_envmap = false;
   out.new_model.name = name;
-  out.new_model.max_bones = 120;  // idk
-  out.new_model.max_draws = 200;
+  out.new_model.max_bones = joints;
+  out.new_model.max_draws = 0;
+
   for (const auto& [mat_idx, d_] : draw_by_material) {
-    e.all_draws.push_back(d_);
-    auto& draw = e.all_draws.back();
-    draw.mode = gltf_util::make_default_draw_mode();
-
-    if (mat_idx == -1) {
-      lg::warn("Draw had a material index of -1, using default texture.");
-      draw.tree_tex_id = 0;
-      continue;
-    }
     const auto& mat = model.materials[mat_idx];
-    int tex_idx = mat.pbrMetallicRoughness.baseColorTexture.index;
-    if (tex_idx == -1) {
-      lg::warn("Material {} has no texture, using default texture.", mat.name);
-      draw.tree_tex_id = 0;
-      continue;
+    if (mat_idx < 0 || !gltf_util::material_has_envmap(model.materials[mat_idx]) ||
+        !gltf_util::envmap_is_valid(model.materials[mat_idx])) {
+      gltf_util::process_normal_merc_draw(model, out, tex_offset, e, mat_idx, d_);
+    } else {
+      envmap_eff.has_envmap = true;
+      gltf_util::process_envmap_merc_draw(model, out, tex_offset, envmap_eff, mat_idx, d_);
     }
-
-    const auto& tex = model.textures[tex_idx];
-    ASSERT(tex.sampler >= 0);
-    ASSERT(tex.source >= 0);
-    gltf_util::setup_draw_mode_from_sampler(model.samplers.at(tex.sampler), &draw.mode);
-    gltf_util::setup_alpha_from_material(mat, &draw.mode);
-
-    const auto& img = model.images[tex.source];
-    draw.tree_tex_id = tex_offset + texture_pool_add_texture(&out.tex_pool, img);
   }
-  lg::info("total of {} unique materials", e.all_draws.size());
-  out.new_model.effects.push_back(e);
-  out.new_model.effects.push_back(e);
-  out.new_model.effects.push_back(e);
-  out.new_model.effects.push_back(e);
 
+  // in case a model only has envmap draws, we don't push the normal merc effect
+  if (!e.all_draws.empty()) {
+    out.new_model.effects.push_back(e);
+  }
+  if (envmap_eff.has_envmap) {
+    out.new_model.effects.push_back(envmap_eff);
+  }
+
+  for (auto& effect : out.new_model.effects) {
+    out.new_model.max_draws += effect.all_draws.size();
+  }
+
+  lg::info("total of {} unique materials ({} normal, {} envmap)", out.new_model.max_draws,
+           e.all_draws.size(), envmap_eff.all_draws.size());
   lg::info("Merged {} meshes and {} prims into {} vertices", mesh_count, prim_count,
            out.new_vertices.size());
 }
 
-void merc_convert(MercSwapData& out, const MercExtractData& in) {
+void merc_convert(gltf_util::MercSwapData& out, const gltf_util::MercExtractData& in) {
   // easy
   out.new_model = in.new_model;
   out.new_indices = in.new_indices;
@@ -155,12 +156,12 @@ void merc_convert(MercSwapData& out, const MercExtractData& in) {
   }
 }
 
-MercSwapData load_merc_model(u32 current_idx_count,
-                             u32 current_vtx_count,
-                             u32 current_tex_count,
-                             const std::string& path,
-                             const std::string& name) {
-  MercSwapData result;
+gltf_util::MercSwapData load_merc_model(u32 current_idx_count,
+                                        u32 current_vtx_count,
+                                        u32 current_tex_count,
+                                        const std::string& path,
+                                        const std::string& name) {
+  gltf_util::MercSwapData result;
   lg::info("Reading gltf mesh: {}", path);
   tinygltf::TinyGLTF loader;
   tinygltf::Model model;
@@ -171,7 +172,7 @@ MercSwapData load_merc_model(u32 current_idx_count,
   ASSERT_MSG(res, "Failed to load GLTF file!");
   auto all_nodes = gltf_util::flatten_nodes_from_all_scenes(model);
 
-  MercExtractData extract_data;
+  gltf_util::MercExtractData extract_data;
   extract(name, extract_data, model, all_nodes, current_idx_count, current_vtx_count,
           current_tex_count);
   merc_convert(result, extract_data);
