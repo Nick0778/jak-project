@@ -1,0 +1,10 @@
+("RUI.DGO"
+ ("ruins-ocean.o"
+  "tpage-851.go"
+  "tpage-853.go"
+  "tpage-852.go"
+  "tpage-2205.go"
+  "tpage-1000.go"
+  "com-airlock-outer-ag.go"
+  "ruins-vis.go"
+ ))

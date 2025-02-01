@@ -7239,7 +7239,11 @@
                    )
                  )
                :callback-list '((34 . sewer-logout) (33 . sewer-login))
-               :borrow #f
+               :borrow (new 'static 'level-borrow-info
+                :alias #f
+                :borrow-size (new 'static 'array uint16 5 #x285 #x285 #x0 #x0 #x0)
+                :borrow-info (new 'static 'array object 5 #f #f #f #f #f)
+                )
                :bottom-height (meters -229)
                :fog-height (meters 80)
                :fog-mult 1.0
@@ -7331,13 +7335,29 @@
                      )
                    :want-sound (new 'static 'array symbol 3 'sewer3 'sewer1 'sewer2)
                    )
+                (new 'static 'continue-point
+                   :name "sewb-ate-elevator"
+                   :level 'sewb
+                   :flags (continue-flags no-auto)
+                   :trans (new 'static 'vector :x (meters 286.56) :y (meters -140.03) :z (meters -62.69) :w 1.0)
+                   :camera-trans (new 'static 'vector :x (meters 286.7296) :y (meters -136.1933) :z (meters -70.2725) :w 1.0)
+                   :quat (new 'static 'vector4h :data (new 'static 'array int16 4 0 0 0 099))
+                   :camera-rot (new 'static 'array int16 9 #x687 0 #x7fd1 -4688 #x7eaa #xef -32383 -4695 #x676)
+                   :on-goto #f
+                   :vis-nick 'sewb
+                   :vehicle-type #x1b
+                   :want-count 3
+                   :want (new 'static 'inline-array level-buffer-state-small 4
+                     (new 'static 'level-buffer-state-small :name 'sewa :display? 'display)
+                     (new 'static 'level-buffer-state-small :name 'sewb :display? 'display)
+                     (new 'static 'level-buffer-state-small :name 'sewc :display? #f)
+                     (new 'static 'level-buffer-state-small)
+                     )
+                   :want-sound (new 'static 'array symbol 3 'sewer3 'sewer1 'sewer2)
+                   )
                  )
                :callback-list '((35 . sewb-activate) (23 . init-mood-sewb))
-               :borrow (new 'static 'level-borrow-info
-                :alias #f
-                :borrow-size (new 'static 'array uint16 5 #x285 #x0 #x0 #x0 #x0)
-                :borrow-info (new 'static 'array object 5 #f #f #f #f #f)
-                )
+               :borrow #f
                :bottom-height (meters -229)
                :fog-height (meters 80)
                :fog-mult 1.0
@@ -9114,7 +9134,7 @@
                   :callback-list '((36 . waswide-deactivate) (35 . waswide-activate) (33 . waswide-login))
                   :borrow (new 'static 'level-borrow-info
                     :alias #f
-                    :borrow-size (new 'static 'array uint16 5 #x320 #x0 #x0 #x0 #x0)
+                    :borrow-size (new 'static 'array uint16 5 #x320 #x200 #x0 #x0 #x0)
                     :borrow-info (new 'static 'array object 5 #f #f #f #f #f)
                     )
                   :bottom-height (meters -150)
@@ -9835,9 +9855,53 @@
                          )
                        :want-sound (new 'static 'array symbol 3 'wascity1 'wascity2 'wascity3)
                        )
+                      (new 'static 'continue-point
+                       :name "wascityb-bbush-leaper-race"
+                       :level 'wascityb
+                       :flags (continue-flags no-auto)
+                       :trans (new 'static 'vector :x (meters 1797.01) :y (meters 29.35) :z (meters -323.79) :w 1.0)
+                       :camera-trans (new 'static 'vector :x 6172366.5 :y 140140.14 :z -1297840.5 :w 1.0)
+                       :quat (new 'static 'vector4h :data (new 'static 'array int16 4 29 #x743b -36 -13712))
+                       :camera-rot (new 'static 'array int16 9 -29837 0 #x34e3 -1661 #x7f05 -3663 -13437 -4023 -29611)
+                       :on-goto #f
+                       :vis-nick 'wascityb
+                       :vehicle-type #x1b
+                       :want-count 4
+                       :want (new 'static 'inline-array level-buffer-state-small 4
+                         (new 'static 'level-buffer-state-small :name 'wasall :display? 'special)
+                         (new 'static 'level-buffer-state-small :name 'waswide :display? 'display)
+                         (new 'static 'level-buffer-state-small :name 'wascityb :display? 'display)
+                         (new 'static 'level-buffer-state-small :name 'wascast :display? 'special)
+                         )
+                       :want-sound (new 'static 'array symbol 3 'wascity1 'wascity2 'wascity3)
+                       )
+                      (new 'static 'continue-point
+                       :name "wascityb-flut-racer"
+                       :level 'wascityb
+                       :flags (continue-flags no-auto flut-racer)
+                       :trans (new 'static 'vector :x (meters 1730.76) :y (meters 30.18) :z (meters -318.90) :w 1.0)
+                       :camera-trans (new 'static 'vector :x 6172366.5 :y 140140.14 :z -1297840.5 :w 1.0)
+                       :quat (new 'static 'vector4h :data (new 'static 'array int16 4 29 #x743b -36 -13712))
+                       :camera-rot (new 'static 'array int16 9 -29837 0 #x34e3 -1661 #x7f05 -3663 -13437 -4023 -29611)
+                       :on-goto #f
+                       :vis-nick 'wascityb
+                       :vehicle-type #x1b
+                       :want-count 4
+                       :want (new 'static 'inline-array level-buffer-state-small 4
+                         (new 'static 'level-buffer-state-small :name 'wasall :display? 'special)
+                         (new 'static 'level-buffer-state-small :name 'waswide :display? 'display)
+                         (new 'static 'level-buffer-state-small :name 'wascityb :display? 'display)
+                         (new 'static 'level-buffer-state-small :name 'wascast :display? 'special)
+                         )
+                       :want-sound (new 'static 'array symbol 3 'wascity1 'wascity2 'wascity3)
+                       )
                      )
                    :callback-list '()
-                   :borrow #f
+                   :borrow (new 'static 'level-borrow-info
+                    :alias #f
+                    :borrow-size (new 'static 'array uint16 5 #x120 #x0 #x0 #x0 #x0)
+                    :borrow-info (new 'static 'array object 5 #f #f #f #f #f)
+                    )
                    :bottom-height (meters -150)
                    :fog-height (meters 80)
                    :fog-mult 10.0
@@ -20389,6 +20453,207 @@
                )
         )
 
+(define atoll (new 'static 'level-load-info
+               :name 'atoll
+               :visname 'atoll-vis
+               :nickname 'ato
+               :dbname 'atoll
+               :taskname 'default
+               :index #x128
+               :master-level #f
+               :level-flags (level-flags sky display-wait ocean-near-translucent)
+               :packages '()
+               :run-packages '("common")
+               :memory-mode (level-memory-mode large)
+               :music-bank 'ruins
+               :extra-sound-bank #f
+               :mood-func 'update-mood-atoll
+               :special-mood #f
+               :ocean '*ocean-map-city*
+               :ocean-alpha 1.0
+               :priority 100
+               :draw-priority 10.0
+               :base-task-mask (task-mask task0)
+               :bigmap-id (bigmap-id none)
+               :continues '((new 'static 'continue-point
+                   :name "atoll-start"
+                   :level 'atoll
+                   :trans (new 'static 'vector :x 2288109.5 :y 8801.075 :z -3452941.0 :w 1.0)
+                   :camera-trans (new 'static 'vector :x 2289175.2 :y 29895.475 :z -3401749.0 :w 1.0)
+                   :quat (new 'static 'vector4h :data (new 'static 'array int16 4 0 #x7f9f 0 -2460))
+                   :camera-rot (new 'static 'array int16 9 -32717 0 -1749 #xd1 #x7f0c -3954 #x6c8 -3958 -32478)
+                   :on-goto #f
+                   :vis-nick 'atoll
+                   :vehicle-type #x1b
+                   :want-count 2
+                   :want (new 'static 'inline-array level-buffer-state-small 2
+                     (new 'static 'level-buffer-state-small :name 'atollext :display? 'special)
+                     (new 'static 'level-buffer-state-small :name 'atoll :display? 'display)
+                     )
+                   :want-sound (new 'static 'array symbol 3 'sewer3 'sewer1 'sewer2)
+                   )
+                  (new 'static 'continue-point
+                   :name "atoll-elevator"
+                   :level 'atoll
+                   :trans (new 'static 'vector :x (meters 558.39) :y (meters 2.16) :z (meters -789.20) :w 1.0)
+                   :camera-trans (new 'static 'vector :x 2289175.2 :y 29895.475 :z -3401749.0 :w 1.0)
+                   :quat (new 'static 'vector4h :data (new 'static 'array int16 4 0 #x7f9f 0 -2460))
+                   :camera-rot (new 'static 'array int16 9 -32717 0 -1749 #xd1 #x7f0c -3954 #x6c8 -3958 -32478)
+                   :on-goto #f
+                   :vis-nick 'atoll
+                   :vehicle-type #x1b
+                   :want-count 2
+                   :want (new 'static 'inline-array level-buffer-state-small 2
+                     (new 'static 'level-buffer-state-small :name 'atollext :display? 'display)
+                     (new 'static 'level-buffer-state-small :name 'sewa :display? 'display)
+                     )
+                   :want-sound (new 'static 'array symbol 3 'sewer3 'sewer1 'sewer2)
+                   )
+                 )
+               :callback-list '((23 . init-mood-atoll))
+               :borrow (new 'static 'level-borrow-info
+                :alias #f
+                :borrow-size (new 'static 'array uint16 5 #x360 #x0 #x0 #x0 #x0)
+                :borrow-info (new 'static 'array object 5 #f #f #f #f #f)
+                )
+               :bottom-height (meters -150)
+               :fog-height (meters 80)
+               :max-rain 1.0
+               :fog-mult 1.0
+               :mood-range (new 'static 'mood-range :min-cloud 0.75 :max-cloud 0.75 :min-fog 0.64 :max-fog 0.64)
+               )
+        )
+
+(define atollext (new 'static 'level-load-info
+                   :name 'atollext
+                   :visname 'atollext-vis
+                   :nickname 'ate
+                   :dbname 'atollext
+                   :taskname 'default
+                   :index #x129
+                   :master-level #f
+                   :packages '()
+                   :run-packages '("common")
+                   :music-bank #f
+                   :extra-sound-bank #f
+                   :mood-func 'update-mood-atoll
+                   :special-mood #f
+                   :ocean #f
+                   :ocean-alpha 1.0
+                   :priority 100
+                   :draw-priority 10.0
+                   :bigmap-id (bigmap-id none)
+                   :continues '()
+                   :callback-list '((23 . init-mood-atoll))
+                   :borrow (new 'static 'level-borrow-info
+                    :alias #f
+                    :borrow-size (new 'static 'array uint16 5 #x285 #x0 #x0 #x0 #x0)
+                    :borrow-info (new 'static 'array object 5 #f #f #f #f #f)
+                    )
+                   :bottom-height (meters -15)
+                   :fog-height (meters 80)
+                   :max-rain 1.0
+                   :fog-mult 1.0
+                   :mood-range (new 'static 'mood-range :max-cloud 1.0 :min-fog 0.5 :max-fog 1.0)
+                   )
+        )
+
+(define ruins (new 'static 'level-load-info
+               :name 'ruins
+               :visname 'ruins-vis
+               :nickname 'rui
+               :dbname 'ruins
+               :taskname 'default
+               :index #x130
+               :master-level #f
+               :level-flags (level-flags sky display-wait ocean-near-translucent)
+               :packages '()
+               :run-packages '("common")
+               :memory-mode (level-memory-mode large)
+               :music-bank 'ruins
+               :extra-sound-bank #f
+               :mood-func 'update-mood-default
+               :special-mood #f
+               :ocean '*ocean-map-ruins*
+               :ocean-alpha 1.0
+               :priority 100
+               :draw-priority 10.0
+               :base-task-mask (task-mask task0)
+               :bigmap-id (bigmap-id none)
+               :continues '((new 'static 'continue-point
+                   :name "ruins-start"
+                   :level 'atoll
+                   :trans (new 'static 'vector :x 3439019.2 :y 22.1184 :z -1390645.6 :w 1.0)
+                   :camera-trans (new 'static 'vector :x 3390097.0 :y 20509.9 :z -1391488.6 :w 1.0)
+                   :quat (new 'static 'vector4h :data (new 'static 'array int16 4 0 #x7f9f 0 -2460))
+                   :camera-rot (new 'static 'array int16 9 -32717 0 -1749 #xd1 #x7f0c -3954 #x6c8 -3958 -32478)
+                   :on-goto #f
+                   :vis-nick 'ruins
+                   :vehicle-type #x1b
+                   :want-count 1
+                   :want (new 'static 'inline-array level-buffer-state-small 1
+                     (new 'static 'level-buffer-state-small :name 'ruins :display? 'display)
+                     )
+                   :want-sound (new 'static 'array symbol 3 #f #f #f)
+                   )
+                  (new 'static 'continue-point
+                   :name "ruins-hut"
+                   :level 'ruins
+                   :trans (new 'static 'vector :x 4338732.0 :y 99318.99 :z -1983915.2 :w 1.0)
+                   :camera-trans (new 'static 'vector :x 4320175.0 :y 120442.47 :z -1945102.8 :w 1.0)
+                   :quat (new 'static 'vector4h :data (new 'static 'array int16 4 0 #x7f9f 0 -2460))
+                   :camera-rot (new 'static 'array int16 9 -32717 0 -1749 #xd1 #x7f0c -3954 #x6c8 -3958 -32478)
+                   :on-goto #f
+                   :vis-nick 'ruins
+                   :vehicle-type #x1b
+                   :want-count 2
+                   :want (new 'static 'inline-array level-buffer-state-small 2
+                     (new 'static 'level-buffer-state-small :name 'ruins :display? 'display)
+                     (new 'static 'level-buffer-state-small :name 'sagehut :display? 'display)
+                     )
+                   :want-sound (new 'static 'array symbol 3 #f #f #f)
+                   )
+                 )
+               :callback-list '()
+               :borrow #f
+               :bottom-height (meters -150)
+               :fog-height (meters 80)
+               :max-rain 1.0
+               :fog-mult 1.0
+               :mood-range (new 'static 'mood-range :min-cloud 0.75 :max-cloud 0.75 :min-fog 0.64 :max-fog 0.64)
+               )
+        )
+
+(define sagehut (new 'static 'level-load-info
+                   :name 'sagehut
+                   :visname 'sagehut-vis
+                   :nickname 'sag
+                   :dbname 'sagehut
+                   :taskname 'default
+                   :index #x131
+                   :master-level #f
+                   :packages '()
+                   :run-packages '("common")
+                   :music-bank #f
+                   :extra-sound-bank #f
+                   :mood-func 'update-mood-default
+                   :special-mood #f
+                   :ocean #f
+                   :ocean-alpha 1.0
+                   :priority 100
+                   :draw-priority 10.0
+                   :bigmap-id (bigmap-id none)
+                   :continues '()
+                   :callback-list '()
+                   :borrow #f
+                   :bottom-height (meters -15)
+                   :fog-height (meters 80)
+                   :max-rain 1.0
+                   :fog-mult 1.0
+                   :mood-range (new 'static 'mood-range :max-cloud 1.0 :min-fog 0.5 :max-fog 1.0)
+                   )
+        )
+
 (define *level-load-list* '(default-level
                              intro
                              title
@@ -20684,6 +20949,10 @@
                              testisle
                              gregtest
                              4amy
+                             atoll
+                             atollext
+                             ruins
+                             sagehut
                              )
         )
 
@@ -20808,10 +21077,158 @@
     :fog-height (meters 80)
     :max-rain 1.0
     :fog-mult 1.0
-    :mood-range (new 'static 'mood-range :max-cloud 1.0 :min-fog 0.5 :max-fog 1.0)
+    :mood-range (new 'static 'mood-range :min-cloud 0.75 :max-cloud 0.75 :min-fog 0.64 :max-fog 0.64)
     )
   )
 
 (#when PC_PORT
   (cons! *level-load-list* 'lctyturret)
+  )
+
+(define leaper-race
+  (new 'static 'level-load-info
+    :name 'leaper-race
+    :visname 'leaper-race-vis
+    :nickname 'lpr
+    :dbname 'leaper-race
+    :taskname 'wascity
+    :index #x128
+    :master-level #f
+    :packages '()
+    :run-packages '("common")
+    :memory-mode (level-memory-mode borrow)
+    :music-bank #f
+    :extra-sound-bank #f
+    :mood-func 'update-mood-default
+    :special-mood #f
+    :ocean #f
+    :ocean-alpha 1.0
+    :priority 100
+    :draw-priority 10.0
+    :base-task-mask (task-mask task0)
+    :bigmap-id (bigmap-id none)
+    :continues '()
+    :callback-list '()
+    :borrow #f
+    :bottom-height (meters -150)
+    :fog-height (meters 80)
+    :max-rain 1.0
+    :fog-mult 1.0
+    :mood-range (new 'static 'mood-range :max-cloud 1.0 :min-fog 0.5 :max-fog 1.0)
+    )
+  )
+
+(#when PC_PORT
+  (cons! *level-load-list* 'leaper-race)
+  )
+
+(define sewb-elev
+  (new 'static 'level-load-info
+    :name 'sewb-elev
+    :visname 'sewb-elev-vis
+    :nickname 'swe
+    :dbname 'sewb-elev
+    :taskname 'default
+    :index #x128
+    :master-level #f
+    :packages '()
+    :run-packages '("common")
+    :memory-mode (level-memory-mode borrow)
+    :music-bank #f
+    :extra-sound-bank #f
+    :mood-func 'update-mood-default
+    :special-mood #f
+    :ocean #f
+    :ocean-alpha 1.0
+    :priority 100
+    :draw-priority 10.0
+    :base-task-mask (task-mask task0)
+    :bigmap-id (bigmap-id none)
+    :continues '()
+    :callback-list '()
+    :borrow #f
+    :bottom-height (meters -150)
+    :fog-height (meters 80)
+    :max-rain 1.0
+    :fog-mult 1.0
+    :mood-range (new 'static 'mood-range :max-cloud 1.0 :min-fog 0.5 :max-fog 1.0)
+    )
+  )
+
+(#when PC_PORT
+  (cons! *level-load-list* 'sewb-elev)
+  )
+
+(define ate-elev
+  (new 'static 'level-load-info
+    :name 'ate-elev
+    :visname 'ate-elev-vis
+    :nickname 'atv
+    :dbname 'ate-elev
+    :taskname 'default
+    :index #x128
+    :master-level #f
+    :packages '()
+    :run-packages '("common")
+    :memory-mode (level-memory-mode borrow)
+    :music-bank #f
+    :extra-sound-bank #f
+    :mood-func 'update-mood-default
+    :special-mood #f
+    :ocean #f
+    :ocean-alpha 1.0
+    :priority 100
+    :draw-priority 10.0
+    :base-task-mask (task-mask task0)
+    :bigmap-id (bigmap-id none)
+    :continues '()
+    :callback-list '()
+    :borrow #f
+    :bottom-height (meters -150)
+    :fog-height (meters 80)
+    :max-rain 1.0
+    :fog-mult 1.0
+    :mood-range (new 'static 'mood-range :max-cloud 1.0 :min-fog 0.5 :max-fog 1.0)
+    )
+  )
+
+(#when PC_PORT
+  (cons! *level-load-list* 'ate-elev)
+  )
+
+(define ato-actors
+  (new 'static 'level-load-info
+    :name 'ato-actors
+    :visname 'ato-actors-vis
+    :nickname 'ata
+    :dbname 'ato-actors
+    :taskname 'default
+    :index #x128
+    :master-level #f
+    :packages '()
+    :run-packages '("common")
+    :memory-mode (level-memory-mode borrow)
+    :music-bank #f
+    :extra-sound-bank #f
+    :mood-func 'update-mood-default
+    :special-mood #f
+    :ocean #f
+    :ocean-alpha 1.0
+    :priority 100
+    :draw-priority 10.0
+    :base-task-mask (task-mask task0)
+    :bigmap-id (bigmap-id none)
+    :continues '()
+    :callback-list '()
+    :borrow #f
+    :bottom-height (meters -150)
+    :fog-height (meters 80)
+    :max-rain 1.0
+    :fog-mult 1.0
+    :mood-range (new 'static 'mood-range :max-cloud 1.0 :min-fog 0.5 :max-fog 1.0)
+    )
+  )
+
+(#when PC_PORT
+  (cons! *level-load-list* 'ato-actors)
   )

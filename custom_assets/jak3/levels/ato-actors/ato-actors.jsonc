@@ -1,0 +1,839 @@
+{
+  // The "in-game" name of the level. Should be lower case, with dashes (GOAL symbol name)
+  // the name of this file, and the folder this file is in must have the same name.
+  "long_name": "ato-actors",
+  // The file name, should be upper case and 8 characters or less.
+  "iso_name": "ATOACTOR",
+  // The nickname, should be exactly 3 characters
+  "nickname": "ata", // 3 char name, all lowercase
+  // Background mesh file.
+  // Must have vertex colors. Use the blender cycles renderer, bake, diffuse, uncheck color,
+  // and bake to vertex colors. For now, only the first vertex color group is used, so make sure you
+  // only have 1.
+  "gltf_file": "custom_assets/jak3/levels/ato-actors/ato-actors.glb",
+
+  // automatically set wall vs. ground based on angle. Useful if you don't want to assign this yourself
+  "automatic_wall_detection": true,
+  "automatic_wall_angle": 45.0,
+
+  // if your mesh has triangles with incorrect orientation, set this to make all collision mesh triangles double sided
+  // this makes collision 2x slower and bigger, so only use if really needed
+  "double_sided_collide": false,
+
+  // available res-lump tag types:
+  // integer types: int32, uint32, enum-int32, enum-uint32
+  // float types: float, meters (1 meter = 4096.0 units), degrees (65536.0 = 360°)
+  // vector types: vector (normal floats), vector4m (meters), vector3m (meters with w set to 1.0), vector-vol (normal floats with w in meters), movie-pos (meters with w in degrees)
+  // special types: symbol, type, string, eco-info, cell-info, buzzer-info, water-height
+  //
+  // examples:
+  //
+  // adds a float tag 'spring-height' with value of 200 meters (1 meter = 4096.0 units):
+  // "spring-height": ["meters", 200.0]
+  //
+  // adds a degrees tag 'rotoffset':
+  // "rotoffset": ["degrees", -45.0]
+  //
+  // adds a movie-pos tag:
+  // "movie-pos": ["movie-pos", [100.22, -25.3, 99.5, 180.0]]
+  //
+  // adds an enum tag 'options':
+  // "options": ["enum-int32", "(fact-options large)"]
+  //
+  // adds a water-height tag:
+  // "water-height": ["water-height", 25.0, 0.5, 2.0, "(water-flags can-swim can-wade)"]
+  //
+  // adds an eco-info tag:
+  // "eco-info": ["eco-info", "(pickup-type health)", 2]
+  //
+  // adds a 'type' tag (using the "symbol" and "string" lump types works the same way):
+  // "spawn-types": ["type", "spyder", "juicer"]
+
+   // The base actor id for your custom level. If you have multiple levels, this should be unique!
+   "base_id": 100,
+
+  // All art groups you want to use in your custom level. Will add their models and corresponding textures to the FR3 file.
+  "art_groups": ["spyder-ag", "mantis-ag", "tentacle-ag", "neo-juicer-ag", "sewer-frog-ag", "grunt-ag", "fac-move-plat-b-ag"],
+
+   // Any textures you want to include in your custom level.
+   // This is mainly useful for textures which are not in the common level files and have no art group associated with them.
+   // To get a list of all the textures, you can extract all of the game's textures
+   // by setting "save_texture_pngs" to true in the decompiler config.
+   // "textures": [],
+
+  "actors" : [
+    {
+      "aid": 100000,
+      "trans": [563.54, 0.78, -910.71], // translation
+      "etype": "spyder",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [563.54, 0.78, -910.71, 10], // bounding sphere
+      "lump": {
+        "name": "spyder-ato-1",
+        "nav-mesh-actor": ["uint32", 10051],
+        "enemy-options": ["enum-uint32", "(enemy-option knocked-into-water)"]
+      }
+    },
+
+    {
+      "aid": 200000,
+      "trans": [550.76, 0.87, -898.29], // translation
+      "etype": "mantis",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, -0.01, 0, 0.99], // quaternion
+      "bsphere": [550.76, 0.87, -898.29, 10], // bounding sphere
+      "lump": {
+        "name": "mantis-1",
+        "nav-mesh-actor": ["uint32", 10051],
+        "enemy-options": ["enum-uint32", "(enemy-option ambush dormant-aware knocked-into-water)"]
+      }
+    },
+
+    {
+      "aid": 300000,
+      "trans": [532.14, 1.22, -921.53], // translation
+      "etype": "mantis",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0.51, 0, 0.85], // quaternion
+      "bsphere": [532.14, 1.22, -921.53, 10], // bounding sphere
+      "lump": {
+        "name": "mantis-2",
+        "nav-mesh-actor": ["uint32", 10051],
+        "enemy-options": ["enum-uint32", "(enemy-option ambush dormant-aware knocked-into-water)"]
+      }
+    },
+
+    {
+      "aid": 400000,
+      "trans": [572.38, 0.96, -918.68], // translation
+      "etype": "mantis",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [572.38, 0.96, -918.68, 10], // bounding sphere
+      "lump": {
+        "name": "mantis-3",
+        "nav-mesh-actor": ["uint32", 10051],
+        "enemy-options": ["enum-uint32", "(enemy-option ambush dormant-aware knocked-into-water)"]
+      }
+    },
+
+    {
+      "aid": 500000,
+      "trans": [543.73, 1.13, -919.79], // translation
+      "etype": "neo-juicer",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [543.73, 1.13, -919.79, 10], // bounding sphere
+      "lump": {
+        "name": "neo-juicer-1",
+        "nav-mesh-actor": ["uint32", 10051],
+        "enemy-options": ["enum-uint32", "(enemy-option knocked-into-water multi-focus)"],
+        "path": ["vector4m",
+          [543.73, 1.13, -919.79, 1.0],
+          [542.47, 1.05, -915.42, 1.0],
+          [548.35, 0.80, -918.34, 1.0],
+          [543.73, 1.13, -919.79, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 600000,
+      "trans": [548.03, 1.03, -911.09], // translation
+      "etype": "mantis",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [548.03, 1.03, -911.09, 10], // bounding sphere
+      "lump": {
+        "name": "mantis-4",
+        "nav-mesh-actor": ["uint32", 10051],
+        "enemy-options": ["enum-uint32", "(enemy-option ambush dormant-aware knocked-into-water)"]
+      }
+    },
+
+    /*{
+      "aid": 700000,
+      "trans": [565.66, 1.61, -894.22], // translation
+      "etype": "mantis",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [565.66, 1.61, -894.22, 10], // bounding sphere
+      "lump": {
+        "name": "mantis-5",
+        "nav-mesh-actor": ["uint32", 10051],
+        "enemy-options": ["enum-uint32", "(enemy-option ambush dormant-aware)"]
+      }
+    },*/
+
+    {
+      "aid": 700000,
+      "trans": [516.79, 1.22, -918.43], // translation
+      "etype": "mantis",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [516.79, 1.22, -918.43, 10], // bounding sphere
+      "lump": {
+        "name": "mantis-5",
+        "nav-mesh-actor": ["uint32", 10051],
+        "enemy-options": ["enum-uint32", "(enemy-option ambush dormant-aware knocked-into-water)"]
+      }
+    },
+
+    {
+      "aid": 800000,
+      "trans": [579.03, 1.10, -928.98], // translation
+      "etype": "neo-juicer",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [579.03, 1.10, -928.98, 10], // bounding sphere
+      "lump": {
+        "name": "neo-juicer-2",
+        "nav-mesh-actor": ["uint32", 10051],
+        "enemy-options": ["enum-uint32", "(enemy-option knocked-into-water multi-focus)"],
+        "path": ["vector4m",
+          [579.03, 1.10, -928.98, 1.0],
+          [577.21, 0.90, -925.03, 1.0],
+          [573.73, 1.58, -928.64, 1.0],
+          [579.03, 1.10, -928.98, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 1000000,
+      "trans": [691.99, -0.10, -979.16], // translation
+      "etype": "tentacle",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [691.99, -0.10, -979.16, 10], // bounding sphere
+      "lump": {
+        "name": "tentacle-1",
+        "nav-mesh-actor": ["uint32", 19136]
+      }
+    },
+
+    {
+      "aid": 2000000,
+      "trans": [463.92, 13.12, -951.97], // translation
+      "etype": "neo-juicer",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [463.92, 13.12, -951.97, 10], // bounding sphere
+      "lump": {
+        "name": "neo-juicer-3",
+        "nav-mesh-actor": ["uint32", 8779],
+        "enemy-options": ["enum-uint32", "(enemy-option knocked-into-water)"],
+        "path": ["vector4m",
+          [463.92, 13.12, -951.97, 1.0],
+          [471.70, 13.12, -949.67, 1.0],
+          [462.60, 13.12, -945.46, 1.0],
+          [463.92, 13.12, -951.97, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 3000000,
+      "trans": [448.66, 13.12, -947.00], // translation
+      "etype": "neo-juicer",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [448.66, 13.12, -947.00, 10], // bounding sphere
+      "lump": {
+        "name": "neo-juicer-4",
+        "nav-mesh-actor": ["uint32", 8779],
+        "path": ["vector4m",
+          [448.66, 13.12, -947.00, 1.0],
+          [442.12, 13.12, -947.26, 1.0],
+          [453.61, 13.12, -951.21, 1.0],
+          [448.66, 13.12, -947.00, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 4000000,
+      "trans": [538.53, 15.23, -949.13], // translation
+      "etype": "sewer-frog",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [538.53, 15.23, -949.13, 10], // bounding sphere
+      "lump": {
+        "name": "sewer-frog-1",
+        "nav-mesh-actor": ["uint32", 8445],
+        "path": ["vector4m",
+          [538.53, 15.23, -949.13, 1.0],
+          [532.92, 15.23, -949.56, 1.0],
+          [537.82, 15.23, -945.06, 1.0],
+          [538.53, 15.23, -949.13, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 5000000,
+      "trans": [528.85, 15.23, -957.81], // translation
+      "etype": "sewer-frog",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [528.85, 15.23, -957.81, 10], // bounding sphere
+      "lump": {
+        "name": "sewer-frog-2",
+        "nav-mesh-actor": ["uint32", 8445],
+        "path": ["vector4m",
+          [528.85, 15.23, -957.81, 1.0],
+          [523.82, 15.23, -955.98, 1.0],
+          [526.62, 15.23, -953.44, 1.0],
+          [528.85, 15.23, -957.81, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 6000000,
+      "trans": [599.35, 20.44, -998.76], // translation
+      "etype": "grunt",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [599.35, 20.44, -998.76, 10], // bounding sphere
+      "lump": {
+        "name": "grunt-1",
+        "nav-mesh-actor": ["uint32", 5369],
+        "path": ["vector4m",
+          [599.35, 20.44, -998.76, 1.0],
+          [594.87, 21.03, -994.66, 1.0],
+          [600.77, 20.91, -993.41, 1.0],
+          [599.35, 20.44, -998.76, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 7000000,
+      "trans": [533.63, 23.84, -1082.51], // translation
+      "etype": "grunt",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [533.63, 23.84, -1082.51, 10], // bounding sphere
+      "lump": {
+        "name": "grunt-2",
+        "nav-mesh-actor": ["uint32", 4915],
+        "path": ["vector4m",
+          [533.63, 23.84, -1082.51, 1.0],
+          [528.39, 23.80, -1081.51, 1.0],
+          [530.53, 23.85, -1088.17, 1.0],
+          [533.63, 23.84, -1082.51, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 8000000,
+      "trans": [598.97, 20.09, -1020.17], // translation
+      "etype": "neo-juicer",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [598.97, 20.09, -1020.17, 10], // bounding sphere
+      "lump": {
+        "name": "neo-juicer-5",
+        "nav-mesh-actor": ["uint32", 5369],
+        "path": ["vector4m",
+          [598.97, 20.09, -1020.17, 1.0],
+          [599.18, 20.09, -1014.35, 1.0],
+          [603.48, 20.24, -1016.57, 1.0],
+          [598.97, 20.09, -1020.17, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 9000000,
+      "trans": [538.78, 24.34, -1015.95], // translation
+      "etype": "neo-juicer",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [538.78, 24.34, -1015.95, 10], // bounding sphere
+      "lump": {
+        "name": "neo-juicer-6",
+        "nav-mesh-actor": ["uint32", 5989],
+        "path": ["vector4m",
+          [538.78, 24.34, -1015.95, 1.0],
+          [542.80, 24.34, -1016.51, 1.0],
+          [538.25, 24.34, -1019.24, 1.0],
+          [538.78, 24.34, -1015.95, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 10000000,
+      "trans": [549.94, 24.34, -1016.37], // translation
+      "etype": "neo-juicer",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [549.94, 24.34, -1016.37, 10], // bounding sphere
+      "lump": {
+        "name": "neo-juicer-7",
+        "nav-mesh-actor": ["uint32", 5989],
+        "path": ["vector4m",
+          [549.94, 24.34, -1016.37, 1.0],
+          [554.52, 24.34, -1018.08, 1.0],
+          [551.35, 24.34, -1014.37, 1.0],
+          [549.94, 24.34, -1016.37, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 11000000,
+      "trans": [557.21, 23.95, -1070.14], // translation
+      "etype": "sewer-frog",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [557.21, 23.95, -1070.14, 10], // bounding sphere
+      "lump": {
+        "name": "sewer-frog-3",
+        "nav-mesh-actor": ["uint32", 4915],
+        "path": ["vector4m",
+          [557.21, 23.95, -1070.14, 1.0],
+          [555.14, 23.95, -1067.92, 1.0],
+          [558.45, 23.95, -1065.89, 1.0],
+          [557.21, 23.95, -1070.14, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 12000000,
+      "trans": [549.71, 23.95, -1068.27], // translation
+      "etype": "sewer-frog",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [549.71, 23.95, -1068.27, 10], // bounding sphere
+      "lump": {
+        "name": "sewer-frog-4",
+        "nav-mesh-actor": ["uint32", 4915],
+        "path": ["vector4m",
+          [549.71, 23.95, -1068.27, 1.0],
+          [547.81, 23.95, -1070.99, 1.0],
+          [550.29, 23.95, -1072.00, 1.0],
+          [549.71, 23.95, -1068.27, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 13000000,
+      "trans": [543.19, 23.95, -1068.80], // translation
+      "etype": "sewer-frog",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [543.19, 23.95, -1068.80, 10], // bounding sphere
+      "lump": {
+        "name": "sewer-frog-5",
+        "nav-mesh-actor": ["uint32", 4915],
+        "path": ["vector4m",
+          [543.19, 23.95, -1068.80, 1.0],
+          [539.02, 23.91, -1069.82, 1.0],
+          [540.07, 23.91, -1073.92, 1.0],
+          [543.19, 23.95, -1068.80, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 14000000,
+      "trans": [589.49, 36.59, -1132.04], // translation
+      "etype": "grunt",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [589.49, 36.59, -1132.04, 10], // bounding sphere
+      "lump": {
+        "name": "grunt-3",
+        "nav-mesh-actor": ["uint32", 4506],
+        "path": ["vector4m",
+          [589.49, 36.59, -1132.04, 1.0],
+          [592.60, 36.46, -1126.53, 1.0],
+          [589.30, 36.65, -1128.23, 1.0],
+          [589.49, 36.59, -1132.04, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 15000000,
+      "trans": [580.39, 36.12, -1133.26], // translation
+      "etype": "mantis",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [580.39, 36.12, -1133.26, 10], // bounding sphere
+      "lump": {
+        "name": "mantis-6",
+        "nav-mesh-actor": ["uint32", 4506],
+        "enemy-options": ["enum-uint32", "(enemy-option ambush dormant-aware knocked-into-water)"]
+      }
+    },
+
+    {
+      "aid": 16000000,
+      "trans": [589.17, 36.23, -1198.80], // translation
+      "etype": "sewer-frog",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [589.17, 36.23, -1198.80, 10], // bounding sphere
+      "lump": {
+        "name": "sewer-frog-6",
+        "nav-mesh-actor": ["uint32", 4503],
+        "path": ["vector4m",
+          [589.17, 36.23, -1198.80, 1.0],
+          [590.60, 36.13, -1196.48, 1.0],
+          [591.93, 36.14, -1197.97, 1.0],
+          [589.17, 36.23, -1198.80, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 17000000,
+      "trans": [590.88, 36.17, -1201.30], // translation
+      "etype": "sewer-frog",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [590.88, 36.17, -1201.30, 10], // bounding sphere
+      "lump": {
+        "name": "sewer-frog-7",
+        "nav-mesh-actor": ["uint32", 4503],
+        "path": ["vector4m",
+          [590.88, 36.17, -1201.30, 1.0],
+          [587.66, 36.26, -1200.39, 1.0],
+          [589.13, 36.18, -1204.02, 1.0],
+          [590.88, 36.17, -1201.30, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 18000000,
+      "trans": [585.90, 36.25, -1205.00], // translation
+      "etype": "sewer-frog",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [585.90, 36.25, -1205.00, 10], // bounding sphere
+      "lump": {
+        "name": "sewer-frog-8",
+        "nav-mesh-actor": ["uint32", 4503],
+        "path": ["vector4m",
+          [585.90, 36.25, -1205.00, 1.0],
+          [585.21, 36.26, -1201.02, 1.0],
+          [582.69, 36.27, -1203.72, 1.0],
+          [585.90, 36.25, -1205.00, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 19000000,
+      "trans": [551.66, 28.72, -1212.30], // translation
+      "etype": "grunt",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [551.66, 28.72, -1212.30, 10], // bounding sphere
+      "lump": {
+        "name": "grunt-4",
+        "nav-mesh-actor": ["uint32", 4502],
+        "path": ["vector4m",
+          [551.66, 28.72, -1212.30, 1.0],
+          [557.40, 28.72, -1208.31, 1.0],
+          [555.22, 28.73, -1216.57, 1.0],
+          [551.66, 28.72, -1212.30, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 20000000,
+      "trans": [545.67, 28.72, -1211.17], // translation
+      "etype": "mantis",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [545.67, 28.72, -1211.17, 10], // bounding sphere
+      "lump": {
+        "name": "mantis-7",
+        "nav-mesh-actor": ["uint32", 4502],
+        "enemy-options": ["enum-uint32", "(enemy-option ambush dormant-aware knocked-into-water)"]
+      }
+    },
+
+    {
+      "aid": 21000000,
+      "trans": [549.19, 28.73, -1224.76], // translation
+      "etype": "mantis",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [549.19, 28.73, -1224.76, 10], // bounding sphere
+      "lump": {
+        "name": "mantis-8",
+        "nav-mesh-actor": ["uint32", 4502],
+        "enemy-options": ["enum-uint32", "(enemy-option ambush dormant-aware knocked-into-water)"]
+      }
+    },
+
+    {
+      "aid": 22000000,
+      "trans": [501.05, 30.51, -1239.44], // translation
+      "etype": "grunt",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [501.05, 30.51, -1239.44, 10], // bounding sphere
+      "lump": {
+        "name": "grunt-5",
+        "nav-mesh-actor": ["uint32", 4501],
+        "path": ["vector4m",
+          [501.05, 30.51, -1239.44, 1.0],
+          [506.23, 30.51, -1239.18, 1.0],
+          [502.56, 30.56, -1243.74, 1.0],
+          [501.05, 30.51, -1239.44, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 23000000,
+      "trans": [496.13, 30.44, -1233.08], // translation
+      "etype": "neo-juicer",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [496.13, 30.44, -1233.08, 10], // bounding sphere
+      "lump": {
+        "name": "neo-juicer-8",
+        "nav-mesh-actor": ["uint32", 4501],
+        "path": ["vector4m",
+          [496.13, 30.44, -1233.08, 1.0],
+          [500.11, 30.46, -1234.78, 1.0],
+          [497.73, 30.40, -1229.17, 1.0],
+          [496.13, 30.44, -1233.08, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 24000000,
+      "trans": [418.20, 26.99, -1224.62], // translation
+      "etype": "sewer-frog",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [418.20, 26.99, -1224.62, 10], // bounding sphere
+      "lump": {
+        "name": "sewer-frog-9",
+        "nav-mesh-actor": ["uint32", 4499],
+        "path": ["vector4m",
+          [418.20, 26.99, -1224.62, 1.0],
+          [420.94, 26.99, -1228.53, 1.0],
+          [416.65, 26.98, -1227.87, 1.0],
+          [418.20, 26.99, -1224.62, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 25000000,
+      "trans": [413.85, 26.78, -1225.06], // translation
+      "etype": "sewer-frog",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [413.85, 26.78, -1225.06, 10], // bounding sphere
+      "lump": {
+        "name": "sewer-frog-10",
+        "nav-mesh-actor": ["uint32", 4499],
+        "path": ["vector4m",
+          [413.85, 26.78, -1225.06, 1.0],
+          [415.31, 26.71, -1229.78, 1.0],
+          [421.06, 26.99, -1230.03, 1.0],
+          [413.85, 26.78, -1225.06, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 26000000,
+      "trans": [412.73, 27.01, -1197.06], // translation
+      "etype": "mantis",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [412.73, 27.01, -1197.06, 10], // bounding sphere
+      "lump": {
+        "name": "mantis-9",
+        "nav-mesh-actor": ["uint32", 4524],
+        "enemy-options": ["enum-uint32", "(enemy-option ambush dormant-aware knocked-into-water)"]
+      }
+    },
+
+    {
+      "aid": 27000000,
+      "trans": [450.69, 2.00, -1051.37], // translation
+      "etype": "spyder",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [450.69, 2.00, -1051.37, 10], // bounding sphere
+      "lump": {
+        "name": "spyder-ato-2",
+        "nav-mesh-actor": ["uint32", 8452],
+        "enemy-options": ["enum-uint32", "(enemy-option knocked-into-water)"]
+      }
+    },
+
+    {
+      "aid": 28000000,
+      "trans": [451.30, 1.49, -1082.20], // translation
+      "etype": "spyder",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [451.30, 1.49, -1082.20, 10], // bounding sphere
+      "lump": {
+        "name": "spyder-ato-3",
+        "nav-mesh-actor": ["uint32", 8452],
+        "enemy-options": ["enum-uint32", "(enemy-option knocked-into-water)"]
+      }
+    },
+
+    {
+      "aid": 29000000,
+      "trans": [439.30, 1.97, -1072.58], // translation
+      "etype": "spyder",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [439.30, 1.97, -1072.58, 10], // bounding sphere
+      "lump": {
+        "name": "spyder-ato-4",
+        "nav-mesh-actor": ["uint32", 8452],
+        "enemy-options": ["enum-uint32", "(enemy-option knocked-into-water)"]
+      }
+    },
+
+    {
+      "aid": 30000000,
+      "trans": [455.57, 1.65, -1068.22], // translation
+      "etype": "neo-juicer",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [455.57, 1.65, -1068.22, 10], // bounding sphere
+      "lump": {
+        "name": "neo-juicer-9",
+        "nav-mesh-actor": ["uint32", 8452],
+        "path": ["vector4m",
+          [455.57, 1.65, -1068.22, 1.0],
+          [459.39, 1.30, -1072.06, 1.0],
+          [456.30, 1.55, -1071.99, 1.0],
+          [455.57, 1.65, -1068.22, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 31000000,
+      "trans": [456.96, 1.40, -1057.06], // translation
+      "etype": "neo-juicer",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [456.96, 1.40, -1057.06, 10], // bounding sphere
+      "lump": {
+        "name": "neo-juicer-10",
+        "nav-mesh-actor": ["uint32", 8452],
+        "path": ["vector4m",
+          [456.96, 1.40, -1057.06, 1.0],
+          [463.00, 0.88, -1063.33, 1.0],
+          [460.94, 1.20, -1066.90, 1.0],
+          [456.96, 1.40, -1057.06, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 50000000,
+      "trans": [580.32, 20.12, -1015.05], // translation
+      "etype": "ato-move-plat",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [580.32, 20.12, -1015.05, 10], // bounding sphere
+      "lump": {
+        "name": "ato-move-plat-1",
+        "path": ["vector4m",
+          [580.32, 20.12, -1015.05, 1.0],
+          [571.33, 20.12, -1015.05, 1.0]
+        ]
+      }
+    },
+
+    {
+      "aid": 60000000,
+      "trans": [485.66, 30.21, -1246.14], // translation
+      "etype": "ato-move-plat",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, 0, 0, 1], // quaternion
+      "bsphere": [485.66, 30.21, -1246.14, 10], // bounding sphere
+      "lump": {
+        "name": "ato-move-plat-2",
+        "path": ["vector4m",
+          [485.66, 30.21, -1246.14, 1.0],
+          [472.24, 30.21, -1246.14, 1.0]
+        ]
+      }
+    }
+
+    /*{
+      "aid": 6000000,
+      "trans": [425.29, 13.01, -966.81], // translation
+      "etype": "min-falling-step",  // actor type
+      "game_task": "(game-task none)", // associated game task (for powercells, etc)
+      "kill_mask": 0,
+      "quat": [0, -0.99, 0, 0.01], // quaternion
+      "bsphere": [425.29, 13.01, -966.81, 10], // bounding sphere
+      "lump": {
+        "name": "min-falling-step-1"
+      }
+    }*/
+  ]
+}

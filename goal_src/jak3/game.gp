@@ -393,6 +393,10 @@
 (cgo-file "lwassig.gd" common-dep)
 (cgo-file "lwlandm.gd" common-dep)
 (cgo-file "lwstdpck.gd" common-dep)
+(cgo-file "ato.gd" common-dep)
+(cgo-file "ate.gd" common-dep)
+(cgo-file "rui.gd" common-dep)
+(cgo-file "sag.gd" common-dep)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Example Custom Level
@@ -418,6 +422,18 @@
 (build-custom-level "lctyturret")
 ;; the DGO file
 (custom-level-cgo "LCT.DGO" "lctyturret/lctyturret.gd")
+
+(build-custom-level "sewb-elev")
+;; the DGO file
+(custom-level-cgo "SWE.DGO" "sewb-elev/sewb-elev.gd")
+
+(build-custom-level "ate-elev")
+;; the DGO file
+(custom-level-cgo "ATV.DGO" "ate-elev/ate-elev.gd")
+
+(build-custom-level "ato-actors")
+;; the DGO file
+(custom-level-cgo "ATA.DGO" "ato-actors/ato-actors.gd")
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; ANIMATIONS

@@ -537,6 +537,26 @@
        )
      )
     (('atoll)
+      (prototypes-game-visible-set!
+       '("atoll-tank.mb")
+       (not (task-node-closed? (game-task-node arena-training-1-introduction)))
+       this
+       )
+      (prototypes-game-visible-set!
+        '("lowres-casboss.mb")
+        (not (task-node-closed? (game-task-node arena-training-1-introduction)))
+        this
+        )
+      (prototypes-game-visible-set!
+        '("atoll-lowres-stadium-canopies.mb")
+        (not (task-node-closed? (game-task-node arena-training-1-introduction)))
+        this
+        )
+      (prototypes-game-visible-set!
+        '("atoll-lowres-stadium-tower-01.mb")
+        (not (task-node-closed? (game-task-node arena-training-1-introduction)))
+        this
+        )
      )
     (('ctymarkb)
      )
@@ -3518,9 +3538,6 @@
         (when (entity-by-name "min-elevator-6")
           (set! (cdr (res-lump-struct (entity-by-name "min-elevator-6") 'on-notice pair)) '((task-closed? "mine-return-introduction") (when (and (not (send-event self 'query 'bottom?)) (not (task-closed? "mine-explore-resolution"))) (send-event self 'jump-to 'bottom)) (send-event self 'go-dormant)))
           )
-        ;(when (entity-by-name "min-bomb-elevator-1")
-          ;(set! (cdr (res-lump-struct (entity-by-name "min-bomb-elevator-1") 'on-wait pair)) '((task-open? "mine-return-introduction") (send-event self 'use-camera "camera-288")))
-          ;)
         (when (entity-by-name "com-airlock-inner-117")
           (add-data! (entity-by-name "com-airlock-inner-117") (new 'static 'res-tag :name 'on-activate :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") (want-load 'mined 'minee) (want-display 'mined 'display) (want-display 'minee 'display))))
           (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-117") 'on-notice pair)) '((mined)))
@@ -3537,47 +3554,35 @@
 
         ;; Sewer locked airlock
 
-        #|
-        (when (entity-by-name "com-airlock-outer-40")
+        (when (and (entity-by-name "com-airlock-outer-40") (= (-> (level-get-target-inside *level*) name) 'sewb))
           (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'on-notice :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") '(sewb))))
           (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'next-actor :key-frame -1000000000.0 :elt-count 1 :elt-type uint32) (the pointer 40938))
           (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 20.0000)))
           (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'idle-distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 40.0000)))
+          (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'on-cross :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(scene-play "sewer-ate-entrance")))
           )
-        (when (entity-by-name "com-airlock-inner-51")
+        (when (and (entity-by-name "com-airlock-inner-51") (= (-> (level-get-target-inside *level*) name) 'sewb))
           (add-data! (entity-by-name "com-airlock-inner-51") (new 'static 'res-tag :name 'on-notice :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") '(sewb))))
           (add-data! (entity-by-name "com-airlock-inner-51") (new 'static 'res-tag :name 'next-actor :key-frame -1000000000.0 :elt-count 1 :elt-type uint32) (the pointer 40939))
           (add-data! (entity-by-name "com-airlock-inner-51") (new 'static 'res-tag :name 'distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 20.0000)))
           (add-data! (entity-by-name "com-airlock-inner-51") (new 'static 'res-tag :name 'idle-distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 40.0000)))
           )
-        |#
 
-        ;; Sewer Unused KG Hoppers
+        ;; atollext airlocks
 
-        (when (entity-by-name "kg-hopper-32")
-          (set! (-> (the entity-actor (entity-by-name "kg-hopper-32")) extra kill-mask) (task-mask task3))
-          (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "kg-hopper-32") 5))) 67294)
-          )
-        (when (entity-by-name "kg-hopper-34")
-          (set! (-> (the entity-actor (entity-by-name "kg-hopper-34")) extra kill-mask) (task-mask task3))
-          (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "kg-hopper-34") 5))) 67294)
-          )
-        (when (entity-by-name "kg-hopper-36")
-          (set! (-> (the entity-actor (entity-by-name "kg-hopper-36")) extra kill-mask) (task-mask task3))
-          (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "kg-hopper-36") 5))) 67294)
-          )
-        (when (entity-by-name "kg-hopper-38")
-          (set! (-> (the entity-actor (entity-by-name "kg-hopper-38")) extra kill-mask) (task-mask task3))
-          (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "kg-hopper-38") 5))) 67294)
-          )
-        (when (entity-by-name "kg-hopper-40")
-          (set! (-> (the entity-actor (entity-by-name "kg-hopper-40")) extra kill-mask) (task-mask task3))
-          (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "kg-hopper-40") 5))) 67294)
+        (when (and (entity-by-name "com-airlock-inner-17") (= (status-of-level-and-borrows *level* 'atollext #f) 'active))
+          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-17") 'on-inside pair)) '((want-load 'atollext 'atoll #f)))
+          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-17") 'on-enter pair)) '((want-display 'atollext 'display) (want-display 'sewa 'display)))
+          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-17") 'on-notice pair)) '((atollext)))
+          (add-data! (entity-by-name "com-airlock-inner-17") (new 'static 'res-tag :name 'on-cross :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(scene-play "ate-elevator-exit")))
+          (add-data! (entity-by-name "com-airlock-inner-17") (new 'static 'res-tag :name 'distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 10.0000)))
+          (add-data! (entity-by-name "com-airlock-inner-17") (new 'static 'res-tag :name 'idle-distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 40.0000)))
           )
 
-        ;(when (entity-by-name "sewer-elec-gate-3")
-          ;(set! (-> (the (pointer pair) (get-tag-index-data (entity-by-name "sewer-elec-gate-3") 1))) '(send-event "battle-2" 'trigger))
-          ;)
+        (when (and (entity-by-name "com-airlock-inner-18") (= (status-of-level-and-borrows *level* 'atollext #f) 'active))
+          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-18") 'on-inside pair)) '((want-load 'atollext 'sewa #f)))
+          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-18") 'on-exit pair)) '((want-load  'atollext 'sewa #f)))
+          )
 
         ;; Sewer Scoutbot
 
@@ -3589,6 +3594,13 @@
           )
         (when (entity-by-name "sewer-elec-gate-4")
           (set! (-> (the (pointer pair) (get-tag-index-data (entity-by-name "sewer-elec-gate-4") 0))) '(send-event "scoutbot-9" 'trigger))
+          )
+        
+        ;; Chickalopes
+
+        (when (entity-by-name "chickalope-5")
+          (set! (-> (the entity-actor (entity-by-name "chickalope-5")) extra kill-mask) (task-mask task3))
+          ;(set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "chickalope-5") 5))) 67294)
           )
       (suspend)
       )
