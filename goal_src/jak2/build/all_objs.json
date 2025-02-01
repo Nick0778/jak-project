@@ -2097,7 +2097,14 @@
 ["5COMMON",                                    "5COMMON",                    2, ["NO-XGO"], ""],
 ["6COMMON",                                    "6COMMON",                    2, ["NO-XGO"], ""],
 ["7COMMON",                                    "7COMMON",                    2, ["NO-XGO"], ""],
-["target-port-turret",                         "target-port-turret",         3, ["PORTBLMP"], "levels/portblmp"],
+["port-metal-head-boat-ag",                    "port-metal-head-boat",       4, ["PORTBLMP"], "levels/portblmp"],
 ["port-blimp",                                 "port-blimp",                 3, ["PORTBLMP"], "levels/portblmp"],
-["portblmp",                                   "portblmp",                   4, ["PORTBLMP"], ""]
+["portblmp",                                   "portblmp",                   4, ["PORTBLMP"], "levels/portblmp"],
+["target-port-turret",                         "target-port-turret",         3, ["PORTBLMP"], "levels/portblmp"],
+["torn-turret+0-ag",                           "torn-turret+0",              4, ["PORTBLMP"], "levels/portblmp"],
+["tpage-2934",                                 "tpage-2934",                 4, ["PORTBLMP"], "levels/portblmp"],
+["tpage-2935",                                 "tpage-2935",                 4, ["PORTBLMP"], "levels/portblmp"],
+["tpage-2967",                                 "tpage-2967",                 4, ["PORTBLMP"], "levels/portblmp"],
+["tpage-3071",                                 "tpage-3071",                 4, ["PORTBLMP"], "levels/portblmp"],
+["tpage-3130",                                 "tpage-3130",                 4, ["PORTBLMP"], "levels/portblmp"]
 ]
