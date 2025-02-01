@@ -419,12 +419,6 @@
 ;; the DGO file
 (custom-level-cgo "LCT.DGO" "lctyturret/lctyturret.gd")
 
-<<<<<<< HEAD
-
-=======
-
->>>>>>> d5590ab6387f13ad0dc7de1112a0fecc990a4510
-
 ;;;;;;;;;;;;;;;;;;;;;
 ;; ANIMATIONS
 ;;;;;;;;;;;;;;;;;;;;;
