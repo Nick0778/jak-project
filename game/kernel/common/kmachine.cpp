@@ -249,6 +249,7 @@ u64 playMP3_internal(u32 filePathu32, u32 volume, bool isMainMusic) {
       if (maSoundMap.find(filePath) != maSoundMap.end()) {
         maSoundMap[filePath].remove_if(
             [&](MiniAudioLib::ma_sound l_sound) { return &sound == &l_sound; });
+        stopAllSounds(); //Force sounds to stop
       }
     }
   });
@@ -305,6 +306,65 @@ void changeMainMusicVolume(u32 volume) {
     MiniAudioLib::ma_sound_set_volume(mainMusicSound, ((float)volume) / 100.0);
   }
   mainMusicMutex.unlock();
+}
+
+// Function to check if any custom audio is being played or not. This will return true or false.
+u64 isAnySoundPlaying() {
+  bool anyPlaying = false;  // Flag to track whether any sound is currently playing
+
+  std::lock_guard<std::mutex> activeLock(activeMusicsMutex);
+
+  // Iterate over all entries in maSoundMap
+  for (auto it = maSoundMap.begin(); it != maSoundMap.end();) {
+    auto& soundList = it->second;  // Get the list of sounds for the current file
+
+    // Remove sounds that have finished playing
+    soundList.remove_if([](MiniAudioLib::ma_sound& sound) {
+      if (!MiniAudioLib::ma_sound_is_playing(&sound)) {  // Check if the sound has stopped
+        MiniAudioLib::ma_sound_stop(&sound);             // Stop the sound to free resources
+        MiniAudioLib::ma_sound_uninit(&sound);           // Uninitialize to clean up memory
+        return true;                                     // Remove this sound from the list
+      }
+      return false;  // Keep this sound in the list if it's still playing
+    });
+
+    // If the list still contains sounds, set anyPlaying to true
+    if (!soundList.empty()) {
+      anyPlaying = true;
+    }
+
+    // If the list is empty after removing finished sounds, erase it from the map
+    if (soundList.empty()) {
+      it = maSoundMap.erase(it);  // Remove the entry and move iterator to the next valid element
+    } else {
+      ++it;  // Move to the next element in the map
+    }
+  }
+
+  if (anyPlaying) {
+    std::cout << "Some sound is being played!" << std::endl;
+  } else {
+    std::cout << "No sound is being played!" << std::endl;
+  }
+
+  return bool_to_symbol(anyPlaying);
+}
+
+// Function to check if the custom audio passed as an argument is being played or not. This will return true or false. 
+u64 isSoundPlaying(u32 filePathu32) {
+
+  std::string filePath = Ptr<String>(filePathu32).c()->data();
+
+  //Get the list of files that are currently being played
+  std::vector<std::string> playingFiles = getPlayingFileNames();
+
+  // Checks if the file is in the list of files being played
+  if (std::find(playingFiles.begin(), playingFiles.end(), filePath) != playingFiles.end()) {
+    std::cout << "The sound: (" << filePath << ") is being played!" << std::endl;
+    return bool_to_symbol(true);
+  }
+
+  return bool_to_symbol(false);
 }
 
 /*!
@@ -1224,6 +1284,10 @@ void init_common_pc_port_functions(
   make_func_symbol_func("resume-main-music", (void*)resumeMainMusic);
 
   make_func_symbol_func("main-music-volume", (void*)changeMainMusicVolume);
+
+  // Check if any custom audio is being played or not
+  make_func_symbol_func("is-any-sound-playing?", (void*)isAnySoundPlaying);
+  make_func_symbol_func("is-sound-playing?", (void*)isSoundPlaying);
 
   // discord rich presence
   make_func_symbol_func("pc-discord-rpc-set", (void*)set_discord_rpc);
