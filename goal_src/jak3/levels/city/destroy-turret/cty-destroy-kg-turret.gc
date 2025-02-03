@@ -1178,7 +1178,7 @@
             )
           (set! (-> this start-target-pos quad) (-> gp-0 root trans quad))
           (set! (-> this start-target-vel quad) (-> gp-0 root transv quad))
-          (try-update-focus (-> this focus) (the-as process-focusable gp-0) this)
+          (focus-on! (-> this focus) (the-as process-focusable gp-0) this)
           )
         (else
           (clear-focused (-> this focus))

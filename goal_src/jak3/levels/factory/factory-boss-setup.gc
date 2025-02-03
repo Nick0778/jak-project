@@ -2142,10 +2142,24 @@
     )
   )
 
-(defmethod init-from-entity! ((this fac-warp-effect) (arg0 entity-actor))
-  "Set up a newly created process from the entity that created it."
-  (set! (-> this root) (new 'process 'trsqv))
-  (process-drawable-from-entity! this arg0)
+(defmethod init-skel-and-collide! ((this fac-warp-effect))
+  (let ((s5-0 (new 'process 'collide-shape this (collide-list-enum usually-hit-by-player))))
+    (set! (-> s5-0 penetrated-by) (penetrate))
+    (let ((v1-2 (new 'process 'collide-shape-prim-mesh s5-0 (the-as uint 0) (the-as uint 0))))
+      (set! (-> v1-2 prim-core collide-as) (collide-spec obstacle))
+      (set! (-> v1-2 prim-core action) (collide-action solid))
+      (set! (-> v1-2 transform-index) 3)
+      (set-vector! (-> v1-2 local-sphere) 0.0 12288.0 0.0 16384.0)
+      (set! (-> s5-0 total-prims) (the-as uint 1))
+      (set! (-> s5-0 root-prim) v1-2)
+      )
+    (set! (-> s5-0 nav-radius) (* 0.75 (-> s5-0 root-prim local-sphere w)))
+    (let ((v1-5 (-> s5-0 root-prim)))
+      (set! (-> s5-0 backup-collide-as) (-> v1-5 prim-core collide-as))
+      (set! (-> s5-0 backup-collide-with) (-> v1-5 prim-core collide-with))
+      )
+    (set! (-> this root) s5-0)
+    )
   (initialize-skeleton
     this
     (the-as skeleton-group (art-group-get-by-name *level* "skel-fac-warp-effect" (the-as (pointer level) #f)))

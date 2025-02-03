@@ -3556,7 +3556,7 @@
 
         ;; atollext airlocks
 
-        (when (and (entity-by-name "com-airlock-inner-17") (= (status-of-level-and-borrows *level* 'atollext #f) 'active))
+        (when (and (entity-by-name "com-airlock-inner-17") (= (level-status? *level* 'atollext #f) 'active))
           (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-17") 'on-inside pair)) '((want-load 'atollext 'atoll #f)))
           (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-17") 'on-enter pair)) '((want-display 'atollext 'display) (want-display 'sewa 'display)))
           (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-17") 'on-notice pair)) '((atollext)))
@@ -3565,7 +3565,7 @@
           (add-data! (entity-by-name "com-airlock-inner-17") (new 'static 'res-tag :name 'idle-distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 40.0000)))
           )
 
-        (when (and (entity-by-name "com-airlock-inner-18") (= (status-of-level-and-borrows *level* 'atollext #f) 'active))
+        (when (and (entity-by-name "com-airlock-inner-18") (= (level-status? *level* 'atollext #f) 'active))
           (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-18") 'on-inside pair)) '((want-load 'atollext 'sewa #f)))
           (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-18") 'on-exit pair)) '((want-load  'atollext 'sewa #f)))
           )
