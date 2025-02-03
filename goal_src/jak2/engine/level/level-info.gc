@@ -4356,6 +4356,7 @@
     :activate-func 'strip-activate
     :deactivate-func 'strip-deactivate
     :kill-func #f
+    :borrow-size (new 'static 'array uint16 2 #x285 #x0) ;; added
     :borrow-level (new 'static 'array symbol 2 #f #f)
     :borrow-display? (new 'static 'array symbol 2 #f #f)
     :base-task-mask (task-mask task0)
@@ -15808,4 +15809,66 @@
 
 (#when PC_PORT
   (cons! *level-load-list* 'test-zone)
+  )
+
+;; this level is loaded as a borrow level in Strip Mine after beating Kor
+(define hover-test
+  (new 'static 'level-load-info
+    :index #x9f
+    :name 'hover-test
+    :visname 'hover-test-vis
+    :nickname 'hrt
+    :dbname 'hover-test
+    :taskname 'default
+    :packages '(hoverp turretp)
+    :memory-mode (load-buffer-mode borrow)
+    :music-bank #f
+    :ambient-sounds '()
+    :mood-func 'update-mood-default
+    :mood-init #f
+    :ocean #f
+    :sky #t
+    :use-camera-other #f
+    :part-engine-max 16
+    :continues '()
+    :tasks '()
+    :priority 100
+    :load-commands '()
+    :alt-load-commands '()
+    :bsp-mask #xffffffffffffffff
+    :buttom-height (meters -10000000)
+    :run-packages '("common")
+    :wait-for-load #t
+    :login-func 'hover-test-login ;; call the function responsible to allocate custom nav-network in memory while the level is being loaded.
+    :activate-func 'hover-test-activate ;; call the function responsible to allocate custom nav-network in memory while the level is being loaded.
+    :deactivate-func 'hover-test-deactivate ;; call the function responsible to remove custom nav-network from memory.
+    :kill-func #f
+    :borrow-level (new 'static 'array symbol 2 #f #f)
+    :borrow-display? (new 'static 'array symbol 2 #f #f)
+    :base-task-mask (task-mask task0)
+    :texture-anim-tfrag #f
+    :texture-anim-pris #f
+    :texture-anim-shrub #f
+    :texture-anim-alpha #f
+    :texture-anim-water #f
+    :texture-anim-twarp #f
+    :texture-anim-pris2 #f
+    :texture-anim-sprite #f
+    :texture-anim-map #f
+    :texture-anim-sky #f
+    :draw-priority 10.0
+    :fog-height 327680.0
+    :bigmap-id (bigmap-id city)
+    :ocean-near-translucent? #t
+    :ocean-far? #t
+    :mood-range (new 'static 'mood-range :data (new 'static 'array float 4 0.0 1.0 0.0 1.0))
+    :max-rain 1.0
+    :fog-mult 1.0
+    :ocean-alpha 1.0
+    :extra-sound-bank '((strip1 drill3) (strip3 drill1))
+    )
+  )
+
+(#when PC_PORT
+  (cons! *level-load-list* 'hover-test)
   )

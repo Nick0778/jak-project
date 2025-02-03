@@ -365,3 +365,9 @@
 (deftype hud-green-eco-pickup (hud)
   ()
   )
+
+;; added - the custom hud for wasp counting used in the example custom hover battle.
+;; at the moment this uses "hud-plasmite" as a placeholder as we can't add new textures yet.
+(deftype hud-wasp (hud)
+  ()
+  )

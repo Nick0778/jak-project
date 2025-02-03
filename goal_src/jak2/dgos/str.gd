@@ -19,6 +19,7 @@
   "strip-drop.o"
   "strip-obs.o"
   "chaincrate.o"
+  "hover-test-setup.o" ;; added - added this code here too prevent a weird compiler error at the beginning.
   "tpage-787.go"
   "tpage-789.go"
   "tpage-788.go"

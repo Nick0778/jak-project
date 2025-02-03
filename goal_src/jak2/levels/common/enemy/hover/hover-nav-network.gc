@@ -3133,3 +3133,170 @@
 (define *under-adjacency* (new 'static 'boxed-array :type nav-network-info))
 
 (define *nestb-adjacency* (new 'static 'boxed-array :type nav-network-info))
+
+;; added - custom nav-network used in hover-test custom level
+(define *hover-test-adjacency* (new 'static 'boxed-array :type nav-network-info
+                            (new 'static 'nav-network-info
+                              :pos (new 'static 'vector :x (meters 2550.20) :y (meters 134.12) :z (meters -105.45) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :parent #f)
+                              :count 3
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 3
+                                (new 'static 'nav-network-adjacency :index 1 :dist (meters 29.210526))
+                                (new 'static 'nav-network-adjacency :index 2 :dist (meters 15.808975))
+                                (new 'static 'nav-network-adjacency :index 4 :dist (meters 16.225024))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 1
+                              :pos (new 'static 'vector :x (meters 2566.38) :y (meters 134.12) :z (meters -81.13) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 1 :parent #f)
+                              :count 3
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 3
+                                (new 'static 'nav-network-adjacency :dist (meters 29.210526))
+                                (new 'static 'nav-network-adjacency :index 3 :dist (meters 21.115009))
+                                (new 'static 'nav-network-adjacency :index 5 :dist (meters 17.725462))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 2
+                              :pos (new 'static 'vector :x (meters 2537.06) :y (meters 134.12) :z (meters -96.66) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 2 :parent #f)
+                              :count 6
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 6
+                                (new 'static 'nav-network-adjacency :dist (meters 15.808975))
+                                (new 'static 'nav-network-adjacency :index 3 :dist (meters 31.344768))
+                                (new 'static 'nav-network-adjacency :index 7 :dist (meters 172.160241))
+                                (new 'static 'nav-network-adjacency :index 8 :dist (meters 171.445072))
+                                (new 'static 'nav-network-adjacency :index 10 :dist (meters 64.029924))
+                                (new 'static 'nav-network-adjacency :index 12 :dist (meters 30.126419))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 3
+                              :pos (new 'static 'vector :x (meters 2549.82) :y (meters 134.12) :z (meters -68.03) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 3 :parent #f)
+                              :count 6
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 6
+                                (new 'static 'nav-network-adjacency :index 1 :dist (meters 21.115009))
+                                (new 'static 'nav-network-adjacency :index 2 :dist (meters 31.344768))
+                                (new 'static 'nav-network-adjacency :index 6 :dist (meters 131.753115))
+                                (new 'static 'nav-network-adjacency :index 7 :dist (meters 167.394018))
+                                (new 'static 'nav-network-adjacency :index 11 :dist (meters 129.092826))
+                                (new 'static 'nav-network-adjacency :index 13 :dist (meters 28.137786))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 4
+                              :pos (new 'static 'vector :x (meters 2540.95) :y (meters 134.12) :z (meters -118.78) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 4 :parent #f)
+                              :count 1
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 1
+                                (new 'static 'nav-network-adjacency :dist (meters 16.225024))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 5
+                              :pos (new 'static 'vector :x (meters 2576.66) :y (meters 134.12) :z (meters -66.69) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 5 :parent #f)
+                              :count 1
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 1
+                                (new 'static 'nav-network-adjacency :index 1 :dist (meters 17.725462))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 6
+                              :pos (new 'static 'vector :x (meters 2472.85) :y (meters 90.61) :z (meters 29.65) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 6 :parent #f)
+                              :count 1
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 1
+                                (new 'static 'nav-network-adjacency :index 3 :dist (meters 131.753115))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 7
+                              :pos (new 'static 'vector :x (meters 2406.57) :y (meters 90.73) :z (meters 6.92) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 7 :parent #f)
+                              :count 2
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 2
+                                (new 'static 'nav-network-adjacency :index 2 :dist (meters 172.160241))
+                                (new 'static 'nav-network-adjacency :index 3 :dist (meters 167.394018))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 8
+                              :pos (new 'static 'vector :x (meters 2367.16) :y (meters 111.61) :z (meters -101.21) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 8 :parent #f)
+                              :count 2
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 1
+                                (new 'static 'nav-network-adjacency :index 2 :dist (meters 171.445072))
+                                (new 'static 'nav-network-adjacency :index 9 :dist (meters 38.337015))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 9
+                              :pos (new 'static 'vector :x (meters 2350.01) :y (meters 124.70) :z (meters -69.52) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 9 :parent #f)
+                              :count 1
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 1
+                                (new 'static 'nav-network-adjacency :index 8 :dist (meters 38.337015))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 10
+                              :pos (new 'static 'vector :x (meters 2495.22) :y (meters 97.42) :z (meters -128.32) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 10 :parent #f)
+                              :count 1
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 1
+                                (new 'static 'nav-network-adjacency :index 2 :dist (meters 64.029924))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 11
+                              :pos (new 'static 'vector :x (meters 2551.93) :y (meters 79.16) :z (meters 48.76) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 11 :parent #f)
+                              :count 1
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 1
+                                (new 'static 'nav-network-adjacency :index 3 :dist (meters 129.092826))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 12
+                              :pos (new 'static 'vector :x (meters 2527.17) :y (meters 159.49) :z (meters -83.77) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 12 :parent #f)
+                              :count 2
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 2
+                                (new 'static 'nav-network-adjacency :index 2 :dist (meters 30.126419))
+                                (new 'static 'nav-network-adjacency :index 14 :dist (meters 5.153989))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 13
+                              :pos (new 'static 'vector :x (meters 2536.07) :y (meters 158.43) :z (meters -71.45) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 13 :parent #f)
+                              :count 2
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 2
+                                (new 'static 'nav-network-adjacency :index 3 :dist (meters 28.137786))
+                                (new 'static 'nav-network-adjacency :index 15 :dist (meters 4.969688))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 14
+                              :pos (new 'static 'vector :x (meters 2526.53) :y (meters 156.85) :z (meters -79.39) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 14 :parent #f)
+                              :count 1
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 1
+                                (new 'static 'nav-network-adjacency :index 12 :dist (meters 5.153989))
+                                )
+                              )
+                            (new 'static 'nav-network-info
+                              :index 15
+                              :pos (new 'static 'vector :x (meters 2535.10) :y (meters 158.23) :z (meters -76.32) :w 1.0)
+                              :path-node (new 'static 'nav-network-path-node :row-index 15 :parent #f)
+                              :count 1
+                              :adjacency (new 'static 'inline-array nav-network-adjacency 1
+                                (new 'static 'nav-network-adjacency :index 13 :dist (meters 4.969688))
+                                )
+                              )
+                            )
+          )
+          

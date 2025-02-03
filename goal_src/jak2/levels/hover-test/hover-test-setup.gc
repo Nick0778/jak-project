@@ -1,0 +1,65 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; basically this will allocate the custom nav-network in memory while the level is being loaded
+
+(declare-type nav-network basic)
+(define-extern *nav-network* nav-network)
+
+(defun hover-test-login ()
+  (set! *nav-network* (new 'loading-level 'nav-network)) 
+  (nav-network-method-9 *nav-network*)
+  0
+  (none)
+  )
+
+(defun hover-test-deactivate ()
+  (set! *nav-network* (the-as nav-network 0))
+  0
+  (none)
+  )
+
+(defun hover-test-activate ((arg0 level))
+  (nav-network-method-10 *nav-network* arg0 *hover-test-adjacency*)
+  0
+  (none)
+  )
+
+;; added - the custom hud for wasp counting used in the example custom hover battle.
+;; at the moment this uses "hud-plasmite" as a placeholder as we can't add new textures yet.
+(defmethod draw ((this hud-wasp))
+  (set-hud-piece-position!
+    (the-as hud-sprite (-> this sprites))
+    (the int (+ 457.0 (* 130.0 (-> this offset))))
+    210
+    )
+  (format (clear (-> this strings 0 text)) "~D" (-> this values 0 current))
+  (set-as-offset-from! (the-as hud-sprite (-> this strings 0 pos)) (the-as vector4w (-> this sprites)) -16 20)
+  ((method-of-type hud draw) this)
+  0
+  (none)
+  )
+
+(defmethod update-values ((this hud-wasp))
+  (set! (-> this values 0 target) (the int (-> *game-info* counter)))
+  ((method-of-type hud update-values) this)
+  0
+  (none)
+  )
+
+(defmethod init-callback ((this hud-wasp))
+  (set! (-> this level) (level-get *level* 'strip))
+  (set! (-> this gui-id)
+        (add-process *gui-control* this (gui-channel hud-middle-right) (gui-action hidden) (-> this name) 81920.0 0)
+        )
+  (logior! (-> this flags) (hud-flags show))
+  (set! (-> this sprites 0 tex) (lookup-texture-by-id (new 'static 'texture-id :page #xb26)))
+  (set! (-> this sprites 0 flags) (the-as uint 4))
+  (set! (-> this sprites 0 scale-x) 1.0)
+  (set! (-> this sprites 0 scale-y) 1.0)
+  (alloc-string-if-needed this 0)
+  (set! (-> this strings 0 scale) 0.6)
+  (set! (-> this strings 0 flags) (font-flags kerning middle large))
+  0
+  (none)
+  )

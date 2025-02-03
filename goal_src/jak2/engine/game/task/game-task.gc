@@ -1034,6 +1034,15 @@
             :play-continue "stadiumd-race-fail"
             :kiosk-play-continue #f
             )
+          (new 'static 'game-task-info
+            :name "strip-hover-battle"
+            :pre-play-node (game-task-node strip-hover-battle-introduction)
+            :kiosk-play-node (game-task-node strip-hover-battle-resolution)
+            :pre-play-continue "vinroom-start"
+            :play-node (game-task-node strip-hover-battle-resolution)
+            :play-continue "strip-warp"
+            :kiosk-play-continue "vinroom-start"
+            )
           )
         )
   (set! (-> gp-0 sub-task-list)
@@ -1068,6 +1077,7 @@
               (stadiumd 0 #f #f) ;; added
               (introcst 0 lintcstb #f)
               (onintent 0 ltentout display)
+              (strip 0 #f #f) ;; added for hover-test
               )
             :open? #f
             :on-close #f
@@ -12304,6 +12314,51 @@
                                                    (the-as symbol (and v1-1 (= (-> v1-1 info taskname) (-> arg0 level))))
                                                    )
                     )
+            :on-close #f
+            )
+          ;; added for hover-test
+          (new 'static 'game-task-node-info
+            :level 'strip
+            :task (game-task strip-hover-battle)
+            :name "strip-hover-battle-introduction"
+            :when-open #f
+            :flags (game-task-node-flag save-on-life)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node nest-boss-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open '(begin (task-close! "strip-hover-battle-introduction"))
+            :info #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            )
+          (new 'static 'game-task-node-info
+            :level 'strip
+            :task (game-task strip-hover-battle)
+            :name "strip-hover-battle-resolution"
+            :when-open (new 'static 'boxed-array :type game-task-event
+              (new 'static 'game-task-event
+                :actor (game-task-actor minimap)
+                :action (game-task-action show)
+                :tex (game-task-icon gaticon-03)
+                :scene #f
+                )
+              )
+            :flags (game-task-node-flag close-task abs-task-mask)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node strip-hover-battle-introduction)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :task-mask (task-mask done)
+            :on-open #f
+            :info #f
+            :borrow '((strip 0 hover-test display))
+            :open? #f
             :on-close #f
             )
           )
