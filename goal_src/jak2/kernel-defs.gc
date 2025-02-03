@@ -255,6 +255,10 @@
 (define-extern is-any-sound-playing? (function symbol))
 (define-extern is-sound-playing? (function string symbol))
 
+;;pause/resume all sounds
+(define-extern pause-all-sounds (function none))
+(define-extern resume-all-sounds (function none))
+
 (define-extern pc-filepath-exists? (function string symbol))
 (define-extern pc-mkdir-file-path (function string none))
 (define-extern pc-sound-set-flava-hack (function int none))
