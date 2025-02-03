@@ -308,6 +308,10 @@
 ;; to also generate a collide-mesh, add :gen-mesh #t
 (build-actor "test-actor" :force-run #t :gen-mesh #t)
 
+(build-custom-level "hover-test")
+;; the DGO file
+(custom-level-cgo "HRT.DGO" "hover-test/hover-test.gd")
+
 ;;;;;;;;;;;;;;;;;;;;;
 ;; ANIMATIONS
 ;;;;;;;;;;;;;;;;;;;;;
