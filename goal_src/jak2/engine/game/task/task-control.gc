@@ -2386,6 +2386,8 @@
   (in-bubble? (meters x) (meters y) (meters z) (meters w))
   )
 
+(define *playing-cutscene?* #f) ;; Flag to check if cutscenes are playing
+
 ;; Hack that allows portblmp to be loaded when you are in the city port
 (process-spawn-function process
   (lambda :behavior process ()
@@ -2422,6 +2424,12 @@
               (want-display-level *load-state* 'ctyport 'display)
               )
             )
+          )
+        )
+      ;; Play custom audio during mission cutscene 
+      (when (and (= (level-status *level* 'portblmp) 'active) *playing-cutscene?*)
+        (if (not (is-any-sound-playing?))
+          (play-sound-file "CIPBRES.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
           )
         )
       (suspend)
