@@ -54,35 +54,80 @@
 
 ;; Torn new wave voicelines
 (defun new-wave-speech ((arg0 port-turret))
-  (when (not (is-any-sound-playing?))
+  (when (= (get-status *gui-control* (the-as sound-id (-> arg0 id))) (gui-status unknown))
     (let ((v1-3 (rand-vu-int-count 9)))
       (cond
         ((zero? v1-3)
-          (play-sound-file "TORN018.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn018" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 1)
-         (play-sound-file "TORN022.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn022" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 2)
-         (play-sound-file "TORN023.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn023" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 3)
-         (play-sound-file "TORN026.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn026" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 4)
-         (play-sound-file "TORN033.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn033" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 5)
-         (play-sound-file "TORN037.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn037" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 6)
-         (play-sound-file "TORN038.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn038" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 7)
-         (play-sound-file "TORN039.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn039" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 8)
-         (play-sound-file "TORN047.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn047" -99.0 0)
+                 )
+               )
          )
         )
       )
@@ -92,35 +137,80 @@
 
 ;; Torn voicelines when Jak destroy an metal head boat
 (defun jak-hit-speech ((arg0 port-turret))
-  (when (not (is-any-sound-playing?))
+  (when (= (get-status *gui-control* (the-as sound-id (-> arg0 id))) (gui-status unknown))
     (let ((v1-3 (rand-vu-int-count 9)))
       (cond
         ((zero? v1-3)
-         (play-sound-file "TORN019.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn019" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 1)
-         (play-sound-file "TORN029.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn029" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 2)
-         (play-sound-file "TORN030.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn030" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 3)
-         (play-sound-file "TORN034.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn034" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 4)
-         (play-sound-file "TORN035.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn035" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 5)
-         (play-sound-file "TORN040.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn040" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 6)
-         (play-sound-file "TORN049.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn049" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 7)
-         (play-sound-file "TORN052.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn052" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 8)
-         (play-sound-file "TORN056.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn056" -99.0 0)
+                 )
+               )
          )
         )
       )
@@ -130,14 +220,27 @@
 
 ;; UNUSED voicelines
 (defun jak-miss-speech ((arg0 port-turret))
-  (when (not (is-any-sound-playing?))
-    (let ((v1-2 (rand-vu-int-count 2)))
-      (cond
-        ((zero? v1-2)
-          (play-sound-file "TORN048.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
-          )
-        ((= v1-2 1)
-          (play-sound-file "TORN051.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+  (let ((a2-0 (get-status *gui-control* (the-as sound-id (-> arg0 id)))))
+    (when (= a2-0 (gui-status unknown))
+      (format 0 "status ~D~%" a2-0)
+      (let ((v1-2 (rand-vu-int-count 2)))
+        (cond
+          ((zero? v1-2)
+           (set! (-> arg0 id)
+                 (the-as
+                   uint
+                   (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn048" -99.0 0)
+                   )
+                 )
+           )
+          ((= v1-2 1)
+           (set! (-> arg0 id)
+                 (the-as
+                   uint
+                   (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn051" -99.0 0)
+                   )
+                 )
+           )
           )
         )
       )
@@ -147,17 +250,32 @@
 
 ;; Torn voicelines when the metal head boats are close to the portwall
 (defun ship-close-speech ((arg0 port-turret))
-  (when (not (is-any-sound-playing?))
+  (when (= (get-status *gui-control* (the-as sound-id (-> arg0 id))) (gui-status unknown))
     (let ((v1-3 (rand-vu-int-count 3)))
       (cond
         ((zero? v1-3)
-         (play-sound-file "TORN028.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn028" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 1)
-         (play-sound-file "TORN053.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn053" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 2)
-         (play-sound-file "TORN057.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn057" -99.0 0)
+                 )
+               )
          )
         )
       )
@@ -167,14 +285,24 @@
 
 ;; UNUSED voicelines
 (defun help-speech ((arg0 port-turret))
-  (when (not (is-any-sound-playing?))
+  (when (= (get-status *gui-control* (the-as sound-id (-> arg0 id))) (gui-status unknown))
     (let ((v1-3 (rand-vu-int-count 2)))
       (cond
         ((zero? v1-3)
-         (play-sound-file "TORN017.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn017" -99.0 0)
+                 )
+               )
          )
         ((= v1-3 1)
-         (play-sound-file "TORN020.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+         (set! (-> arg0 id)
+               (the-as
+                 uint
+                 (add-process *gui-control* arg0 (the-as gui-channel (-> arg0 channel)) (gui-action play) "torn020" -99.0 0)
+                 )
+               )
          )
         )
       )
@@ -386,7 +514,7 @@
 (defstate idle (port-metal-head-boat)
   :virtual #t
   :enter (behavior ()
-    (let ((v0-0 (the-as object (-> self draw color-mult)))) ;; Added - Make metal head boat black like in the prototype
+    (let ((v0-0 (the-as object (-> self draw color-mult)))) ;; Added to make metal head boat black like in the prototype
                  (set! (-> (the-as rgbaf v0-0) x) 0.0)
                  (set! (-> (the-as rgbaf v0-0) y) 0.0)
                  (set! (-> (the-as rgbaf v0-0) z) 0.0)
@@ -858,10 +986,22 @@
              )
          (set! (-> self roty) (t9-2 a0-3 (the-as float a1-2) (the-as float a2-2)))
          (when (and (cpad-pressed? 0 triangle) (= (-> self ships-launched) 1))
-            ;; If there are custom audios playing, then, stop them
-            (if (is-any-sound-playing?) 
-              (stop-all-sounds)
-              )
+           (let* ((a0-5 *gui-control*)
+                  (t9-3 (method-of-object a0-5 set-action!))
+                  (a1-3 4)
+                  )
+             (set! a2-2 1)
+             (t9-3
+               a0-5
+               (the-as gui-action a1-3)
+               (the-as sound-id a2-2)
+               (the-as gui-channel (-> self channel))
+               (gui-action none)
+               (the-as string #f)
+               (the-as (function gui-connection symbol) #f)
+               (the-as process #f)
+               )
+             )
            (logclear! (-> *cpad-list* cpads 0 button0-abs 0) (pad-buttons triangle))
            (logclear! (-> *cpad-list* cpads 0 button0-rel 0) (pad-buttons triangle))
            (set! (-> self ships-launched) 0)
@@ -878,24 +1018,37 @@
          (case (-> self turret-state)
            ((2)
             (when (= (-> self ships-launched) 1)
-              (play-sound-file "TORN010.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+              (set! (-> self id)
+                    (the-as
+                      uint
+                      (add-process *gui-control* self (the-as gui-channel (-> self channel)) (gui-action play) "torn010" -99.0 0)
+                      )
+                    )
               (set! (-> self next-turret-state) (the-as uint 3))
               (set! (-> self turret-state) (the-as uint 8))
               )
             )
            ((3)
-            (cond
-              ((not (is-any-sound-playing?))
-                ;(set! (-> self id) (the-as uint 0))
-                (set! (-> self turret-state) (the-as uint 4))
+            (let ((a2-4 (get-status *gui-control* (the-as sound-id (-> self id)))))
+              (cond
+                ((< (the-as uint a2-4) (the-as uint 3))
+                 (format 0 "status ~D~%" a2-4)
+                 (set! (-> self id) (the-as uint 0))
+                 (set! (-> self turret-state) (the-as uint 4))
+                 )
+                (else
+                  (set! (-> self target-y) 14563.556)
+                  )
                 )
-              (else
-                (set! (-> self target-y) 14563.556)
-                ) 
               )
             )
            ((4)
-            (play-sound-file "TORN011.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+            (set! (-> self id)
+                  (the-as
+                    uint
+                    (add-process *gui-control* self (the-as gui-channel (-> self channel)) (gui-action play) "torn011" -99.0 0)
+                    )
+                  )
             (set! (-> self next-turret-state) (the-as uint 5))
             (set! (-> self turret-state) (the-as uint 7))
             )
@@ -904,22 +1057,33 @@
             (send-event (process-by-name "port-turret-1" *active-pool*) 'start-shooting)
             (set! (-> self num-shots-available) 5.0)
             (set! (-> self target-y) 0.0)
-            (play-sound-file "TORN012.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+            (set! (-> self id)
+                  (the-as
+                    uint
+                    (add-process *gui-control* self (the-as gui-channel (-> self channel)) (gui-action play) "torn012" -99.0 0)
+                    )
+                  )
             (set! (-> self turret-state) (the-as uint 6))
             )
            ((6)
             (manage-torn-turret self (the-as none a1-2) (the-as float a2-2))
             )
            ((8)
-            (when (is-any-sound-playing?)
-              (set! (-> self turret-state) (-> self next-turret-state))
-              (set! (-> self next-turret-state) (the-as uint 1))
+            (let ((a2-7 (get-status *gui-control* (the-as sound-id (-> self id)))))
+              (when (= a2-7 (gui-status active))
+                (format 0 "status ~D~%" a2-7)
+                (set! (-> self turret-state) (-> self next-turret-state))
+                (set! (-> self next-turret-state) (the-as uint 1))
+                )
               )
             )
            ((7)
-            (when (not (is-any-sound-playing?))
-              (set! (-> self turret-state) (-> self next-turret-state))
-              (set! (-> self next-turret-state) (the-as uint 1))
+            (let ((a2-8 (get-status *gui-control* (the-as sound-id (-> self id)))))
+              (when (= a2-8 (gui-status unknown))
+                (format 0 "status ~D~%" a2-8)
+                (set! (-> self turret-state) (-> self next-turret-state))
+                (set! (-> self next-turret-state) (the-as uint 1))
+                )
               )
             )
            ((1)
@@ -979,31 +1143,44 @@
          (cond
            ((zero? v1-34)
             (when (= (-> self ships-launched) 1)
-              (when (not (is-any-sound-playing?))
-                (play-sound-file "TORN060.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
-                (set! (-> self last-speech) (the-as uint 1))
-                )
+              (set! (-> self last-speech) (the-as uint 1))
+              (set! (-> self id)
+                    (the-as
+                      uint
+                      (add-process *gui-control* self (the-as gui-channel (-> self channel)) (gui-action play) "torn060" -99.0 0)
+                      )
+                    )
               )
             )
            ((= v1-34 1)
-            (if (is-any-sound-playing?)
-              (set! (-> self last-speech) (the-as uint 2))
-              )
+            (if (= (get-status *gui-control* (the-as sound-id (-> self id))) (gui-status active))
+                (set! (-> self last-speech) (the-as uint 2))
+                )
             )
            ((= v1-34 2)
-            (if (not (is-any-sound-playing?))
-              (set! (-> self last-speech) (the-as uint 3))
-              )   
+            (if (< (the-as uint (get-status *gui-control* (the-as sound-id (-> self id)))) (the-as uint 3))
+                (set! (-> self last-speech) (the-as uint 3))
+                )
             )
            ((= v1-34 3)
-            (when (and (zero? (-> self ships-launched)) (not (is-any-sound-playing?)))
+            (when (zero? (-> self ships-launched))
               (let ((v1-43 (rand-vu-int-count 2)))
                 (cond
                   ((zero? v1-43)
-                    (play-sound-file "TORN061.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+                   (set! (-> self id)
+                         (the-as
+                           uint
+                           (add-process *gui-control* self (the-as gui-channel (-> self channel)) (gui-action play) "torn061" -99.0 0)
+                           )
+                         )
                    )
                   ((= v1-43 1)
-                    (play-sound-file "TORN062.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+                   (set! (-> self id)
+                         (the-as
+                           uint
+                           (add-process *gui-control* self (the-as gui-channel (-> self channel)) (gui-action play) "torn062" -99.0 0)
+                           )
+                         )
                    )
                   )
                 )
@@ -1011,22 +1188,22 @@
               )
             )
            ((= v1-34 4)
-            (if (is-any-sound-playing?)
-              (set! (-> self last-speech) (the-as uint 5))
-              )
+            (if (= (get-status *gui-control* (the-as sound-id (-> self id))) (gui-status active))
+                (set! (-> self last-speech) (the-as uint 5))
+                )
             )
            ((= v1-34 5)
-            (when (not (is-any-sound-playing?))
+            (when (< (the-as uint (get-status *gui-control* (the-as sound-id (-> self id)))) (the-as uint 3))
               (set! (-> self path-mode) (the-as uint 2))
               (set! (-> self roty-min) 0.0)
               (set! (-> self roty-max) 0.0)
               (set! (-> self available-for-pickup) #f)
-              (remove-setting! 'music) ;; Added - Stop the music after beating the mission (Not in original)
+              (remove-setting! 'music) ;; Stop the music after beating the mission (Not in original)
               (process-spawn scene-player :init scene-player-init "city-protect-blimp-res" #t #f)
-              (set! (-> self last-speech) (the-as uint 6)) ;; Added - New state which fixes an black screen softlock after the cutscene ends
+              (set! (-> self last-speech) (the-as uint 6)) ;; Added a new case which fixes an black screen softlock after the cutscene ends
               )
             )
-          ((= v1-34 6) ;; Added - New state which fixes an black screen softlock after the cutscene ends
+          ((= v1-34 6) ;; Added a new case which fixes an black screen softlock after the cutscene ends
             (go-virtual shutdown)
             (send-event *target* 'end-mode)
             (set! (-> self path-u) 0.0) ;; Set turret's path position to the start
@@ -1040,15 +1217,25 @@
           (set-time! (-> self last-ship-launched))
           (+! (-> self ships-launched) 1)
           (if (zero? (-> self total-ships-launched))
-            (play-sound-file "TORN014.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
-            (set-setting! 'music 'danger4 0.0 0) ;; Added - Play a music during the mission
-            )
+              (set! (-> self id)
+                    (the-as
+                      uint
+                      (add-process *gui-control* self (the-as gui-channel (-> self channel)) (gui-action play) "torn014" -99.0 0)
+                      )
+                    )
+
+                (set-setting! 'music 'danger4 0.0 0) ;; Added an music during the mission
+              )
           (+! (-> self total-ships-launched) 1)
           (if (< 7 (-> self ships-launched))
-            (new-wave-speech self)
-            )
+              (new-wave-speech self)
+              )
           )
         )
       )
     )
   )
+
+
+
+
