@@ -1034,7 +1034,7 @@
             :play-continue "stadiumd-race-fail"
             :kiosk-play-continue #f
             )
-          ;; added in PC Port - task "city-defend-portwall" for the unused port mission
+          ;; "ctyport-turret-res" - task "city-defend-portwall" for the unused port mission
           (new 'static 'game-task-info
             :name "city-defend-portwall"
             :text-name (text-id progress-missions-defend-port-wall)
@@ -12317,7 +12317,7 @@
                     )
             :on-close #f
             )
-          ;; added in PC Port - task-node "city-protect-blimp-introduction" restored from Jak 2 July Prototype
+          ;; Added - task-node "city-protect-blimp-introduction" restored from Jak 2 July Prototype
           (new 'static 'game-task-node-info
             :level 'city
             :task (game-task city-defend-portwall)
@@ -12341,7 +12341,7 @@
             :info (new 'static 'task-manager-info
               :mask (task-manager-mask intro-scene)
               :level 'ctywide
-              :intro-scene "tor005" ;; Torn speaker voicelines restored from "Defend the Portwall" from Jak 2 July Prototype  
+              :intro-scene "tor005" ;; Torn's intro speaker voice line from "Defend the Portwall" mission  
               :resolution-scene #f
               :resolution-scene-continue #f
               :retry-continue #f
@@ -12364,7 +12364,7 @@
             :on-close #f
             :description (text-id progress-missions-defend-port-wall)
             )
-          ;; added in PC Port - task-node "city-protect-blimp-resolution" restored from Jak 2 July Prototype
+          ;; Added - task-node "city-protect-blimp-resolution" restored from Jak 2 July Prototype
           (new 'static 'game-task-node-info
             :level 'city
             :task (game-task city-defend-portwall)
@@ -12391,7 +12391,7 @@
               :level 'portblmp
               :intro-scene #f
               :resolution-scene "city-protect-blimp-res"
-              :resolution-scene-continue #f
+              :resolution-scene-continue "ctyport-turret-res"
               :retry-continue "ctyport-turret"
               :fail-continue "ctyport-turret"
               :init-hook #f
