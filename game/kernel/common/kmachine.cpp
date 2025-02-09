@@ -281,7 +281,7 @@ u64 playMP3_internal(u32 filePathu32, u32 volume, bool isMainMusic) {
        // Check if the game is paused
       if (isPaused) {
         // pause sound
-        std::cout << "Sounds paused, stopping playback..." << std::endl;
+        //std::cout << "Sounds paused, stopping playback..." << std::endl;
         MiniAudioLib::ma_sound_stop(&sound);  // stop the sound when paused
 
         // Wait until the game is resumed
@@ -290,7 +290,7 @@ u64 playMP3_internal(u32 filePathu32, u32 volume, bool isMainMusic) {
         }
 
         // Resume the sound after the pause
-        std::cout << "Resuming sound: " << filePath << std::endl;
+        //std::cout << "Resuming sound: " << filePath << std::endl;
         MiniAudioLib::ma_sound_start(&sound);
       }
 
@@ -401,11 +401,11 @@ u64 isAnySoundPlaying() {
     }
   }
 
-  if (anyPlaying) {
+  /*if (anyPlaying) {
     std::cout << "Some sound is being played!" << std::endl;
   } else {
     std::cout << "No sound is being played!" << std::endl;
-  }
+  }*/
 
   return bool_to_symbol(anyPlaying);
 }
@@ -420,7 +420,7 @@ u64 isSoundPlaying(u32 filePathu32) {
 
   // Checks if the file is in the list of files being played
   if (std::find(playingFiles.begin(), playingFiles.end(), filePath) != playingFiles.end()) {
-    std::cout << "The sound: (" << filePath << ") is being played!" << std::endl;
+    //std::cout << "The sound: (" << filePath << ") is being played!" << std::endl;
     return bool_to_symbol(true);
   }
 
@@ -430,17 +430,17 @@ u64 isSoundPlaying(u32 filePathu32) {
 // Function to pause custom sounds
 void pauseAllSounds() {
   std::lock_guard<std::mutex> lock(soundMutex);
-  std::cout << "Pausing all sounds..." << std::endl;
+  //std::cout << "Pausing all sounds..." << std::endl;
   isPaused = true;  // pause sounds
 }
 
 // Function to resume custom sounds
 void resumeAllSounds() {
   std::lock_guard<std::mutex> lock(soundMutex);
-  std::cout << "Resuming all sounds..." << std::endl;
+  //std::cout << "Resuming all sounds..." << std::endl;
   isPaused = false;             // resume sounds
   soundCondition.notify_all();  // notifies the thread to resume
-  std::cout << "All sounds have resumed!" << std::endl;
+  //std::cout << "All sounds have resumed!" << std::endl;
 }
 
 /*!
