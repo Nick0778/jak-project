@@ -2407,6 +2407,7 @@
             (want-display-level *load-state* 'ctywide 'display)
             (want-display-level *load-state* 'ctyport 'display)
             )
+          (script-eval '(want-sound 'drill1 'ctywide1 'ctywide2)) ;; sound banks for portblmp
           )
         ;; Fix ctypal not loading when you pass in a specific path
         (when (and (= (-> (level-get-target-inside *level*) name) 'ctyport) (= (level-status *level* 'portblmp) 'active))

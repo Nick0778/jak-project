@@ -14565,7 +14565,7 @@
           (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
           (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
           )
-        :want-sound (new 'static 'array symbol 3 'drill1 'drill2 'drill3) ;; Added - Drill Platform's sound banks for turret's sound
+        :want-sound (new 'static 'array symbol 3 'drill1 'ctywide1 'ctywide2) ;; Added - Drill Platform's sound banks for turret's sound
         )
       (new 'static 'continue-point
         :name "ctyport-turret-res"
@@ -14588,7 +14588,7 @@
           (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
           (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
           )
-        :want-sound (new 'static 'array symbol 3 'drill1 'drill2 'drill3) ;; Added - Drill Platform's sound banks for turret's sound
+        :want-sound (new 'static 'array symbol 3 'drill1 'ctywide1 'ctywide2) ;; Added - Drill Platform's sound banks for turret's sound
         )
       )
     :tasks '()
