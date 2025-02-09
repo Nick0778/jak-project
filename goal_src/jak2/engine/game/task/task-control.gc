@@ -2430,7 +2430,7 @@
       ;; Play custom audio during mission cutscene 
       (when (and (= (level-status *level* 'portblmp) 'active) *playing-cutscene?*)
         (if (not (is-any-sound-playing?))
-          (play-sound-file "CIPBRES.wav" (the int (* (-> *setting-control* user-current dialog-volume) 100.0)))
+          (play-sound-file "CIPBRES.wav" (the int (* (-> *setting-control* user-default dialog-volume) 100.0)))
           )
         )
       (suspend)
