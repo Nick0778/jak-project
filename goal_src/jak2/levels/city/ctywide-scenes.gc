@@ -858,7 +858,7 @@
                        )
                      (new 'static 'scene-actor
                        :name "torn-highres"
-                       :level 'portblmp
+                       :level 'ltrnysam ;; chaged - use torn-highres from this package to avoid missing eyes texture bug
                        :art-group "skel-torn-highres"
                        :prefix ""
                        :draw-frames '((min max))

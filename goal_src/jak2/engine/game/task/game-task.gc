@@ -1079,6 +1079,7 @@
               (stadiumd 0 #f #f) ;; added
               (introcst 0 lintcstb #f)
               (onintent 0 ltentout display)
+              (portblmp 0 ltrnysam special) ;; added
               )
             :open? #f
             :on-close #f
