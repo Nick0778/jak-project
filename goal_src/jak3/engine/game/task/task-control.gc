@@ -3422,3 +3422,76 @@
       (lookup-text! *common-text* (text-id discord-rpc-not-in-mission) #f)
     )
   )
+
+(process-spawn-function process
+  (lambda :behavior process ()
+    (loop
+
+      ;; Return to War Factory
+    
+      (when (task-closed? "desert-final-boss-resolution") 
+        (when (and (entity-by-name "cty-door-3") (= (-> (level-get-target-inside *level*) name) 'ctyslumc))
+
+          ;; on-notice
+          (set! (cdr (res-lump-struct (entity-by-name "cty-door-3") 'on-notice pair)) 
+            '(((and (task-closed? "city-win-introduction") (not (task-closed? "city-win-resolution")) (or (eq? (level-status? 'lfacrm1) 'loaded) (eq? (level-status? 'lfacrm1) 'active))) '(ctyslumc factorya)) ((and (task-closed? "city-win-resolution") (< (send-event self 'distance) 60480)) '(ctyslumc towerc))))
+
+          ;; on-cross
+          (set! (cdr (res-lump-struct (entity-by-name "cty-door-3") 'on-cross pair)) 
+            '((and (task-closed? "city-win-introduction") (not (task-closed? "city-win-resolution")) (< (send-event self 'distance) 60480)) (scene-play "factory-return-intro")))
+
+          ;; on-activate
+          (set! (cdr (res-lump-struct (entity-by-name "cty-door-3") 'on-activate pair)) 
+            '(((and (task-closed? "city-win-introduction") (not (task-closed? "city-win-resolution"))) (when (send-event self 'front) (want-load 'ctyslumc 'ctywide-ff 'factorya))) ((task-closed? "factory-sky-battle-resolution") (when (and (not (send-event self 'open?)) (send-event self 'front)) (want-load 'ctyslumc 'ctywide-ff 'freehq)))))
+          )
+        (when (and (entity-by-name "fac-elevator-a-1") (= (-> (level-get-target-inside *level*) name) 'factoryc))
+          (set! (cdr (res-lump-struct (entity-by-name "fac-elevator-a-1") 'on-notice pair))
+            '((when (task-closed? "city-win-resolution") (send-event self 'move-to 'bottom) (send-event self 'go-dormant))))
+          )
+        (when (and (entity-by-name "fac-elevator-a-2") (= (-> (level-get-target-inside *level*) name) 'factoryc))
+          (set! (cdr (res-lump-struct (entity-by-name "fac-elevator-a-2") 'on-notice pair))
+            '((when (task-closed? "city-win-resolution") (send-event self 'move-to 'top) (send-event self 'go-dormant))))
+          )
+
+        ;; Temple to Eco Mine
+
+        (when (and (entity-by-name "tpl-mardoor-4") (= (-> (level-get-target-inside *level*) name) 'templea))
+          ;; on-notice
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-mardoor-4") 'on-notice pair)) 
+            '((and (task-closed? "desert-final-boss-resolution") (not (task-closed? "city-win-resolution"))) '(templea templec)))
+          )
+        (when (= (-> (level-get-target-inside *level*) name) 'templea)
+          (set! (-> (region-lookup-by-id 1372) on-enter) (the-as pair '(when (task-closed? "desert-final-boss-resolution") (want-load 'templea 'templeb 'templec) (want-display 'templeb 'display) (want-display 'templec 'display))))
+          (set! (-> (region-lookup-by-id 1372) on-exit) (the-as pair '(when (task-closed? "desert-final-boss-resolution") (want-display 'templec #f))))
+          )
+        (when (entity-by-name "tpl-door-a-15")
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-a-15") 'on-notice pair)) '((not (task-closed? "city-win-resolution")) '(templec)))
+          )
+        (when (entity-by-name "tpl-door-a-2")
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-a-2") 'on-notice pair)) '((not (task-closed? "city-win-resolution")) '(templeb templec)))
+          )
+        (when (entity-by-name "tpl-door-a-7")
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-a-7") 'on-notice pair)) '((and (task-closed? "temple-tests-oracle") (not (task-closed? "city-win-resolution"))) '(templeb)))
+          )
+        (when (entity-by-name "tpl-door-b-1")
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-b-1") 'on-notice pair)) '((and (task-closed? "temple-tests-oracle") (not (task-closed? "city-win-resolution"))) '(templea templeb templec)))
+          )
+        (when (entity-by-name "tpl-door-a-8")
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-a-8") 'on-notice pair)) '((not (task-closed? "city-win-resolution")) '(templea templeb templed)))
+          )
+        (when (entity-by-name "tpl-mardoor-5")
+          (set! (cdr (res-lump-struct (entity-by-name "tpl-mardoor-5") 'on-notice pair)) '((not (task-closed? "city-win-resolution")) '(templed)))
+          )
+        (when (entity-by-name "min-elevator-6")
+          (set! (cdr (res-lump-struct (entity-by-name "min-elevator-6") 'on-notice pair)) '((task-closed? "mine-return-introduction") (when (and (not (send-event self 'query 'bottom?)) (not (task-closed? "mine-explore-resolution"))) (send-event self 'jump-to 'bottom)) (send-event self 'go-dormant)))
+          )
+        (when (entity-by-name "com-airlock-inner-117")
+          (add-data! (entity-by-name "com-airlock-inner-117") (new 'static 'res-tag :name 'on-activate :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") (want-load 'mined 'minee) (want-display 'mined 'display) (want-display 'minee 'display))))
+          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-117") 'on-notice pair)) '((mined)))
+          )
+        )
+      (suspend)
+      )
+    )
+  )
+

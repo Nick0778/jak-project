@@ -495,7 +495,28 @@
         (set! (-> this on-close) (the-as pair (car (cdr (cdr (cdr s5-0))))))
         )
       (else
-        (set! (-> this continue) #f)
+        (case-str (-> this name)
+          (("warp-gate-31") ;; templex -> volcanox
+            (when (task-closed? "desert-final-boss-resolution")
+              (set! (-> this continue) (get-continue-by-name *game-info* "volcanox-warp"))
+              (set! (-> this on-activate) '())
+              (set! (-> this wait-for) '())
+              (set! (-> this on-close) '())
+              )
+            )
+          (("fac-warp-effect-1") ;; factoryd -> vinroom
+            (when (task-closed? "desert-final-boss-resolution")
+              (set! (-> this continue) (get-continue-by-name *game-info* "vinroom-warp"))
+              (set! (-> this on-activate) '())
+              (set! (-> this wait-for) '())
+              (set! (-> this on-close) '())
+              )
+            )
+          ;; unknown
+          (else
+            ;;(set! (-> this continue) #f)
+            )
+          )
         )
       )
     )
