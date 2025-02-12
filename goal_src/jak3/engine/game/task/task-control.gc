@@ -3423,6 +3423,21 @@
     )
   )
 
+;;This returns true or false if jak is within a bubble defined by coordiantes and width
+(defun in-bubble? ((x float) (y float) (z float) (w float))
+  (<= 
+    (vector-vector-distance 
+      (target-pos 0) 
+      (set-vector! (new-stack-vector0) x y z 1.0)
+      )
+    (/ w 2.0)
+    )
+  )
+
+(defun in-bubble-m? ((x float) (y float) (z float) (w float))
+  (in-bubble? (meters x) (meters y) (meters z) (meters w))
+  )
+
 (process-spawn-function process
   (lambda :behavior process ()
     (loop
@@ -3488,6 +3503,14 @@
         (when (entity-by-name "com-airlock-inner-117")
           (add-data! (entity-by-name "com-airlock-inner-117") (new 'static 'res-tag :name 'on-activate :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") (want-load 'mined 'minee) (want-display 'mined 'display) (want-display 'minee 'display))))
           (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-117") 'on-notice pair)) '((mined)))
+          )
+
+        ;; Reopen catacomb task
+
+        (when (and (in-bubble-m? 7.16 2.16 102.20 150.0) (= (level-status? *level* 'comba #f) 'active))
+          (when (task-closed? "comb-travel-return-resolution")
+            (task-node-open! (game-task-node comb-travel-return-introduction) 'event)
+            )
           )
         )
       (suspend)
