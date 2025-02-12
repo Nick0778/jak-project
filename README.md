@@ -1,3 +1,12 @@
+# "Jak3-Revisitable-Single-Mission-Levels" Branch
+
+This branch allows the player to revisit some Jak 3 levels that are only accessible during their missions after completing the game. Also, some changes were made in order to prevent the player from getting stucked in some of those levels. So, it's possible to leave them and return to these levels whenever you want. Here is the list of levels you can revisit:
+
+- Volcano (By interacting with Monk temple warp gate in the entrance)
+- Eco Mine (By going to the same way you go during Monk Temple Tests mission)
+- KG War Factory (By going to the place where you start the mission. You can also leave from there by going to the control room and interacting with the warp gate)
+
+
 <p align="center">
   <img width="500" height="100%" src="./docs/img/logo-text-colored-new.png">
 </p>
