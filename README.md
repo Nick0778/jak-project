@@ -8,7 +8,7 @@ You need to grab `PORTBLMP.DGO` from the DGO folder of the `Jak II (July 2003 Pr
 
 ### Final words
 
-Well, doing something like this took me a LOT of effort, it was really complicated, and really frustrates me during the restoration and decompiling process. I wanted to do this because I found this mission really interesting and fun, and because I thought it was a shame that Naughty Dog cut it from the final game. But here it is, and works very similarly to what it was in that build, but with some improvements and fixes!
+Well, doing something like this took me a LOT of effort, it was really complicated, and really frustrates me during the restoration and decompiling process. I wanted to do this because I thought this mission really interesting and fun, and because I thought it was a shame that Naughty Dog cut it from the final game. But here it is, and works very similarly to what it was in that build, but with some improvements and fixes!
 
 So, that's it. Hope you enjoy it!
 
