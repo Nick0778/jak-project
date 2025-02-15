@@ -863,6 +863,7 @@
                        :prefix ""
                        :draw-frames '((min max))
                        :scissor-frames '()
+                       :light-index #x1e
                        :flags #x1
                        :shadow-flags -1
                        :shadow-volume-joint #f
