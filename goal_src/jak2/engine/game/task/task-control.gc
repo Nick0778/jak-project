@@ -2407,7 +2407,12 @@
             (want-display-level *load-state* 'ctywide 'display)
             (want-display-level *load-state* 'ctyport 'display)
             )
-          (script-eval '(want-sound 'drill1 'ctywide1 'ctywide2)) ;; sound banks for portblmp
+          (let ((a1-3 (new 'stack-no-clear 'array 'symbol 3))) ;; sound banks for portblmp
+              (set! (-> a1-3 2) 'drill1)
+              (set! (-> a1-3 1) 'ctywide1)
+              (set! (-> a1-3 0) 'ctywide2)
+              (want-sound-banks *load-state* a1-3)
+              )
           )
         ;; Fix ctypal not loading when you pass in a specific path
         (when (and (= (-> (level-get-target-inside *level*) name) 'ctyport) (= (level-status *level* 'portblmp) 'active))
@@ -2424,9 +2429,27 @@
               (want-display-level *load-state* 'ctywide 'display)
               (want-display-level *load-state* 'ctyport 'display)
               )
+            (let ((a1-3 (new 'stack-no-clear 'array 'symbol 3))) ;; sound banks for ctywide
+              (set! (-> a1-3 2) 'ctywide4)
+              (set! (-> a1-3 1) 'ctywide5)
+              (set! (-> a1-3 0) 'ctywide2)
+              (want-sound-banks *load-state* a1-3)
+              )
+            )
+          )
+        ;; Load ctywide sound banks back in a specific spot
+        (when (and (= (-> (level-get-target-inside *level*) name) 'ctyport) (= (level-status *level* 'portblmp) 'active))
+          (when (in-bubble-m? 625.57 7.72 1597.09 150.0)
+            (let ((a1-3 (new 'stack-no-clear 'array 'symbol 3))) ;; sound banks for ctywide
+              (set! (-> a1-3 2) 'ctywide4)
+              (set! (-> a1-3 1) 'ctywide5)
+              (set! (-> a1-3 0) 'ctywide2)
+              (want-sound-banks *load-state* a1-3)
+              )
             )
           )
         )
+
       ;; Play custom audio during mission cutscene 
       (when (and (= (level-status *level* 'portblmp) 'active) *playing-cutscene?*)
         (if (not (is-any-sound-playing?))

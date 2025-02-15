@@ -52,7 +52,7 @@
    )
   )
 
-;; Torn new wave voicelines
+;; Torn new wave voice lines
 (defun new-wave-speech ((arg0 port-turret))
   (when (not (is-any-sound-playing?))
     (let ((v1-3 (rand-vu-int-count 9)))
@@ -90,7 +90,7 @@
   0
   )
 
-;; Torn voicelines when Jak destroy an metal head boat
+;; Torn voice lines when Jak destroy an metal head boat
 (defun jak-hit-speech ((arg0 port-turret))
   (when (not (is-any-sound-playing?))
     (let ((v1-3 (rand-vu-int-count 9)))
@@ -128,7 +128,7 @@
   0
   )
 
-;; UNUSED voicelines
+;; UNUSED voice lines
 (defun jak-miss-speech ((arg0 port-turret))
   (when (not (is-any-sound-playing?))
     (let ((v1-2 (rand-vu-int-count 2)))
@@ -145,7 +145,7 @@
   0
   )
 
-;; Torn voicelines when the metal head boats are close to the portwall
+;; Torn voice lines when the metal head boats are close to the portwall
 (defun ship-close-speech ((arg0 port-turret))
   (when (not (is-any-sound-playing?))
     (let ((v1-3 (rand-vu-int-count 3)))
@@ -165,7 +165,7 @@
   0
   )
 
-;; UNUSED voicelines
+;; UNUSED voice lines
 (defun help-speech ((arg0 port-turret))
   (when (not (is-any-sound-playing?))
     (let ((v1-3 (rand-vu-int-count 2)))
@@ -798,7 +798,7 @@
      (seek! (-> this health) 0.0 (the-as float (-> arg3 param 0)))
      (activate! (-> this smush-control) 0.2 30 240 0.8 0.8 (-> *display* entity-clock))
      (cpad-set-buzz! (-> *cpad-list* cpads 0) 1 255 (seconds 0.5))
-     (sound-play "turret-take-hit") ;; Added turret's hit sound
+     (sound-play "turret-take-hit") ;; Added - Turret's hit sound
      )
     (('exit)
      (if (= (-> this path-u) 0.0)
@@ -886,7 +886,6 @@
            ((3)
             (cond
               ((not (is-any-sound-playing?))
-                ;(set! (-> self id) (the-as uint 0))
                 (set! (-> self turret-state) (the-as uint 4))
                 )
               (else

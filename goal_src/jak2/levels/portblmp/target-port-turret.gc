@@ -2134,7 +2134,7 @@ This commonly includes things such as:
             (cond
               ((= (-> self game mode) 'play)
                (send-event (handle->process (-> self port-turret handle)) 'trans (-> self control trans))
-               (go target-death 'port-turret)
+               (go target-death 'turret)
                #t
                )
               (else
