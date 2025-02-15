@@ -404,7 +404,6 @@
 (build-custom-level "test-zone")
 ;; the DGO file
 (goal-src "levels/test-zone/test-zone-obs.gc" "process-focusable")
-(goal-src "levels/test-zone/test-zone-obs.gc" "process-focusable")
 (custom-level-cgo "TSZ.DGO" "test-zone/testzone.gd")
 
 ;; generate the art group for a custom actor.
