@@ -63,7 +63,7 @@
 
   "actors" : [
     {
-      "aid": 10000,
+      "aid": 10000, // Entity ID
       "trans": [-716.99, 23.07, 1075.98], // translation
       "etype": "spydroid-orig",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -82,7 +82,7 @@
     },
 
     {
-      "aid": 20000,
+      "aid": 20000, // Entity ID
       "trans": [-709.64, 23.13, 1076.00], // translation
       "etype": "spydroid-orig",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -101,7 +101,7 @@
     },
 
     {
-      "aid": 30000,
+      "aid": 30000, // Entity ID
       "trans": [-702.85, 23.14, 1074.17], // translation
       "etype": "spydroid-orig",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -120,7 +120,7 @@
     },
 
     {
-      "aid": 40000,
+      "aid": 40000, // Entity ID
       "trans": [-706.83, 22.93, 1086.32], // translation
       "etype": "battle",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
@@ -129,8 +129,8 @@
       "bsphere": [-706.83, 22.93, 1086.32, 10], // bounding sphere
       "lump": {
         "name": "battle-1",
-        "extra-id": ["int32", 23],
-        "alt-actor": ["uint32", 10000, 20000, 30000]
+        "extra-id": ["int32", 23], // The battle info ID. Check 'battle.gc'
+        "alt-actor": ["uint32", 10000, 20000, 30000] // The list of entities used in this battle
       }
     }
   ]
