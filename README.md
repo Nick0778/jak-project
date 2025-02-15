@@ -1,64 +1,18 @@
-# "PORTBLMP-Restoration" Branch
+# "Defend-The-Portwall-Restoration" Branch
 
-This branch contains modifications as an attempt to restore that cut port mission from Jak 2 July Prototype called "Defend the Portwall" in the final version of the game on OpenGoal. More info about this mission can be found in: https://www.youtube.com/watch?v=2ZGTRvTlA3M&t=131s
+This branch contains modifications with the goal of restoring that cut Port mission called "Defend the Port Wall" from Jak II (July 2003 preview) to the final version of the game on OpenGoal, with some improvements. For more information on this mission, see: https://www.youtube.com/watch?v=2ZGTRvTlA3M&t=131s
 
 ### Usage
 
-You need to get PORTBLMP.DGO from _Jak 2 July Prototype build_'s DGO folder, and put it into the DGO folder of iso_data. Also, you need to get CIPBRES.STR from STR folder of the Prototype build, and put it into the STR folder from iso_data. Then, do all the rest of Opengoal installation process. If you did everything right, you will be able to access this level by entering in Debug Menu: _game/continue/default/ctyport-turret_, then the level should work.
+You need to grab `PORTBLMP.DGO` from the DGO folder of the `Jak II (July 2003 Preview) Prototype Build` and place it in the DGO folder of `iso_data`. Also, you need to grab `CIPBRES.STR` from the STR folder of the Prototype Build and place it in the STR folder of `iso_data`. Then complete the rest of the Opengoal installation process. If you did everything correctly, you will be able to do this mission after completing the "Defend Stadium" mission near the end of the game.
 
-### Progress so far
-- The task for this level was fully recreated with the help of some remains from it found in the source code that made it easier for me to recreate it.
-- The Task was placed exactly where it originally belonged, between "Defend Stadium" and "Check the Construction Site" tasks.
-- Torn's cutscene was restored and it can close the task after the scene ends. You can load the cutscene by entering in Debug Menu: _scene/city/city-protect-blimp-res_. 
-- The game task system proceed normally after beating this mission.
-- Added new sounds that originally don't exist in the mission, like turret sounds and damage sounds.
-- The mission is finally functional, so you can really play it!
-- The level loads and can be accessed through the city port during the mission
+### Final words
 
-### To do
-- Implement the custom audio system, so the users will no need to add back every missing voicelines from this mission in VAGWAD using a Hex Editor  
-- Fix some visual glitches, like Torn eyes that are glitched.
-- Fix Jak coordinates when starting the level.
+Well, doing something like this took me a LOT of effort, it was really complicated, and really frustrates me during the restoration and decompiling process. I wanted to do this because I found this mission really interesting and fun, and because I thought it was a shame that Naughty Dog cut it from the final game. But here it is, and works very similarly to what it was in that build, but with some improvements and fixes!
 
-### About the missing voicelines 
-The major problem about the mission is the missing audios played during it, which is crucial to make the mission work properly with no issues. So, I plan to implement the custom audio system from OpenGoal Mod Base in this mission, which will play all the audios as .wav files with a better quality. At the moment, if you prefer, you can add all the necessary audios back in VAGWAD.ENG file using a Hex Editor and with the help of **Jak Audio Tool**, made by **Luminar Light**: https://github.com/LuminarLight/JakAudioTool
-Below is a list of all the audios required for this mission.
+So, that's it. Hope you enjoy it!
 
-### List of all the audios from Jak 2 July Build required for this mission
-
-- "CIPBRES"
-- "torn010"
-- "torn011"
-- "torn012"
-- "torn014"
-- "torn017"
-- "torn018"
-- "torn019"
-- "torn020"
-- "torn022"
-- "torn023"
-- "torn026"
-- "torn028"
-- "torn029"
-- "torn030"
-- "torn033"
-- "torn034"
-- "torn035"
-- "torn037"
-- "torn038"
-- "torn039"
-- "torn040"
-- "torn047"
-- "torn048"
-- "torn049"
-- "torn051"
-- "torn052"
-- "torn053"
-- "torn056"
-- "torn057"
-- "torn060"
-- "torn061"
-- "torn062"
+_~~Nick07_
 
 <p align="center">
   <img width="500" height="100%" src="./docs/img/logo-text-colored-new.png">
