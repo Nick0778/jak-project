@@ -1132,7 +1132,6 @@
     (if (is-any-sound-playing?)
       (stop-all-sounds)
       )
-    (set! *playing-cutscene?* #f) ;; Cutscene is not playing anymore
     )
   )
 
@@ -1551,7 +1550,6 @@
           )
         )
       )
-      (set! *playing-cutscene?* #t) ;; Cutscene is currently playing
     )
   )
 

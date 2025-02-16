@@ -2386,7 +2386,7 @@
   (in-bubble? (meters x) (meters y) (meters z) (meters w))
   )
 
-(define *playing-cutscene?* #f) ;; Flag to check if cutscenes are playing
+(define *started-torn-cutscene?* #f) ;; Flag to check if Torn cutscene has started
 
 ;; Hack that allows portblmp to be loaded when you are in the city port
 (process-spawn-function process
@@ -2451,9 +2451,15 @@
         )
 
       ;; Play custom audio during mission cutscene 
-      (when (and (= (level-status *level* 'portblmp) 'active) *playing-cutscene?*)
-        (if (not (is-any-sound-playing?))
-          (play-sound-file "CIPBRES.wav" (the int (* (-> *setting-control* user-default dialog-volume) 100.0)))
+      (cond
+        ((and (= (level-status *level* 'portblmp) 'active) (not *started-torn-cutscene?*) (real-movie?))
+          (if (not (is-any-sound-playing?))
+            (play-sound-file "CIPBRES.wav" (the int (* (-> *setting-control* user-default dialog-volume) 100.0)))
+            (set! *started-torn-cutscene?* #t)
+            )
+          )
+        ((and *started-torn-cutscene?* (not (real-movie?)))
+          (set! *started-torn-cutscene?* #f)
           )
         )
       (suspend)
