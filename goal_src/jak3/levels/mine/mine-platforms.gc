@@ -727,7 +727,7 @@
       (set! (-> s5-0 backup-collide-with) (-> v1-20 prim-core collide-with))
       )
     (set! (-> this root) s5-0)
-    )
+    ) 
   0
   (none)
   )
@@ -739,7 +739,7 @@
 (defstate running (min-falling-elevator)
   :virtual #t
   :enter (behavior ()
-    (if (task-node-closed? (game-task-node mine-blow-resolution))
+    (if (and (task-node-closed? (game-task-node mine-blow-resolution)) (not (task-node-closed? (game-task-node desert-final-boss-resolution))))
         (go-virtual dormant)
         )
     (let ((t9-2 (-> (method-of-type elevator running) enter)))

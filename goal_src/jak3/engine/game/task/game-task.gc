@@ -1310,6 +1310,25 @@
             :play-node (game-task-node city-destroy-kg-turrets-resolution)
             :play-continue "ctyport-gungame"
             :kiosk-play-continue #f
+            )
+          (new 'static 'game-task-info
+            :name "comb-travel-return"
+            :text-name (text-id progress-missions-comb-travel)
+            :pre-play-node (game-task-node comb-travel-return-introduction)
+            :kiosk-play-node (game-task-node comb-travel-return-resolution)
+            :pre-play-continue #f
+            :play-node (game-task-node comb-travel-return-resolution)
+            :play-continue "comba-elevator"
+            :kiosk-play-continue #f
+            )
+          (new 'static 'game-task-info
+            :name "factory-mine-return"
+            :pre-play-node (game-task-node factory-mine-return-introduction)
+            :kiosk-play-node (game-task-node factory-mine-return-resolution)
+            :pre-play-continue #f
+            :play-node (game-task-node factory-mine-return-resolution)
+            :play-continue #f
+            :kiosk-play-continue #f
             )  
           )
         )
@@ -15183,7 +15202,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((factorya 0 lfaccar special) (factorya 1 lfacrm2 display))
+            :borrow '((stadiuma 0 lppatrol display))
             :open? #f
             :on-close #f
             :reset #f
@@ -23604,6 +23623,141 @@
             :suck-death-count #xa5
             :command-index #x2b
             :description (text-id progress-missions-city-sniper-fight)
+            :faction-commands '()
+            )
+          ;; task for returning to Catacombs
+          (new 'static 'game-task-node-info
+            :level 'comb
+            :task (game-task comb-travel-return)
+            :name "comb-travel-return-introduction"
+            :when-open #f
+            :flags (game-task-node-flag save-on-life)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node desert-final-boss-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open '(begin (task-close! "comb-travel-return-introduction"))
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x24
+            :faction-commands '()
+            )
+          (new 'static 'game-task-node-info
+            :level 'comb
+            :task (game-task comb-travel-return)
+            :name "comb-travel-return-resolution"
+            :when-open #f
+            :flags (game-task-node-flag close-task save-on-life)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node comb-travel-return-introduction)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager (new 'static 'task-manager-info
+              :level 'comba
+              :type-to-spawn 'task-manager-comb-travel
+              :intro-scene #f
+              :resolution-scene #f
+              :resolution-scene-continue #f
+              :final-node (game-task-node comb-travel-return-resolution)
+              :vehicle-type #x1b
+              :on-complete '(begin (want-continue "combn-start") (auto-save 'auto-save))
+              :on-fail #f
+              )
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset (new 'static 'task-reset-info
+              :restart-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message)
+                :fail (new 'static 'resetter-spec :continue "comba-sled" :reset-mode 'try :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                :reset-delay (seconds 6.5)
+                )
+              :quit-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset)
+                :fail (new 'static 'resetter-spec :continue "comba-sled" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                :reset-delay (seconds 6.5)
+                )
+              :fail-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset)
+                :fail (new 'static 'resetter-spec :continue "comba-sled" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                :reset-delay (seconds 6.5)
+                )
+              :death-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio no-slow-down)
+                :fail (new 'static 'resetter-spec :continue "comba-sled" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              )
+            :suck-death-count #xa5
+            :command-index #x24
+            :command-count #x1
+            :faction-commands '()
+            )
+          ;; task for returning to Eco Mine and War Factory
+          (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task factory-mine-return)
+            :name "factory-mine-return-introduction"
+            :when-open #f
+            :flags (game-task-node-flag save-on-life act3)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node desert-final-boss-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open '(begin (task-close! "factory-mine-return-introduction"))
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4b
+            :faction-commands '()
+            )
+          (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task factory-mine-return)
+            :name "factory-mine-return-resolution"
+            :when-open #f
+            :flags (game-task-node-flag close-task save-on-life no-percent act3)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node factory-mine-return-introduction)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager (new 'static 'task-manager-info ;; Play mine music every time you go in there
+              :level 'minea
+              :type-to-spawn 'mine-music-manager
+              :intro-scene #f
+              :resolution-scene #f
+              :resolution-scene-continue #f
+              :final-node (game-task-node factory-mine-return-resolution)
+              :vehicle-type #x1b
+              :on-complete #f
+              :on-fail #f
+              )
+            :borrow '((factorya 0 lfaccar special) (factorya 1 lfacrm2 display))
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4b
             :faction-commands '()
             )
           )

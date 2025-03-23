@@ -151,7 +151,9 @@
   ;(comb-travel-return 138)
   ;(mine-return 139)
   (city-destroy-kg-turrets 138) ;; custom mission
-  (max 139)
+  (comb-travel-return 139)
+  (factory-mine-return 140)
+  (max 141)
   )
 ;; ---game-task
 
@@ -574,6 +576,10 @@
   ;(mine-return-resolution)
   (city-destroy-kg-turrets-introduction) ;; custom mission
   (city-destroy-kg-turrets-resolution) ;; custom mission
+  (comb-travel-return-introduction)
+  (comb-travel-return-resolution)
+  (factory-mine-return-introduction)
+  (factory-mine-return-resolution)
   )
 ;; ---game-task-node
 
