@@ -150,4 +150,5 @@ when updating the mood.  This means that an individual state structure must be l
    (apply-mood-channels (_type_ mood-control-work) none)
    (adjust-num-clouds! (_type_ mood-control-work) none)
    (gen-lightning-and-thunder! (_type_) number)
-   (play-or-stop-lightning! (_type_ sound-spec vector) sound-id)))
+   (play-or-stop-lightning! (_type_ sound-spec vector) sound-id)
+   (play-or-stop-lightning-hack! (_type_ string) sound-id))) ;; added - for thunder sfx hack
