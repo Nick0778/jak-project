@@ -1,0 +1,119 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+(define *thunder-sfx-hack-enabled?* #t)
+(define *play-rain-sfx?* #f)
+
+;; list of sounds for `thunder-a` for thunder sfx hack
+(define *thunder-a* (new 'static 'boxed-array :type string
+                            "SFX/THUN-A1.wav" ;; index 0
+                            "SFX/THUN-A2.wav" ;; index 1
+                            )
+  )
+
+;; list of sounds for `thunder-b` for thunder sfx hack
+(define *thunder-b* (new 'static 'boxed-array :type string
+                            "SFX/THUN-B1.wav" ;; index 0
+                            "SFX/THUN-B2.wav" ;; index 1
+                            )
+  )
+
+;; list of sounds for `thunder-c` for thunder sfx hack
+(define *thunder-c* (new 'static 'boxed-array :type string
+                            "SFX/THUN-C1.wav" ;; index 0
+                            "SFX/THUN-C2.wav" ;; index 1
+                            "SFX/THUN-C3.wav" ;; index 2
+                            )
+  )
+
+;; list of thunder-group names
+(define *thunder-sfx-groups* (new 'static 'boxed-array :type string
+                            "thunder-a"
+                            "thunder-b"
+                            "thunder-c"
+                            )
+  )
+
+(define *cur-thunder-group* (the-as string #f)) ;; current thunder-group
+(define *thunder-sfx-channel* #f)
+(define *rain-sfx-channel* #f)
+
+(defun is-thunder-playing? ()
+  (and *thunder-sfx-channel* (is-sound-playing? (the-as string *thunder-sfx-channel*)))
+  )
+
+(defun stop-rain-sfx! ()
+  (when *rain-sfx-channel*
+    (stop-sound-file (the-as string *rain-sfx-channel*))
+    (set! *rain-sfx-channel* #f)
+    )
+  )
+
+(defun play-rain-sfx! ()
+  (cond
+    ((and *play-rain-sfx?* (not *rain-sfx-channel*) (or (not (load-in-progress? *level*)) (not (movie?))))
+      (if (not (is-sound-playing? "SFX/RAIN.wav"))
+        (set! *rain-sfx-channel* (play-sound-file "SFX/RAIN.wav" (the int (* (-> *setting-control* user-default sfx-volume) 100.0))))
+        )
+      )
+    (else
+      (stop-rain-sfx!)
+      )
+    )
+  )
+
+(defun play-thunder-sfx! ((sound-list-name string) (id sound-id))
+  (dotimes (i (-> *thunder-sfx-groups* length))
+    (if (string= sound-list-name (-> *thunder-sfx-groups* i))
+      (set! *cur-thunder-group* sound-list-name)
+      )
+    )
+  (cond
+    ((string= *cur-thunder-group* "thunder-a")
+      (let ((index (rand-vu-int-count (-> *thunder-a* length))))
+        (cond
+          ((or (zero? index) (= index 1))
+            (when (not (is-thunder-playing?))
+              (set! *thunder-sfx-channel* (play-sound-file (-> *thunder-a* index) (the int (* (-> *setting-control* user-default sfx-volume) 100.0))))
+              )
+            )
+          (else
+            (format 0 "invalid thunder sfx name from (~S)!~%" *cur-thunder-group*)
+            )
+          )
+        )
+      )
+    ((string= *cur-thunder-group* "thunder-b")
+      (let ((index (rand-vu-int-count (-> *thunder-b* length))))
+        (cond
+          ((or (zero? index) (= index 1))
+            (when (not (is-thunder-playing?))
+              (set! *thunder-sfx-channel* (play-sound-file (-> *thunder-b* index) (the int (* (-> *setting-control* user-default sfx-volume) 100.0))))
+              )
+            )
+          (else
+            (format 0 "invalid thunder sfx name from (~S)!~%" *cur-thunder-group*)
+            )
+          )
+        )
+      )
+    ((string= *cur-thunder-group* "thunder-c")
+      (let ((index (rand-vu-int-count (-> *thunder-c* length))))
+        (cond
+          ((or (zero? index) (= index 1) (= index 2))
+            (when (not (is-thunder-playing?))
+              (set! *thunder-sfx-channel* (play-sound-file (-> *thunder-c* index) (the int (* (-> *setting-control* user-default sfx-volume) 100.0))))
+              )
+            )
+          (else
+            (format 0 "invalid thunder sfx name from (~S)!~%" *cur-thunder-group*)
+            )
+          )
+        )
+      )
+    (else
+      (format 0 "failed to play thunder sfx!~%")
+      )
+    )
+  id
+  )
