@@ -47,11 +47,9 @@
   (hungarian 15)
   (catalan 16)
   (icelandic 17)
-  (polish 18)
-  (lithuanian 19)
-  (czech 20)
-  (croatian 21)
-  (galician 22)
+  (russian 18)
+  (polish 19)
+  (lithuanian 20)
   )
 
 (defenum runtime-exit-status
@@ -209,21 +207,6 @@
 (define-extern pc-ignore-background-controller-events! (function symbol none))
 (define-extern pc-reset-bindings-to-defaults! (function int int none))
 (define-extern pc-set-auto-hide-cursor! (function symbol none))
-(define-extern pc-get-pressure-sensitivity-enabled? (function symbol))
-(define-extern pc-set-pressure-sensitivity-enabled! (function symbol none))
-(define-extern pc-current-controller-has-pressure-sensitivity? (function symbol))
-(define-extern pc-current-controller-has-trigger-effect-support? (function symbol))
-(define-extern pc-get-trigger-effects-enabled? (function symbol))
-(define-extern pc-set-trigger-effects-enabled! (function symbol none))
-(defenum pc-trigger-effect-option
-  (left 0)
-  (right 1)
-  (both 2))
-(define-extern pc-clear-trigger-effect! (function pc-trigger-effect-option none))
-(define-extern pc-send-trigger-effect-feedback! (function pc-trigger-effect-option int int none))
-(define-extern pc-send-trigger-effect-vibrate! (function pc-trigger-effect-option int int int none))
-(define-extern pc-send-trigger-effect-weapon! (function pc-trigger-effect-option int int int none))
-(define-extern pc-send-trigger-rumble! (function int int int none))
 
 ;; Display Related Functions
 (define-extern pc-get-display-mode (function symbol))
@@ -255,6 +238,27 @@
 (define-extern pc-discord-rpc-update (function discord-info none))
 (define-extern pc-discord-rpc-set (function int none))
 (define-extern pc-init-autosplitter-struct (function none))
+
+;;main music start
+(define-extern play-sound-file (function string int symbol))
+(define-extern play-main-music (function string int none))
+(define-extern pause-main-music (function none))
+(define-extern stop-main-music (function none))
+(define-extern resume-main-music (function none))
+(define-extern main-music-volume (function int none))
+;;main music end
+
+(define-extern stop-sound-file (function string none))
+(define-extern stop-all-sounds (function none))
+
+;;check if any custom audio is being played or not
+(define-extern is-any-sound-playing? (function symbol))
+(define-extern is-sound-playing? (function string symbol))
+
+;;pause/resume all sounds
+(define-extern pause-all-sounds (function none))
+(define-extern resume-all-sounds (function none))
+
 (define-extern pc-filepath-exists? (function string symbol))
 (define-extern pc-mkdir-file-path (function string none))
 (define-extern pc-sound-set-flava-hack (function int none))

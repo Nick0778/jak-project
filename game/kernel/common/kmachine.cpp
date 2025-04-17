@@ -1,6 +1,37 @@
 #include "kmachine.h"
 
+#include <chrono>
+#include <fstream>
+#include <iostream>
 #include <random>
+#include <thread>
+#include <list>
+
+#define MINIAUDIO_IMPLEMENTATION
+// NOTE - this is needed, because on macOS, there is a file called `MacTypes.h`
+// inside it, it defines something named `Ptr`
+// Our `Ptr` is not namespaced, so there is ambiguity.
+//
+// Second fix is because miniaudio redefines functions in the stdlib based on bad pre-processor
+// assumptions AppleClang apparently does not define POSIX macros, leading to future ambiguity
+namespace MiniAudioLib {
+#if defined(__APPLE__)
+#if !defined(_POSIX_C_SOURCE)
+#define _POSIX_C_SOURCE 200809L
+#include "third-party/miniaudio.h"
+#undef _POSIX_C_SOURCE
+#else
+// It should work if it's defined, but for some reason it didn't this is the unlikely branch
+// but lets maintain the original value
+#define NOT_REAL_OLD_POSIX_C_SOURCE _POSIX_C_SOURCE
+#include "third-party/miniaudio.h"
+#define _POSIX_C_SOURCE NOT_REAL_OLD_POSIX_C_SOURCE
+#undef NOT_REAL_OLD_POSIX_C_SOURCE
+#endif
+#else
+#include "third-party/miniaudio.h"
+#endif
+}  // namespace MiniAudioLib
 
 #include "common/global_profiler/GlobalProfiler.h"
 #include "common/log/log.h"
@@ -44,6 +75,10 @@ u32 vblank_interrupt_handler = 0;
 
 Timer ee_clock_timer;
 
+MiniAudioLib::ma_engine maEngine;
+std::map<std::string, std::list<MiniAudioLib::ma_sound>> maSoundMap;
+MiniAudioLib::ma_sound* mainMusicSound;
+
 void kmachine_init_globals_common() {
   memset(pad_dma_buf, 0, sizeof(pad_dma_buf));
   isodrv = fakeiso;  // changed. fakeiso is the only one that works in opengoal.
@@ -52,6 +87,10 @@ void kmachine_init_globals_common() {
   vif1_interrupt_handler = 0;
   vblank_interrupt_handler = 0;
   ee_clock_timer = Timer();
+#ifdef _WIN32  // only do this on windows, because it only works on windows?
+  MiniAudioLib::ma_engine_uninit(&maEngine);
+#endif
+  MiniAudioLib::ma_engine_init(NULL, &maEngine);
 }
 
 /*!
@@ -102,6 +141,316 @@ u64 CPadOpen(u64 cpad_info, s32 pad_number) {
     cpad->state = 0;
   }
   return cpad_info;
+}
+
+// Mutex to synchronize access to activeMusics
+std::mutex activeMusicsMutex;
+
+// Declare a mutex for synchronizing access to mainMusicInstance
+std::mutex mainMusicMutex;
+
+// Mutex to synchronize access to sounds
+std::mutex soundMutex;
+//std::condition_variable soundCondition;
+bool isPaused = false;  // flag to check whether the custom sounds are paused or not
+
+// Function to stop all instances of specific sound by filepath
+void stopMP3(u32 filePathu32) {
+  std::string filePath = Ptr<String>(filePathu32).c()->data();
+  std::cout << "Trying to stop file: " << filePath << std::endl;
+
+  std::lock_guard<std::mutex> lock(activeMusicsMutex);
+  auto it = maSoundMap.find(filePath);
+  if (it == maSoundMap.end()) {
+    std::cerr << "Couldn't find sound to stop: " << filePath << std::endl;
+  } else {
+    // stop all instances of this sound
+    for (auto sound : it->second) {
+      if (MiniAudioLib::ma_sound_stop(&sound) != MiniAudioLib::MA_SUCCESS) {
+        std::cerr << "Failed to stop sound: " << filePath << std::endl;
+      }
+      // let the thread finish and handle ma_sound_uninit
+    }
+    // clear list of sounds for this filepath
+    it->second.clear();
+  }
+}
+
+// Function to stop all currently playing sounds.
+void stopAllSounds() {
+  std::lock_guard<std::mutex> lock(activeMusicsMutex);
+
+  //std::cout << "Stopping all sounds..." << std::endl;
+
+  // Stop all sounds before removing them
+  for (auto& pair : maSoundMap) {
+    for (auto& sound : pair.second) {
+      if (MiniAudioLib::ma_sound_is_playing(&sound)) {
+        MiniAudioLib::ma_sound_stop(&sound);
+      }
+    }
+  }
+
+  // Wait a short period of time to make sure the sounds have stopped
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+  // Release memory and remove the sounds from the map
+  for (auto it = maSoundMap.begin(); it != maSoundMap.end();) {
+    auto& soundList = it->second;
+
+    for (auto& sound : soundList) {
+      MiniAudioLib::ma_sound_uninit(&sound);
+    }
+
+    soundList.clear();
+    it = maSoundMap.erase(it);
+  }
+
+  std::cout << "All sounds stopped successfully!" << std::endl;
+}
+
+// Function to force sounds to stop after playing. 
+void forceStopSounds() {
+  for (auto& pair : maSoundMap) {
+    // stop all instances of this sound
+    for (auto sound : pair.second) {
+      MiniAudioLib::ma_sound_stop(&sound);
+    }
+    pair.second.clear();
+  }
+  maSoundMap.clear();
+}
+
+// Function to get the names of currently playing files.
+std::vector<std::string> getPlayingFileNames() {
+  std::vector<std::string> playingFileNames;
+  for (const auto& pair : maSoundMap) {
+    playingFileNames.push_back(pair.first);
+  }
+  return playingFileNames;
+}
+
+u64 playMP3_internal(u32 filePathu32, u32 volume, bool isMainMusic) {
+  std::string filePath = Ptr<String>(filePathu32).c()->data();
+  std::string fullFilePath = fs::path(file_util::get_jak_project_dir() / "custom_assets" /
+                                  game_version_names[g_game_version] / "audio" / filePath).string();
+  
+  if (!file_util::file_exists(fullFilePath)) {
+    // file doesn't exist, let GOAL side know we didn't find it
+    return bool_to_symbol(false);
+  }
+
+  std::thread thread([=]() {
+
+    std::cout << "Playing file: " << filePath << std::endl;
+
+    MiniAudioLib::ma_result result;
+    MiniAudioLib::ma_sound sound;
+
+    result = MiniAudioLib::ma_sound_init_from_file(&maEngine, fullFilePath.c_str(), 0, NULL, NULL,
+                                                    &sound);
+    if (result != MiniAudioLib::MA_SUCCESS) {
+      std::cout << "Failed to load: " << filePath << std::endl;
+      return;
+    }
+
+    MiniAudioLib::ma_sound_set_volume(&sound, ((float)volume) / 100.0);
+
+    if (isMainMusic) {
+      MiniAudioLib::ma_sound_set_looping(&sound, MA_TRUE);
+      mainMusicMutex.lock();
+      mainMusicSound = &sound;
+      mainMusicMutex.unlock();
+    }
+
+    MiniAudioLib::ma_sound_start(&sound);
+
+    if (!isMainMusic) {
+      std::lock_guard<std::mutex> lock(activeMusicsMutex);
+      if (maSoundMap.find(filePath) == maSoundMap.end()) {
+        maSoundMap.insert(std::make_pair(filePath, std::list<MiniAudioLib::ma_sound>()));
+      }
+      maSoundMap[filePath].push_back(sound);
+    }
+
+    // Loop to check the state of the sound without freezing the main thread
+    bool isPlaying = true;
+    while (isPlaying) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+       // Check if the game is paused
+      if (isPaused) {
+        // pause sound
+        //std::cout << "Sounds paused, stopping playback..." << std::endl;
+        MiniAudioLib::ma_sound_stop(&sound);  // stop the sound when paused
+
+        // Wait until the game is resumed
+        /*while (isPaused) {
+          std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }*/
+
+        // Wait until the game is resumed
+        while (true) {
+          {
+            std::lock_guard<std::mutex> lock(soundMutex);
+            if (!isPaused)
+              break;
+          }
+          std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+
+        // Resume the sound after the pause
+        //std::cout << "Resuming sound: " << filePath << std::endl;
+        MiniAudioLib::ma_sound_start(&sound);
+      }
+
+      // Check if the sound is still playing
+      if (!MiniAudioLib::ma_sound_is_playing(&sound)) {
+        isPlaying = false;
+      }
+    }
+
+    MiniAudioLib::ma_sound_stop(&sound);
+    MiniAudioLib::ma_sound_uninit(&sound);
+    std::cout << "Finished playing file: " << filePath << std::endl;
+
+    if (!isMainMusic) {
+      std::lock_guard<std::mutex> lock(activeMusicsMutex);
+      if (maSoundMap.find(filePath) != maSoundMap.end()) {
+        maSoundMap[filePath].remove_if(
+            [&](MiniAudioLib::ma_sound l_sound) { return &sound == &l_sound; });
+        forceStopSounds();   // Force sounds to stop. For some reason, without this `isAnySoundPlaying` will always return true even if the sound finished playing.
+      }
+    }
+  });
+
+  thread.detach();
+  return bool_to_symbol(true);
+}
+
+u64 playMP3(u32 filePathu32, u32 volume) {
+  return playMP3_internal(filePathu32, volume, false);
+}
+
+// Function to stop the Main Music.
+void stopMainMusic() {
+  mainMusicMutex.lock();
+  if (mainMusicSound && MiniAudioLib::ma_sound_is_playing(mainMusicSound)) {
+    std::cout << "Stopping Main Music..." << std::endl;
+    MiniAudioLib::ma_sound_stop(mainMusicSound);
+    mainMusicSound = NULL;
+    std::cout << "Stopped Main Music " << std::endl;
+  }
+  mainMusicMutex.unlock();
+}
+
+// Function to play the Main Music.
+void playMainMusic(u32 filePathu32, u32 volume) {
+  stopMainMusic();
+
+  std::cout << "Playing Main Music" << std::endl;
+
+  playMP3_internal(filePathu32, volume, true);
+}
+
+void pauseMainMusic() {
+  mainMusicMutex.lock();
+  if (mainMusicSound && MiniAudioLib::ma_sound_is_playing(mainMusicSound)) {
+    MiniAudioLib::ma_sound_stop(mainMusicSound);
+  }
+  mainMusicMutex.unlock();
+}
+
+void resumeMainMusic() {
+  mainMusicMutex.lock();
+  if (mainMusicSound && !MiniAudioLib::ma_sound_is_playing(mainMusicSound)) {
+    MiniAudioLib::ma_sound_start(mainMusicSound);
+  }
+  mainMusicMutex.unlock();
+}
+
+// Function to change the volume of the Main Music.
+void changeMainMusicVolume(u32 volume) {
+  mainMusicMutex.lock();
+  if (mainMusicSound) {
+    MiniAudioLib::ma_sound_set_volume(mainMusicSound, ((float)volume) / 100.0);
+  }
+  mainMusicMutex.unlock();
+}
+
+// Function to check if any custom audio is being played or not. This will return true or false.
+u64 isAnySoundPlaying() {
+  bool anyPlaying = false;  // Flag to track whether any sound is currently playing
+
+  std::lock_guard<std::mutex> activeLock(activeMusicsMutex);
+
+  // Iterate over all entries in maSoundMap
+  for (auto it = maSoundMap.begin(); it != maSoundMap.end();) {
+    auto& soundList = it->second;  // Get the list of sounds for the current file
+
+    // Remove sounds that have finished playing
+    soundList.remove_if([](MiniAudioLib::ma_sound& sound) {
+      if (!MiniAudioLib::ma_sound_is_playing(&sound)) {  // Check if the sound has stopped
+        MiniAudioLib::ma_sound_stop(&sound);             // Stop the sound to free resources
+        MiniAudioLib::ma_sound_uninit(&sound);           // Uninitialize to clean up memory
+        return true;                                     // Remove this sound from the list
+      }
+      return false;  // Keep this sound in the list if it's still playing
+    });
+
+    // If the list still contains sounds, set anyPlaying to true
+    if (!soundList.empty()) {
+      anyPlaying = true;
+    }
+
+    // If the list is empty after removing finished sounds, erase it from the map
+    if (soundList.empty()) {
+      it = maSoundMap.erase(it);  // Remove the entry and move iterator to the next valid element
+    } else {
+      ++it;  // Move to the next element in the map
+    }
+  }
+
+  /*if (anyPlaying) {
+    std::cout << "Some sound is being played!" << std::endl;
+  } else {
+    std::cout << "No sound is being played!" << std::endl;
+  }*/
+
+  return bool_to_symbol(anyPlaying);
+}
+
+// Function to check if the custom audio passed as an argument is being played or not. This will return true or false. 
+u64 isSoundPlaying(u32 filePathu32) {
+
+  std::string filePath = Ptr<String>(filePathu32).c()->data();
+
+  //Get the list of files that are currently being played
+  std::vector<std::string> playingFiles = getPlayingFileNames();
+
+  // Checks if the file is in the list of files being played
+  if (std::find(playingFiles.begin(), playingFiles.end(), filePath) != playingFiles.end()) {
+    //std::cout << "The sound: (" << filePath << ") is being played!" << std::endl;
+    return bool_to_symbol(true);
+  }
+
+  return bool_to_symbol(false);
+}
+
+// Function to pause custom sounds
+void pauseAllSounds() {
+  std::lock_guard<std::mutex> lock(soundMutex);
+  //std::cout << "Pausing all sounds..." << std::endl;
+  isPaused = true;  // pause sounds
+}
+
+// Function to resume custom sounds
+void resumeAllSounds() {
+  std::lock_guard<std::mutex> lock(soundMutex);
+  //std::cout << "Resuming all sounds..." << std::endl;
+  isPaused = false;             // resume sounds
+  //soundCondition.notify_all();  // notifies the thread to resume
+  //std::cout << "All sounds have resumed!" << std::endl;
 }
 
 /*!
@@ -450,7 +799,7 @@ u64 pc_get_mips2c(u32 name) {
 
 u64 pc_get_display_id() {
   if (Display::GetMainDisplay()) {
-    return Display::GetMainDisplay()->get_display_manager()->get_active_display_index();
+    return Display::GetMainDisplay()->get_display_manager()->get_active_display_id();
   }
   return 0;
 }
@@ -788,96 +1137,6 @@ void pc_set_auto_hide_cursor(u32 val) {
   }
 }
 
-u64 pc_get_pressure_sensitivity_enabled() {
-  if (Display::GetMainDisplay()) {
-    return bool_to_symbol(
-        Display::GetMainDisplay()->get_input_manager()->is_pressure_sensitivity_enabled());
-  }
-  return bool_to_symbol(false);
-}
-
-void pc_set_pressure_sensitivity_enabled(u32 val) {
-  if (Display::GetMainDisplay()) {
-    Display::GetMainDisplay()->get_input_manager()->set_pressure_sensitivity_enabled(
-        symbol_to_bool(val));
-  }
-}
-
-u64 pc_current_controller_has_pressure_sensitivity() {
-  if (Display::GetMainDisplay()) {
-    return bool_to_symbol(
-        Display::GetMainDisplay()->get_input_manager()->controller_has_pressure_sensitivity_support(
-            0));
-  }
-  return bool_to_symbol(false);
-}
-
-u64 pc_current_controller_has_trigger_effect_support() {
-  if (Display::GetMainDisplay()) {
-    return bool_to_symbol(
-        Display::GetMainDisplay()->get_input_manager()->controller_has_trigger_effect_support(0));
-  }
-  return bool_to_symbol(false);
-}
-
-u64 pc_get_trigger_effects_enabled() {
-  if (Display::GetMainDisplay()) {
-    return bool_to_symbol(
-        Display::GetMainDisplay()->get_input_manager()->are_trigger_effects_enabled());
-  }
-  return bool_to_symbol(false);
-}
-
-void pc_set_trigger_effects_enabled(u32 val) {
-  if (Display::GetMainDisplay()) {
-    Display::GetMainDisplay()->get_input_manager()->enqueue_set_trigger_effects_enabled(
-        symbol_to_bool(val));
-  }
-}
-
-void pc_clear_trigger_effect(dualsense_effects::TriggerEffectOption option) {
-  if (Display::GetMainDisplay()) {
-    Display::GetMainDisplay()->get_input_manager()->enqueue_controller_clear_trigger_effect(0,
-                                                                                            option);
-  }
-}
-
-void pc_send_trigger_effect_feedback(dualsense_effects::TriggerEffectOption option,
-                                     u8 position,
-                                     u8 strength) {
-  if (Display::GetMainDisplay()) {
-    Display::GetMainDisplay()->get_input_manager()->enqueue_controller_send_trigger_effect_feedback(
-        0, option, position, strength);
-  }
-}
-
-void pc_send_trigger_effect_vibrate(dualsense_effects::TriggerEffectOption option,
-                                    u8 position,
-                                    u8 amplitude,
-                                    u8 frequency) {
-  if (Display::GetMainDisplay()) {
-    Display::GetMainDisplay()->get_input_manager()->enqueue_controller_send_trigger_effect_vibrate(
-        0, option, position, amplitude, frequency);
-  }
-}
-
-void pc_send_trigger_effect_weapon(dualsense_effects::TriggerEffectOption option,
-                                   u8 start_position,
-                                   u8 end_position,
-                                   u8 strength) {
-  if (Display::GetMainDisplay()) {
-    Display::GetMainDisplay()->get_input_manager()->enqueue_controller_send_trigger_effect_weapon(
-        0, option, start_position, end_position, strength);
-  }
-}
-
-void pc_send_trigger_rumble(u16 left_rumble, u16 right_rumble, u32 duration_ms) {
-  if (Display::GetMainDisplay()) {
-    Display::GetMainDisplay()->get_input_manager()->enqueue_controller_send_trigger_rumble(
-        0, left_rumble, right_rumble, duration_ms);
-  }
-}
-
 void pc_set_vsync(u32 sym_val) {
   Gfx::g_global_settings.vsync = symbol_to_bool(sym_val);
 }
@@ -1069,21 +1328,6 @@ void init_common_pc_port_functions(
   make_func_symbol_func("pc-stop-waiting-for-bind!", (void*)pc_stop_waiting_for_bind);
   make_func_symbol_func("pc-reset-bindings-to-defaults!", (void*)pc_reset_bindings_to_defaults);
   make_func_symbol_func("pc-set-auto-hide-cursor!", (void*)pc_set_auto_hide_cursor);
-  make_func_symbol_func("pc-get-pressure-sensitivity-enabled?",
-                        (void*)pc_get_pressure_sensitivity_enabled);
-  make_func_symbol_func("pc-set-pressure-sensitivity-enabled!",
-                        (void*)pc_set_pressure_sensitivity_enabled);
-  make_func_symbol_func("pc-current-controller-has-pressure-sensitivity?",
-                        (void*)pc_current_controller_has_pressure_sensitivity);
-  make_func_symbol_func("pc-current-controller-has-trigger-effect-support?",
-                        (void*)pc_current_controller_has_trigger_effect_support);
-  make_func_symbol_func("pc-get-trigger-effects-enabled?", (void*)pc_get_trigger_effects_enabled);
-  make_func_symbol_func("pc-set-trigger-effects-enabled!", (void*)pc_set_trigger_effects_enabled);
-  make_func_symbol_func("pc-clear-trigger-effect!", (void*)pc_clear_trigger_effect);
-  make_func_symbol_func("pc-send-trigger-effect-feedback!", (void*)pc_send_trigger_effect_feedback);
-  make_func_symbol_func("pc-send-trigger-effect-vibrate!", (void*)pc_send_trigger_effect_vibrate);
-  make_func_symbol_func("pc-send-trigger-effect-weapon!", (void*)pc_send_trigger_effect_weapon);
-  make_func_symbol_func("pc-send-trigger-rumble!", (void*)pc_send_trigger_rumble);
 
   // graphics things
   make_func_symbol_func("pc-set-vsync", (void*)pc_set_vsync);
@@ -1109,6 +1353,31 @@ void init_common_pc_port_functions(
   // file related functions
   make_func_symbol_func("pc-filepath-exists?", (void*)pc_filepath_exists);
   make_func_symbol_func("pc-mkdir-file-path", (void*)pc_mkdir_filepath);
+
+  // Play sound file
+  make_func_symbol_func("play-sound-file", (void*)playMP3);
+
+  // Stop sound file (all instances)
+  make_func_symbol_func("stop-sound-file", (void*)stopMP3);
+
+  // Stop all sounds
+  make_func_symbol_func("stop-all-sounds", (void*)stopAllSounds);
+
+  // Main music stuff
+  make_func_symbol_func("play-main-music", (void*)playMainMusic);
+  make_func_symbol_func("pause-main-music", (void*)pauseMainMusic);
+  make_func_symbol_func("stop-main-music", (void*)stopMainMusic);
+  make_func_symbol_func("resume-main-music", (void*)resumeMainMusic);
+
+  make_func_symbol_func("main-music-volume", (void*)changeMainMusicVolume);
+
+  // Check if any custom audio is being played or not
+  make_func_symbol_func("is-any-sound-playing?", (void*)isAnySoundPlaying);
+  make_func_symbol_func("is-sound-playing?", (void*)isSoundPlaying);
+
+  // Pause/Resume all sounds
+  make_func_symbol_func("pause-all-sounds", (void*)pauseAllSounds);
+  make_func_symbol_func("resume-all-sounds", (void*)resumeAllSounds);
 
   // discord rich presence
   make_func_symbol_func("pc-discord-rpc-set", (void*)set_discord_rpc);
