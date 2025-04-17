@@ -62,7 +62,7 @@
     )
   )
 
-(defun play-thunder-sfx! ((sound-list-name string) (id sound-id))
+(defun play-thunder-sfx! ((sound-list-name string))
   (dotimes (i (-> *thunder-sfx-groups* length))
     (if (string= sound-list-name (-> *thunder-sfx-groups* i))
       (set! *cur-thunder-group* sound-list-name)
@@ -115,5 +115,4 @@
       (format 0 "failed to play thunder sfx!~%")
       )
     )
-  id
   )
