@@ -246,6 +246,7 @@
   "autosplit.o" ;; added
   "popup-menu-h.o" ;; added
   "speedruns-h.o" ;; added
+  "thunder-sfx-hack.o" ;; added - thunder sfx hack
   "mood-tables.o"
   "mood-tables2.o"
   "mood.o"

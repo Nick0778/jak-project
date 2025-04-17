@@ -1123,6 +1123,14 @@
   (none)
   )
 
+;; added - for thunder sfx hack
+(defmethod play-or-stop-lightning-sfx-hack! ((this mood-control) (arg0 string))
+  (when (or (not (load-in-progress? *level*)) (not (movie?)))
+    (play-thunder-sfx! arg0)
+    )
+  (none)
+  )
+
 ;; WARN: Return type mismatch object vs none.
 (defmethod gen-lightning-and-thunder! ((this mood-control) (arg0 int))
   (local-vars (a1-2 (array float)))
@@ -1225,48 +1233,92 @@
               )
             (set! (-> this lightning-time) 0)
             (cond
-              ((zero? (-> this lightning-index))
-               (play-or-stop-lightning-sfx!
-                 this
-                 (static-sound-spec "thunder-b" :group 0)
-                 (new 'static 'vector :x 37109760.0 :y 16261120.0 :z 5857280.0)
-                 )
-               )
-              ((= (-> this lightning-index) 1)
-               (play-or-stop-lightning-sfx!
-                 this
-                 (static-sound-spec "thunder-b" :group 0)
-                 (new 'static 'vector :x 20480000.0 :y 33341440.0 :z 12124160.0)
-                 )
-               )
-              ((= (-> this lightning-index) 2)
-               (play-or-stop-lightning-sfx!
-                 this
-                 (static-sound-spec "thunder-b" :group 0)
-                 (new 'static 'vector :x -20480000.0 :y 33341440.0 :z 12124160.0)
-                 )
-               )
-              ((= (-> this lightning-index) 3)
-               (play-or-stop-lightning-sfx!
-                 this
-                 (static-sound-spec "thunder-b" :group 0)
-                 (new 'static 'vector :x -37109760.0 :y 16261120.0 :z 5857280.0)
-                 )
-               )
-              ((= (-> this lightning-index) 4)
-               (play-or-stop-lightning-sfx!
-                 this
-                 (static-sound-spec "thunder-c" :group 0)
-                 (new 'static 'vector :y 40960000.0)
-                 )
-               )
-              ((= (-> this lightning-index) 5)
-               (play-or-stop-lightning-sfx!
-                 this
-                 (static-sound-spec "thunder-a" :group 0)
-                 (new 'static 'vector :y 40960000.0)
-                 )
-               )
+              ((not *thunder-sfx-hack-enabled?*) ;; thunder sfx hack not enabled
+                (cond
+                  ((zero? (-> this lightning-index))
+                  (play-or-stop-lightning-sfx!
+                    this
+                    (static-sound-spec "thunder-b" :group 0)
+                    (new 'static 'vector :x 37109760.0 :y 16261120.0 :z 5857280.0)
+                    )
+                  )
+                  ((= (-> this lightning-index) 1)
+                  (play-or-stop-lightning-sfx!
+                    this
+                    (static-sound-spec "thunder-b" :group 0)
+                    (new 'static 'vector :x 20480000.0 :y 33341440.0 :z 12124160.0)
+                    )
+                  )
+                  ((= (-> this lightning-index) 2)
+                  (play-or-stop-lightning-sfx!
+                    this
+                    (static-sound-spec "thunder-b" :group 0)
+                    (new 'static 'vector :x -20480000.0 :y 33341440.0 :z 12124160.0)
+                    )
+                  )
+                  ((= (-> this lightning-index) 3)
+                  (play-or-stop-lightning-sfx!
+                    this
+                    (static-sound-spec "thunder-b" :group 0)
+                    (new 'static 'vector :x -37109760.0 :y 16261120.0 :z 5857280.0)
+                    )
+                  )
+                  ((= (-> this lightning-index) 4)
+                  (play-or-stop-lightning-sfx!
+                    this
+                    (static-sound-spec "thunder-c" :group 0)
+                    (new 'static 'vector :y 40960000.0)
+                    )
+                  )
+                  ((= (-> this lightning-index) 5)
+                  (play-or-stop-lightning-sfx!
+                    this
+                    (static-sound-spec "thunder-a" :group 0)
+                    (new 'static 'vector :y 40960000.0)
+                    )
+                  )
+                  )
+                )
+              (else ;; thunder sfx hack enabled
+                (cond
+                  ((zero? (-> this lightning-index))
+                  (play-or-stop-lightning-sfx-hack!
+                    this
+                    "thunder-b"
+                    )
+                  )
+                  ((= (-> this lightning-index) 1)
+                  (play-or-stop-lightning-sfx-hack!
+                    this
+                    "thunder-b"
+                    )
+                  )
+                  ((= (-> this lightning-index) 2)
+                  (play-or-stop-lightning-sfx-hack!
+                    this
+                    "thunder-b"
+                    )
+                  )
+                  ((= (-> this lightning-index) 3)
+                  (play-or-stop-lightning-sfx-hack!
+                    this
+                    "thunder-b"
+                    )
+                  )
+                  ((= (-> this lightning-index) 4)
+                  (play-or-stop-lightning-sfx-hack!
+                    this
+                    "thunder-c"
+                    )
+                  )
+                  ((= (-> this lightning-index) 5)
+                  (play-or-stop-lightning-sfx-hack!
+                    this
+                    "thunder-a"
+                    )
+                  )
+                  )
+                )
               )
             )
           )
@@ -1516,15 +1568,23 @@
              (gen-lightning-and-thunder! this (the-as int a1-12))
              (cond
                ((zero? (-> this rain-id))
-                (set! (-> this rain-id) (sound-play-by-name
-                                          (static-sound-name "rain-hiss")
-                                          (new-sound-id)
-                                          (the int (* 1024.0 f30-3))
-                                          (the int (* 1524.0 (-> this sound-pitch)))
-                                          0
-                                          (sound-group)
-                                          #t
-                                          )
+                (cond
+                      ((not *thunder-sfx-hack-enabled?*) ;; added
+                        (set! (-> this rain-id) (sound-play-by-name
+                                                (static-sound-name "rain-hiss")
+                                                (new-sound-id)
+                                                (the int (* 1024.0 f30-3))
+                                                (the int (* 1524.0 (-> this sound-pitch)))
+                                                0
+                                                (sound-group)
+                                                #t
+                                                )
+                              )
+                        )
+                      (else
+                        (set! *play-rain-sfx?* #t) ;; added
+                        (play-rain-sfx!) ;; added
+                        )
                       )
                 )
                (else
@@ -1547,6 +1607,10 @@
                 (sound-stop (-> this rain-id))
                 (set! (-> this rain-id) (new 'static 'sound-id))
                 0
+                )
+              ;; added
+              (when *thunder-sfx-hack-enabled?*
+                (set! *play-rain-sfx?* #f)
                 )
               )
             )

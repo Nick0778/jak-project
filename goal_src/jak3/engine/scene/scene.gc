@@ -1334,6 +1334,10 @@
         )
       (script-eval (-> self scene on-complete))
       )
+    ;; If there are custom audios playing, then, stop them 
+    (if (is-any-sound-playing?)
+      (stop-all-sounds)
+      )
     )
   )
 
@@ -1735,6 +1739,10 @@
                   (-> self clock time-adjust-ratio)
                   )
                )
+              ;; If there are custom audios playing, then, pause them
+              (if (is-any-sound-playing?)
+                  (pause-all-sounds)
+                  )
              )
             ((cpad-hold? 0 l1)
              (if (cpad-pressed? 0 square)
@@ -1747,6 +1755,10 @@
                   (-> self clock time-adjust-ratio)
                   )
                )
+              ;; If there are custom audios playing, then, pause them
+              (if (is-any-sound-playing?)
+                  (pause-all-sounds)
+                  )
              )
             ((cpad-hold? 0 x)
              (when (cpad-pressed? 0 x)
@@ -1772,6 +1784,10 @@
            )
           ((= (-> self cur-speed) -1000.0)
            (format *stdcon* "scene paused~%")
+           ;; If there are custom audios playing, then, pause them
+           (if (is-any-sound-playing?)
+              (pause-all-sounds)
+              )
            (when (!= (-> self targ-speed) -1000.0)
              (sound-continue (-> gp-7 id))
              (when *sound-player-enable*
@@ -1782,6 +1798,7 @@
                  (set! (-> v1-190 params mask) (the-as uint 2))
                  (-> v1-190 id)
                  )
+                (resume-all-sounds) ;; Resume all custom audios
                )
              (set! (-> self targ-speed) 0.0)
              (set! (-> self cur-speed) 0.0)
