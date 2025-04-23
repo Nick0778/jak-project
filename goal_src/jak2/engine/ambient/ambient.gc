@@ -397,6 +397,7 @@
         (auto-save-user)
         )
     (apply-settings *setting-control*)
+    (set! *playing-hint?* #t) ;; added - a hint is currently playing
     )
   :exit (behavior ()
     (let ((gp-0 (-> self message on-close)))
@@ -448,6 +449,7 @@
     (remove-setting! 'hint)
     (remove-setting! 'speech-control)
     (apply-settings *setting-control*)
+    (set! *playing-hint?* #f) ;; added - a hint is not playing
     )
   :code (behavior ()
     (local-vars (v1-43 symbol))

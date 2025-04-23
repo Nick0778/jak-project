@@ -1329,8 +1329,8 @@
                               )
                         )
                       (else
-                        (set! *play-rain-sfx?* #t) ;; added
-                        (play-rain-sfx!) ;; added
+                        ;(set! *play-rain-sfx?* #t) ;; added
+                        ;(play-rain-sfx!) ;; added
                         )
                       )
                     )
@@ -1356,9 +1356,9 @@
                     0
                     )
                   ;; added
-                  (when *thunder-sfx-hack-enabled?*
-                    (set! *play-rain-sfx?* #f)
-                    )
+                  ;(when *thunder-sfx-hack-enabled?*
+                    ;(set! *play-rain-sfx?* #f)
+                    ;)
                   )
                 )
               )
