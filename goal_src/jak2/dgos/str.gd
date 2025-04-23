@@ -19,6 +19,7 @@
   "strip-drop.o"
   "strip-obs.o"
   "chaincrate.o"
+  "wind-gust-manager.o" ;; added
   "tpage-787.go"
   "tpage-789.go"
   "tpage-788.go"

@@ -1,5 +1,6 @@
 ("DRI.DGO"
- ("tpage-1204.go"
+ ("wind-gust-manager.o" ;; added
+  "tpage-1204.go"
   "tpage-1205.go"
   "tpage-1239.go"
   "tpage-1203.go"

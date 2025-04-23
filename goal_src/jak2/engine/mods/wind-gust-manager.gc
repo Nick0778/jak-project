@@ -1,0 +1,201 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+(define *wgust-l* (new 'static 'boxed-array :type string
+                            "SFX/WIND/M-GUST1L.wav" ;; index 0
+                            "SFX/WIND/M-GUST2L.wav" ;; index 1
+                            "SFX/WIND/M-GUST3L.wav" ;; index 2
+                            "SFX/WIND/M-GUST4L.wav" ;; index 3
+                            "SFX/WIND/M-GUST5L.wav" ;; index 4
+                            "SFX/WIND/M-GUST6L.wav" ;; index 5
+                            )
+  )
+
+(define *wgust-r* (new 'static 'boxed-array :type string
+                            "SFX/WIND/M-GUST1R.wav" ;; index 0
+                            "SFX/WIND/M-GUST2R.wav" ;; index 1
+                            "SFX/WIND/M-GUST3R.wav" ;; index 2
+                            "SFX/WIND/M-GUST4R.wav" ;; index 3
+                            "SFX/WIND/M-GUST5R.wav" ;; index 4
+                            "SFX/WIND/M-GUST6R.wav" ;; index 5
+                            )
+  )
+
+(deftype wind-gust-manager (process)
+  ((wgust-l-play-timer   float)
+   (wgust-r-play-timer   float)
+   )
+  (:state-methods
+    idle
+    active
+    )
+  (:methods
+    (print-debug-stuff (_type_) none)
+    )
+  )
+
+(define *wind-gust-manager* (the (pointer wind-gust-manager) #f))
+(define *started-wgust-l-time?* #f) ;; true if `wgust-l-play-timer` has started 
+(define *started-wgust-r-time?* #f) ;; true if `wgust-r-play-timer` has started 
+(define *playing-wgust-l-sfx?* #f) ;; true if a sfx from `*wgust-l*` array is playing
+(define *playing-wgust-r-sfx?* #f) ;; true if a sfx from `*wgust-r*` array is playing
+(define *cur-wgust-l-id* -1) ;; current index of the `*wgust-l*` array
+(define *cur-wgust-r-id* -1) ;; current index of the `*wgust-r*` array
+(define *playing-hint?* #f) ;; true if a hint is currently playing (see `ambient.gc`)
+
+(defun play-wind-gust-l-sfx! ((id int))
+  (let ((filename (-> *wgust-l* id)))
+    (when (not (is-sound-playing? filename))
+      (play-sound-file filename (the int (* (-> *setting-control* user-default sfx-volume) 100.0)))
+      (set! *cur-wgust-l-id* id)
+      )
+    )
+  (none)
+  )
+
+(defun stop-wind-gust-l-sfx! ()
+  (when (>= *cur-wgust-l-id* 0)
+    (let ((filename (-> *wgust-l* *cur-wgust-l-id*)))
+      (stop-sound-file filename)
+      )
+    (set! *cur-wgust-l-id* -1)
+    )
+  )
+
+(defun play-wind-gust-r-sfx! ((id int))
+  (let ((filename (-> *wgust-r* id)))
+    (when (not (is-sound-playing? filename))
+      (play-sound-file filename (the int (* (-> *setting-control* user-default sfx-volume) 100.0)))
+      (set! *cur-wgust-r-id* id)
+      )
+    )
+  (none)
+  )
+
+(defun stop-wind-gust-r-sfx! ()
+  (when (>= *cur-wgust-r-id* 0)
+    (let ((filename (-> *wgust-r* *cur-wgust-r-id*)))
+      (stop-sound-file filename)
+      )
+    (set! *cur-wgust-r-id* -1)
+    )
+  )
+
+(defun is-wgust-l-playing? ()
+  (and (>= *cur-wgust-l-id* 0) (is-sound-playing? (-> *wgust-l* *cur-wgust-l-id*)))
+  )
+
+(defun is-wgust-r-playing? ()
+  (and (>= *cur-wgust-r-id* 0) (is-sound-playing? (-> *wgust-r* *cur-wgust-r-id*)))
+  )
+
+(defstate idle (wind-gust-manager)
+  :virtual #t
+  :event (behavior ((proc process) (argc int) (message symbol) (block event-message-block))
+    (case message
+      (('trigger)
+        (go-virtual active)
+       )
+      )
+    )
+  :enter (behavior ()
+    (set! *started-wgust-l-time?* #f)
+    (set! *started-wgust-r-time?* #f)
+    (set! *playing-wgust-l-sfx?* #f)
+    (set! *playing-wgust-r-sfx?* #f)
+    (set! (-> self wgust-l-play-timer) 0.0)
+    (set! (-> self wgust-r-play-timer) 0.0)
+    )
+  :code sleep-code
+  )
+
+(defstate active (wind-gust-manager)
+  :virtual #t
+  :event (behavior ((proc process) (argc int) (message symbol) (block event-message-block))
+    (case message
+      (('untrigger)
+        (go-virtual idle)
+       )
+      )
+    )
+  :exit (behavior ()
+    (stop-wind-gust-l-sfx!)
+    (stop-wind-gust-r-sfx!)
+    )
+  :trans (behavior ()
+    ;(print-debug-stuff self)
+    (when (and (not (is-wgust-l-playing?)) (not *started-wgust-l-time?*))
+      (set! (-> self wgust-l-play-timer) (rand-vu-float-range 1.0 1.5))
+      (set! *started-wgust-l-time?* #t)
+      )
+    (when (and (not (is-wgust-r-playing?)) (not *started-wgust-r-time?*))
+      (set! (-> self wgust-r-play-timer) (rand-vu-float-range 1.5 2.0))
+      (set! *started-wgust-r-time?* #t)
+      )
+    (when *started-wgust-l-time?*
+      (when (not (paused?))
+        (set! (-> self wgust-l-play-timer) (- (-> self wgust-l-play-timer) (seconds-per-frame)))
+        (when (<= (-> self wgust-l-play-timer) 0.0)
+          (when (not *playing-wgust-l-sfx?*)
+            (let ((id (rand-vu-int-count (-> *wgust-l* length))))
+              (play-wind-gust-l-sfx! id)
+              ;(format 0 "play-wind-gust-l-sfx! ~D~%" id)
+              )
+            (set! *playing-wgust-l-sfx?* #t)
+            )
+          )
+        )
+      )
+    (when *started-wgust-r-time?*
+      (when (not (paused?))
+        (set! (-> self wgust-r-play-timer) (- (-> self wgust-r-play-timer) (seconds-per-frame)))
+        (when (<= (-> self wgust-r-play-timer) 0.0)
+          (when (not *playing-wgust-r-sfx?*)
+            (let ((id (rand-vu-int-count (-> *wgust-r* length))))
+              (play-wind-gust-r-sfx! id)
+              ;(format 0 "play-wind-gust-r-sfx! ~D~%" id)
+              )
+            (set! *playing-wgust-r-sfx?* #t)
+            )
+          )
+        )
+      )
+    (when (and *playing-wgust-l-sfx?* (not (is-wgust-l-playing?)))
+      (set! *started-wgust-l-time?* #f)
+      (set! *playing-wgust-l-sfx?* #f)
+      (set! (-> self wgust-l-play-timer) 0.0)
+      )
+    (when (and *playing-wgust-r-sfx?* (not (is-wgust-r-playing?)))
+      (set! *started-wgust-r-time?* #f)
+      (set! *playing-wgust-r-sfx?* #f)
+      (set! (-> self wgust-r-play-timer) 0.0)
+      )
+    (when (or (load-in-progress? *level*) (movie?) *playing-hint?*)
+      (go-virtual idle)
+      )
+    )
+  :code sleep-code
+  )
+
+(defmethod print-debug-stuff ((this wind-gust-manager))
+  (format *stdcon* "is-wgust-l-playing? ~A~%" (is-wgust-l-playing?))
+  (format *stdcon* "wgust-l-sfx-name: (~S)~%" (-> *wgust-l* *cur-wgust-l-id*))
+  (format *stdcon* "is-wgust-r-playing? ~A~%" (is-wgust-r-playing?))
+  (format *stdcon* "wgust-r-sfx-name: (~S)~%" (-> *wgust-r* *cur-wgust-r-id*))
+  (format *stdcon* "wgust-l-play-timer: ~F~%" (-> this wgust-l-play-timer))
+  (format *stdcon* "wgust-r-play-timer: ~F~%" (-> this wgust-r-play-timer))
+  (format *stdcon* "*started-wgust-l-time?* ~A~%" *started-wgust-l-time?*)
+  (format *stdcon* "*started-wgust-r-time?* ~A~%" *started-wgust-r-time?*)
+  (format *stdcon* "*playing-wgust-l-sfx?* ~A~%" *playing-wgust-l-sfx?*)
+  (format *stdcon* "*playing-wgust-r-sfx?* ~A~%" *playing-wgust-r-sfx?*)
+  (none)
+  )
+
+(defbehavior wind-gust-manager-init-by-other wind-gust-manager ()
+  (set! *wind-gust-manager* (the-as (pointer wind-gust-manager) (process->ppointer self)))
+  (set! (-> self wgust-l-play-timer) 0.0)
+  (set! (-> self wgust-r-play-timer) 0.0)
+  (format 0 "wind-gust-manager: init-by-other~%")
+  (go-virtual idle)
+  (none)
+  )

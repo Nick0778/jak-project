@@ -243,6 +243,7 @@
   "popup-menu-h.o" ;; added
   "speedruns-h.o" ;; added
   "thunder-sfx-hack.o" ;; added - thunder sfx hack
+  "wind-gust-manager.o" ;; added
   "mood-tables.o"
   "mood-tables2.o"
   "mood.o"

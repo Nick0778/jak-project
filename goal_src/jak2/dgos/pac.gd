@@ -5,6 +5,7 @@
   "searchlight.o"
   "sew-gunturret.o"
   "pal-obs.o"
+  "wind-gust-manager.o" ;; added
   "tpage-2354.go"
   "tpage-2357.go"
   "tpage-2355.go"

@@ -18,6 +18,7 @@
   "amphibian.o"
   "fodder.o"
   "grenadier.o"
+  "wind-gust-manager.o" ;; added
   "tpage-851.go"
   "tpage-853.go"
   "tpage-852.go"
