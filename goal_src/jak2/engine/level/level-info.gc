@@ -4866,6 +4866,7 @@
     :activate-func #f
     :deactivate-func #f
     :kill-func #f
+    :borrow-size (new 'static 'array uint16 2 #x17c #x82f) ;; added
     :borrow-level (new 'static 'array symbol 2 #f #f)
     :borrow-display? (new 'static 'array symbol 2 #f #f)
     :base-task-mask (task-mask task0 primary0)
@@ -15808,4 +15809,63 @@
 
 (#when PC_PORT
   (cons! *level-load-list* 'test-zone)
+  )
+
+;; custom level for atoll custom task (uses borrow memory-mode)
+(define latoturret (new 'static 'level-load-info
+                 :index #x75
+                 :task-level #x6
+                 :name 'latoturret
+                 :visname 'latoturret-vis
+                 :nickname 'lat
+                 :dbname 'latoturret
+                 :taskname 'atoll
+                 :packages '()
+                 :memory-mode (load-buffer-mode borrow)
+                 :music-bank #f
+                 :ambient-sounds '()
+                 :mood-func 'update-mood-atoll
+                 :mood-init #f
+                 :ocean #f
+                 :sky #f
+                 :use-camera-other #f
+                 :continues '()
+                 :tasks '()
+                 :priority 100
+                 :load-commands '()
+                 :alt-load-commands '()
+                 :bsp-mask #xffffffffffffffff
+                 :buttom-height (meters -20)
+                 :run-packages '("common")
+                 :wait-for-load #f
+                 :login-func #f
+                 :activate-func #f
+                 :deactivate-func #f
+                 :kill-func #f
+                 :borrow-level (new 'static 'array symbol 2 #f #f)
+                 :borrow-display? (new 'static 'array symbol 2 #f #f)
+                 :base-task-mask (task-mask task3)
+                 :texture-anim-tfrag #f
+                 :texture-anim-pris #f
+                 :texture-anim-shrub #f
+                 :texture-anim-alpha #f
+                 :texture-anim-water #f
+                 :texture-anim-twarp #f
+                 :texture-anim-pris2 #f
+                 :texture-anim-sprite #f
+                 :texture-anim-map #f
+                 :texture-anim-sky #f
+                 :draw-priority 10.0
+                 :fog-height 327680.0
+                 :ocean-near-translucent? #t
+                 :ocean-far? #f
+                 :mood-range (new 'static 'mood-range :data (new 'static 'array float 4 0.0 1.0 0.0 1.0))
+                 :max-rain 1.0
+                 :fog-mult 1.0
+                 :ocean-alpha 1.0
+                 :extra-sound-bank '((atoll4 sewer1))
+                 )
+        )
+(#when PC_PORT
+  (cons! *level-load-list* 'latoturret)
   )
