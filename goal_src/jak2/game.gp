@@ -308,6 +308,12 @@
 ;; to also generate a collide-mesh, add :gen-mesh #t
 (build-actor "test-actor" :force-run #t :gen-mesh #t)
 
+;; atoll custom task level
+(build-custom-level "latoturret")
+(goal-src "levels/custom-tasks/atoll/atoll-destroy-obs.gc" "process-focusable") ;; mission actors code
+(goal-src "levels/custom-tasks/atoll/atoll-destroy-turret.gc" "process-focusable") ;; mission code
+(custom-level-cgo "LAT.DGO" "latoturret/latoturret.gd")
+
 ;;;;;;;;;;;;;;;;;;;;;
 ;; ANIMATIONS
 ;;;;;;;;;;;;;;;;;;;;;
