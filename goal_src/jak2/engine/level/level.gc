@@ -30,7 +30,7 @@ into 7 sections, which might explain the weird sizes in the center.
 
 (defglobalconstant LEVEL_HEAP_SIZE (* NUM_LEVEL_PAGES LEVEL_PAGE_SIZE))
 ;(defglobalconstant DEBUG_LEVEL_HEAP_MULT 1.5) ;; level heap in debug mode is 1.5x larger
-(defglobalconstant DEBUG_LEVEL_HEAP_MULT 1.1) ;; we're gonna use debug mode-style heaps but we don't actually need them at 1.5x size right now
+(defglobalconstant DEBUG_LEVEL_HEAP_MULT 1.5) ;; we're gonna use debug mode-style heaps but we don't actually need them at 1.5x size right now
 (defglobalconstant DEBUG_LEVEL_PAGE_SIZE (* 1024 (* DEBUG_LEVEL_HEAP_MULT LEVEL_PAGE_SIZE_KB)))
 (defglobalconstant DEBUG_LEVEL_HEAP_SIZE (* NUM_LEVEL_PAGES DEBUG_LEVEL_PAGE_SIZE))
 
@@ -2320,6 +2320,43 @@ into 7 sections, which might explain the weird sizes in the center.
           )
         (let ((v1-26 (and (-> ctywide borrow-level 1)
                           (begin (set! v1-28 (lookup-level-info (-> ctywide borrow-level 1))) v1-28)
+                          (-> v1-28 extra-sound-bank)
+                          )
+                     )
+              )
+          (when v1-26
+            (let ((a0-19 (car v1-26)))
+              (while (not (null? v1-26))
+                (if (= (car a0-19) s4-0)
+                    (set! s4-0 (car (cdr a0-19)))
+                    )
+                (set! v1-26 (cdr v1-26))
+                (set! a0-19 (car (the-as pair v1-26)))
+                )
+              )
+            )
+          )
+        ;; added - allows to use extra-sound-bank in atoll
+        (let ((v1-19 (and (-> atoll borrow-level 0)
+                          (begin (set! v1-21 (lookup-level-info (-> atoll borrow-level 0))) v1-21)
+                          (-> v1-21 extra-sound-bank)
+                          )
+                     )
+              )
+          (when v1-19
+            (let ((a0-14 (car v1-19)))
+              (while (not (null? v1-19))
+                (if (= (car a0-14) s4-0)
+                    (set! s4-0 (car (cdr a0-14)))
+                    )
+                (set! v1-19 (cdr v1-19))
+                (set! a0-14 (car (the-as pair v1-19)))
+                )
+              )
+            )
+          )
+        (let ((v1-26 (and (-> atoll borrow-level 1)
+                          (begin (set! v1-28 (lookup-level-info (-> atoll borrow-level 1))) v1-28)
                           (-> v1-28 extra-sound-bank)
                           )
                      )
