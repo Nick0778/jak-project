@@ -847,6 +847,12 @@
   (progress-controller-options-enable-pressure-sensitivity #x134a)
   (progress-controller-options-swap-r1-r2 #x134b)
   (progress-controller-options-enable-trigger-effects #x134c)
+
+  ;; custom task progress texts
+  (progress-missions-atoll-destroy-turrets #x3000) ;; "Destroy turrets in Pumping Station"
+
+  ;; custom task hint texts
+  (hint-turn-valve #x4000)
 )
 ;; ---text-id
 
