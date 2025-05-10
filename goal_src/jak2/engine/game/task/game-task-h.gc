@@ -120,7 +120,8 @@
   (stadium-burning-bush-race-class3-r 107)
   (stadium-burning-bush-race-class2-r 108)
   (stadium-burning-bush-race-class1-r 109)
-  (max 110))
+  (atoll-destroy-turrets 110) ;; added - atoll custom task
+  (max 111))
 ;; ---game-task
 
 ;; +++game-task-node
@@ -451,6 +452,10 @@
   (stadium-burning-bush-race-class2-r-resolution)
   (stadium-burning-bush-race-class1-r-introduction)
   (stadium-burning-bush-race-class1-r-resolution)
+  (atoll-destroy-turrets-introduction)
+  (atoll-destroy-turrets-destroy)
+  (atoll-destroy-turrets-turn-on-valve)
+  (atoll-destroy-turrets-resolution)
   )
 ;; ---game-task-node
 
