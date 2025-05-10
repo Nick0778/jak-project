@@ -242,9 +242,18 @@
       )
     )
   :trans (behavior ()
-    (if (task-complete? *game-info* (game-task atoll-sig))
+    ;; added - don't let turbine to go up during atoll custom task
+    (cond
+      ((and (task-complete? *game-info* (game-task atoll-sig)) (not (task-closed? "atoll-destroy-turrets-introduction")))
         (go-virtual risen)
         )
+      ((task-closed? "atoll-destroy-turrets-introduction")
+        #f
+        )
+      )
+    (if (task-closed? "atoll-destroy-turrets-resolution")
+      (go-virtual risen)
+      )
     (rider-trans)
     )
   :code sleep-code
