@@ -847,6 +847,7 @@
   (progress-controller-options-enable-pressure-sensitivity #x134a)
   (progress-controller-options-swap-r1-r2 #x134b)
   (progress-controller-options-enable-trigger-effects #x134c)
+  (scene-protect-blimp-res #x134d)
 )
 ;; ---text-id
 
