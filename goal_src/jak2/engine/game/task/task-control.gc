@@ -2370,3 +2370,78 @@
       )
     )
   )
+
+;; Fix compiler error that don't know these enemy types due to Task-control.gc being compiled before the code for these enemies
+(declare-type amphibian nav-enemy)
+(declare-type metalmonk nav-enemy)
+(declare-type fodder nav-enemy)
+
+(process-spawn-function process
+  (lambda :behavior process ()
+    (loop
+      ;; Hack to force actors to spawn
+       ;; Pumping Station custom task
+       (when (= (-> (level-get-target-inside *level*) name) 'atoll)
+         (when (and (task-closed? "atoll-destroy-turrets-introduction") (not (task-closed? "atoll-destroy-turrets-resolution")))
+           ;; SPYDER
+           (when (and (entity-by-type spyder) (task-closed? "atoll-destroy-turrets-introduction"))
+             (logclear! (-> (entity-by-name "spyder-53") extra kill-mask) (task-mask done task1 task2 task3)) ;; spyder-53
+             (logclear! (-> (entity-by-name "spyder-2") extra kill-mask) (task-mask done task1 task2 task3)) ;; spyder-2
+             (logclear! (-> (entity-by-name "spyder-3") extra kill-mask) (task-mask done task1 task2 task3)) ;; spyder-3
+             (logclear! (-> (entity-by-name "spyder-4") extra kill-mask) (task-mask done task1 task2 task3)) ;; spyder-4
+             )
+           ;; AMPHIBIAN
+           (when (and (entity-by-type amphibian) (task-closed? "atoll-destroy-turrets-introduction"))
+             (logclear! (-> (entity-by-name "amphibian-1") extra kill-mask) (task-mask done task1 task2 task3)) ;; amphibian-1
+             (logclear! (-> (entity-by-name "amphibian-2") extra kill-mask) (task-mask done task1 task2 task3)) ;; amphibian-2
+             (logclear! (-> (entity-by-name "amphibian-4") extra kill-mask) (task-mask done task1 task2 task3)) ;; amphibian-4
+             (logclear! (-> (entity-by-name "amphibian-48") extra kill-mask) (task-mask done task1 task2 task3)) ;; amphibian-48
+             (logclear! (-> (entity-by-name "amphibian-49") extra kill-mask) (task-mask done task1 task2 task3)) ;; amphibian-49
+             (logclear! (-> (entity-by-name "amphibian-46") extra kill-mask) (task-mask done task1 task2 task3)) ;; amphibian-46
+             (logclear! (-> (entity-by-name "amphibian-50") extra kill-mask) (task-mask done task1 task2 task3)) ;; amphibian-50
+             (logclear! (-> (entity-by-name "amphibian-47") extra kill-mask) (task-mask done task1 task2 task3)) ;; amphibian-47
+             )
+           ;; JUICER
+           (when (and (entity-by-type juicer) (task-closed? "atoll-destroy-turrets-introduction"))
+             (logclear! (-> (entity-by-name "juicer-12") extra kill-mask) (task-mask done task1 task2 task3)) ;; juicer-12
+             (logclear! (-> (entity-by-name "juicer-13") extra kill-mask) (task-mask done task1 task2 task3)) ;; juicer-13
+             (logclear! (-> (entity-by-name "juicer-81") extra kill-mask) (task-mask done task1 task2 task3)) ;; juicer-81
+             (logclear! (-> (entity-by-name "juicer-82") extra kill-mask) (task-mask done task1 task2 task3)) ;; juicer-82
+             (logclear! (-> (entity-by-name "juicer-8") extra kill-mask) (task-mask done task1 task2 task3)) ;; juicer-8
+             (logclear! (-> (entity-by-name "juicer-76") extra kill-mask) (task-mask done task1 task2 task3)) ;; juicer-76
+             (logclear! (-> (entity-by-name "juicer-77") extra kill-mask) (task-mask done task1 task2 task3)) ;; juicer-77
+             (logclear! (-> (entity-by-name "juicer-78") extra kill-mask) (task-mask done task1 task2 task3)) ;; juicer-78
+             )
+           ;; METALMONK
+           (when (and (entity-by-type metalmonk) (task-closed? "atoll-destroy-turrets-introduction"))
+             (logclear! (-> (entity-by-name "metalmonk-5") extra kill-mask) (task-mask done task1 task2 task3)) ;; metalmonk-5
+             (logclear! (-> (entity-by-name "metalmonk-34") extra kill-mask) (task-mask done task1 task2 task3)) ;; metalmonk-34
+             (logclear! (-> (entity-by-name "metalmonk-35") extra kill-mask) (task-mask done task1 task2 task3)) ;; metalmonk-35
+             )
+           ;; FODDER
+           (when (and (entity-by-type fodder) (task-closed? "atoll-destroy-turrets-introduction"))
+             (logclear! (-> (entity-by-name "fodder-114") extra kill-mask) (task-mask done task1 task2 task3)) ;; fodder-114
+             (logclear! (-> (entity-by-name "fodder-18") extra kill-mask) (task-mask done task1 task2 task3)) ;; fodder-18
+             (logclear! (-> (entity-by-name "fodder-111") extra kill-mask) (task-mask done task1 task2 task3)) ;; fodder-111
+             (logclear! (-> (entity-by-name "fodder-112") extra kill-mask) (task-mask done task1 task2 task3)) ;; fodder-112
+             )
+
+          ;; REGION HACKS
+          (let* ((region-124 (region-lookup-by-id 124))
+                  (region-20 (region-lookup-by-id 20))
+                  )
+            (set! (-> region-124 on-inside) (the-as pair '(setting-pers calm mode #f)))
+            )
+           )
+         )
+         
+       ;; checker for atoll custom task (close the task after all turrets have been destroyed and after leaving from atoll)
+       (when (task-closed? "atoll-destroy-turrets-turn-on-valve")
+         (when (!= (-> (level-get-target-inside *level*) name) 'atoll)
+           (task-node-close! (game-task-node atoll-destroy-turrets-resolution))
+           )
+         )
+      (suspend)
+      )
+    )
+  )
