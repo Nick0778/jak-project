@@ -1,0 +1,107 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+(define *torn-sound-list* (new 'static 'boxed-array :type string
+                            "TORN010.wav"
+                            "TORN011.wav"
+                            "TORN012.wav"
+                            "TORN014.wav"
+                            "TORN017.wav"
+                            "TORN018.wav"
+                            "TORN019.wav"
+                            "TORN020.wav"
+                            "TORN022.wav"
+                            "TORN023.wav"
+                            "TORN024.wav"
+                            "TORN026.wav"
+                            "TORN028.wav"
+                            "TORN029.wav"
+                            "TORN030.wav"
+                            "TORN033.wav"
+                            "TORN034.wav"
+                            "TORN035.wav"
+                            "TORN037.wav"
+                            "TORN038.wav"
+                            "TORN039.wav"
+                            "TORN040.wav"
+                            "TORN047.wav"
+                            "TORN048.wav"
+                            "TORN049.wav"
+                            "TORN051.wav"
+                            "TORN052.wav"
+                            "TORN053.wav"
+                            "TORN056.wav"
+                            "TORN057.wav"
+                            "TORN060.wav"
+                            "TORN061.wav"
+                            "TORN062.wav"
+                            )
+  )
+
+(deftype portblmp-subt-manager (process)
+  ((current-sound       string)
+   (play-time           time-frame)
+   (cur-frame           time-frame)
+   )
+  (:state-methods
+    idle
+    )
+  (:methods
+    (check-current-sound (_type_) none)
+    )
+  )
+
+(define *portblmp-subt-manager* (the (pointer portblmp-subt-manager) #f))
+(define *portblmp-torn-subtitle?* #f)
+
+(defun subtitle-str-adjust ((pos int))
+  (if (< pos 0) -1 (the int (/ pos (/ 1024.0 60)))))
+
+(defmethod check-current-sound ((this portblmp-subt-manager))
+  (let ((sound-list *torn-sound-list*))
+    (dotimes (i (-> sound-list length))
+      (when (is-sound-playing? (-> sound-list i))
+        (set! (-> this current-sound) (-> sound-list i))
+        (set! *portblmp-torn-subtitle?* #t)
+        )
+      )
+    )
+  (when (not (is-any-sound-playing?))
+    (set! (-> this current-sound) (the-as string #f))
+    (set! (-> this play-time) 0)
+    (set! (-> this cur-frame) 0)
+    (set! *portblmp-torn-subtitle?* #f)
+    )
+  (none)
+  )
+
+(defstate idle (portblmp-subt-manager)
+  :virtual #t
+  ;:enter (behavior ()
+    ;(format 0 "'portblmp-subt-manager' is currently active!~%")
+    ;)
+  :trans (behavior ()
+    (check-current-sound self)
+    ;(format *stdcon* "cur-frame: ~D~%" (the int (-> self cur-frame)))
+    )
+  :code (behavior ()
+    (until #f
+      (set-time! (-> self play-time))
+      (while *portblmp-torn-subtitle?*
+        (set! (-> self cur-frame) (subtitle-str-adjust (the int (- (current-time) (-> self play-time)))))
+        (suspend)
+        )
+      (suspend)
+      )
+    #f
+    )
+  )
+
+(defbehavior portblmp-subt-manager-init-by-other portblmp-subt-manager ()
+  (set! *portblmp-subt-manager* (the-as (pointer portblmp-subt-manager) (process->ppointer self)))
+  (set! (-> self current-sound) (the-as string #f))
+  (set! (-> self play-time) 0)
+  (set! (-> self cur-frame) 0)
+  (go-virtual idle)
+  (none)
+  )

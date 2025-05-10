@@ -2463,6 +2463,21 @@
           (stop-all-sounds)
           )
         )
+
+      ;; Spawn or deactivate `portblmp-subt-manager` process
+        (cond
+          ((= (level-status *level* 'portblmp) 'active)
+            (when (not *portblmp-subt-manager*)
+              (set! *portblmp-subt-manager* (process-spawn portblmp-subt-manager :name "portblmp-subt-manager" :to *active-pool*))
+              )
+            )
+          (else
+            (when *portblmp-subt-manager*
+              (deactivate (ppointer->process *portblmp-subt-manager*))
+              (set! *portblmp-subt-manager* #f)
+              )
+            )
+          )
       (suspend)
       )
     )

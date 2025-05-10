@@ -7841,6 +7841,108 @@
       "Nice shooting, my boy!",
       "Good work, Jak!",
       "We'll all sleep a little easier tonight."
+    ],
+    "TORN010.wav": [
+      "Glad you're here, Jak.",
+      "This is the big one.",
+      "Stop the metal head assault ships from ramming the wall at all costs.",
+      "If the wall's breached, we're through."
+    ],
+    "TORN011.wav": [
+      "Target anything that approaches the wall."
+    ],
+    "TORN012.wav": [
+      "These cannons need lots of lead time to hit targets, but the shells pack a punch."
+    ],
+    "TORN014.wav": [
+      "This is it! Get ready! Here they come!"
+    ],
+    "TORN017.wav": [
+      "Shoot those metal head assault ships!"
+    ],
+    "TORN018.wav": [
+      "More ships coming in! "
+    ],
+    "TORN019.wav": [
+      "Got one!"
+    ],
+    "TORN020.wav": [
+      "Fire a spread if things get hairy."
+    ],
+    "TORN022.wav": [
+      "Multiple targets inbound!"
+    ],
+    "TORN023.wav": [
+      "TOO MANY! TOO MANY! "
+    ],
+    "TORN024.wav": [
+      "More coming in!"
+    ],
+    "TORN026.wav": [
+      "Here comes a whole swarm of them!"
+    ],
+    "TORN028.wav": [
+      "That one's getting too close!"
+    ],
+    "TORN029.wav": [
+      "You got it!"
+    ],
+    "TORN030.wav": [
+      "You got it, Jak! Keep it up!"
+    ],
+    "TORN033.wav": [
+      "More targets inbound!"
+    ],
+    "TORN034.wav": [
+      "Good shooting!"
+    ],
+    "TORN035.wav": [
+      "Nice work! That was close."
+    ],
+    "TORN037.wav": [
+      "They're coming in faster!"
+    ],
+    "TORN038.wav": [
+      "There's another one!"
+    ],
+    "TORN039.wav": [
+      "Here they come again!"
+    ],
+    "TORN040.wav": [
+      "Yeah, good shot!"
+    ],
+    "TORN047.wav": [
+      "That's a lot of blips on my scanner."
+    ],
+    "TORN048.wav": [
+      "You're gonna miss it!"
+    ],
+    "TORN049.wav": [
+      "Nice save!"
+    ],
+    "TORN051.wav": [
+      "Lead them. Lead them."
+    ],
+    "TORN052.wav": [
+      "Nice get!"
+    ],
+    "TORN053.wav": [
+      "Below us, jak."
+    ],
+    "TORN056.wav": [
+      "Yeah. Now they're feeling it."
+    ],
+    "TORN057.wav": [
+      "They're gettin' awfully close!"
+    ],
+    "TORN060.wav": [
+      "Get the last ones!"
+    ],
+    "TORN061.wav": [
+      "You did it, Jak! You helped save the city wall!"
+    ],
+    "TORN062.wav": [
+      "You did it, Jak! You stopped the assault!"
     ]
   },
   "speakers": {

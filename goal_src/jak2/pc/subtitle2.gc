@@ -415,31 +415,66 @@
   ;; on the second pass we add new lines
   (dotimes (q 2)
   (dotimes (i PC_SUBTITLE_QUEUE_SIZE)
-    (when (-> self queue i gui)
-      (let ((pos (current-subtitle2-pos (-> self queue i id))))
-        (when (and (zero? q) *debug-segment*)
-            (format *stdcon0* "subtitle pos: ~3L~D~0L (~S)~%" (the int pos) (-> self queue i gui name)))
+    (cond
+      ((not *portblmp-torn-subtitle?*) 
+        (when (-> self queue i gui)
+          (let ((pos (current-subtitle2-pos (-> self queue i id))))
+            (when (and (zero? q) *debug-segment*)
+                (format *stdcon0* "subtitle pos: ~3L~D~0L (~S)~%" (the int pos) (-> self queue i gui name)))
 
-        (let ((scene (get-scene-by-name *subtitle2-text* (-> self queue i gui name))))
-        (when scene
-          (dotimes (ii PC_SUBTITLE_QUEUE_MAX_LINES)
-            (awhen (get-line-at-pos scene pos ii)
-              (case q
-                ((0)
-                  (let ((index-in-old (find-line line-queue-old it)))
-                    (when (!= -1 index-in-old)
-                        ;; this line exists in the previous frame, put it in the new queue at the same spot
-                        (set-params! (-> line-queue elts index-in-old) it (-> line-queue-old elts index-in-old y)))))
-                ((1)
-                  (when (= -1 (find-line line-queue it))
-                    ;; line not in the queue. find empty spot.
-                    (let ((index-empty (find-line line-queue (the subtitle2-line #f))))
-                        (if (!= -1 index-empty)
-                            (set-params! (-> line-queue elts index-empty) it PC_SUBTITLE_Y_RECALC)))
-                    ))
+            (let ((scene (get-scene-by-name *subtitle2-text* (-> self queue i gui name))))
+            (when scene
+              (dotimes (ii PC_SUBTITLE_QUEUE_MAX_LINES)
+                (awhen (get-line-at-pos scene pos ii)
+                  (case q
+                    ((0)
+                      (let ((index-in-old (find-line line-queue-old it)))
+                        (when (!= -1 index-in-old)
+                            ;; this line exists in the previous frame, put it in the new queue at the same spot
+                            (set-params! (-> line-queue elts index-in-old) it (-> line-queue-old elts index-in-old y)))))
+                    ((1)
+                      (when (= -1 (find-line line-queue it))
+                        ;; line not in the queue. find empty spot.
+                        (let ((index-empty (find-line line-queue (the subtitle2-line #f))))
+                            (if (!= -1 index-empty)
+                                (set-params! (-> line-queue elts index-empty) it PC_SUBTITLE_Y_RECALC)))
+                        ))
+                    )
+                  )
+                ))
+              )
+            )
+          )
+        )
+      (else
+        (when *portblmp-torn-subtitle?*
+          (when (is-any-sound-playing?)
+            (let ((pos (the float (-> *portblmp-subt-manager* 0 cur-frame))))
+              ;(when (and (zero? q) *debug-segment*)
+                  ;(format *stdcon* "subtitle pos: ~3L~D~0L (~S)~%" (the int pos) (-> *portblmp-subt-manager* 0 current-sound)))
+              (let ((subtitle (get-scene-by-name *subtitle2-text* (-> *portblmp-subt-manager* 0 current-sound))))
+              (when subtitle
+                (dotimes (ii PC_SUBTITLE_QUEUE_MAX_LINES)
+                  (awhen (get-line-at-pos subtitle pos ii)
+                    (case q
+                      ((0)
+                        (let ((index-in-old (find-line line-queue-old it)))
+                          (when (!= -1 index-in-old)
+                              ;; this line exists in the previous frame, put it in the new queue at the same spot
+                              (set-params! (-> line-queue elts index-in-old) it (-> line-queue-old elts index-in-old y)))))
+                      ((1)
+                        (when (= -1 (find-line line-queue it))
+                          ;; line not in the queue. find empty spot.
+                          (let ((index-empty (find-line line-queue (the subtitle2-line #f))))
+                              (if (!= -1 index-empty)
+                                  (set-params! (-> line-queue elts index-empty) it PC_SUBTITLE_Y_RECALC)))
+                          ))
+                      )
+                    )
+                  ))
                 )
               )
-            ))
+            )
           )
         )
       )

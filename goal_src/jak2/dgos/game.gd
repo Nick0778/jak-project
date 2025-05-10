@@ -338,6 +338,7 @@
   "prototype.o"
   "main-collide.o"
   "video.o"
+  "portblmp-subt-manager.o" ;; added
   "capture-pc.o" ;; added
   "pckernel-common.o" ;; added
   "pckernel.o" ;; added

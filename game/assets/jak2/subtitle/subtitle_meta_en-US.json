@@ -40699,6 +40699,390 @@
           "speaker": "youngsamos"
         }
       ]
+    },
+    "TORN010.wav": {
+      "lines": [
+        {
+          "frame_end": 22,
+          "frame_start": 0,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        },
+        {
+          "frame_end": 44,
+          "frame_start": 26,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        },
+        {
+          "frame_end": 104,
+          "frame_start": 46,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        },
+        {
+          "frame_end": 140,
+          "frame_start": 106,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN011.wav": {
+      "lines": [
+        {
+          "frame_end": 32,
+          "frame_start": 0,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN012.wav": {
+      "lines": [
+        {
+          "frame_end": 88,
+          "frame_start": 0,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN014.wav": {
+      "lines": [
+        {
+          "frame_end": 38,
+          "frame_start": 0,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN017.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN018.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN019.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN020.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN022.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN023.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN024.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN026.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN028.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN029.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN030.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN033.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN034.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN035.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN037.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN038.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN039.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN040.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN047.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN048.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN049.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN051.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN052.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN053.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN056.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN057.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN060.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN061.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
+    },
+    "TORN062.wav": {
+      "lines": [
+        {
+          "frame_start": 0,
+          "frame_end": 40,
+          "merge": false,
+          "offscreen": true,
+          "speaker": "torn"
+        }
+      ]
     }
   }
 }
