@@ -504,6 +504,14 @@
               (set! (-> this on-close) '())
               )
             )
+          (("warp-gate-33") ;; templeb -> templex
+            (when (task-closed? "desert-final-boss-resolution")
+              (set! (-> this continue) (get-continue-by-name *game-info* "templex-warp"))
+              (set! (-> this on-activate) '())
+              (set! (-> this wait-for) '())
+              (set! (-> this on-close) '())
+              )
+            )
           ;; unknown
           (else
             ;;(set! (-> this continue) #f)
