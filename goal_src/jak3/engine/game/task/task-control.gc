@@ -3446,97 +3446,121 @@
     )
   )
 
-;;This returns true or false if jak is within a bubble defined by coordiantes and width
-(defun in-bubble? ((x float) (y float) (z float) (w float))
-  (<= 
-    (vector-vector-distance 
-      (target-pos 0) 
-      (set-vector! (new-stack-vector0) x y z 1.0)
-      )
-    (/ w 2.0)
-    )
-  )
-
-(defun in-bubble-m? ((x float) (y float) (z float) (w float))
-  (in-bubble? (meters x) (meters y) (meters z) (meters w))
-  )
-
-
 (process-spawn-function process
   (lambda :behavior process ()
     (loop
-      (when (task-closed? "desert-final-boss-resolution") 
+
+      ;; Return to War Factory
+
+      (when (task-closed? "desert-final-boss-resolution")
+        ;; cty-door-3 scripts
         (when (and (entity-by-name "cty-door-3") (= (-> (level-get-target-inside *level*) name) 'ctyslumc))
+          ;; cty-door-3 - on-notice
+          (set-pair-script! "cty-door-3" 'on-notice
+            '(((and (task-closed? "city-win-introduction")
+                    (not (task-closed? "city-win-resolution"))
+                    (or (eq? (level-status? 'lfacrm1) 'loaded)
+                        (eq? (level-status? 'lfacrm1) 'active)))
+              '(ctyslumc factorya))
 
-          ;; on-notice
-          (set! (cdr (res-lump-struct (entity-by-name "cty-door-3") 'on-notice pair)) 
-            '(((and (task-closed? "city-win-introduction") (not (task-closed? "city-win-resolution")) (or (eq? (level-status? 'lfacrm1) 'loaded) (eq? (level-status? 'lfacrm1) 'active))) '(ctyslumc factorya)) ((and (task-closed? "city-win-resolution") (< (send-event self 'distance) 60480)) '(ctyslumc towerc))))
+              ((and (task-closed? "city-win-resolution")
+                    (< (send-event self 'distance) 60480))
+              '(ctyslumc towerc))))
 
-          ;; on-cross
-          (set! (cdr (res-lump-struct (entity-by-name "cty-door-3") 'on-cross pair)) 
-            '((and (task-closed? "city-win-introduction") (not (task-closed? "city-win-resolution")) (< (send-event self 'distance) 60480)) (scene-play "factory-return-intro")))
+          ;; cty-door-3 - on-cross
+          (set-pair-script! "cty-door-3" 'on-cross
+            '((and (task-closed? "city-win-introduction")
+                  (not (task-closed? "city-win-resolution"))
+                  (< (send-event self 'distance) 60480))
+              (scene-play "factory-return-intro")))
 
-          ;; on-activate
-          (set! (cdr (res-lump-struct (entity-by-name "cty-door-3") 'on-activate pair)) 
-            '(((and (task-closed? "city-win-introduction") (not (task-closed? "city-win-resolution"))) (when (send-event self 'front) (want-load 'ctyslumc 'ctywide-ff 'factorya))) ((task-closed? "factory-sky-battle-resolution") (when (and (not (send-event self 'open?)) (send-event self 'front)) (want-load 'ctyslumc 'ctywide-ff 'freehq)))))
+          ;; cty-door-3 - on-activate
+          (set-pair-script! "cty-door-3" 'on-activate
+            '(((and (task-closed? "city-win-introduction")
+                    (not (task-closed? "city-win-resolution")))
+              (when (send-event self 'front)
+                (want-load 'ctyslumc 'ctywide-ff 'factorya)))
+
+              ((task-closed? "factory-sky-battle-resolution")
+              (when (and (not (send-event self 'open?))
+                          (send-event self 'front))
+                (want-load 'ctyslumc 'ctywide-ff 'freehq))))))
+
+        ;; fac-elevator-a-1 - on-notice
+        (set-pair-script! "fac-elevator-a-1" 'on-notice '((when (task-closed? "city-win-resolution") (send-event self 'move-to 'bottom) (send-event self 'go-dormant))))
+
+        ;; fac-elevator-a-2 - on-notice
+        (when (= (-> (level-get-target-inside *level*) name) 'factoryc)
+          (set-pair-script! "fac-elevator-a-2" 'on-notice '((when (task-closed? "city-win-resolution") (send-event self 'move-to 'top) (send-event self 'go-dormant))))
           )
-        (when (and (entity-by-name "fac-elevator-a-1") (= (-> (level-get-target-inside *level*) name) 'factoryc))
-          (set! (cdr (res-lump-struct (entity-by-name "fac-elevator-a-1") 'on-notice pair))
-            '((when (task-closed? "city-win-resolution") (send-event self 'move-to 'bottom) (send-event self 'go-dormant))))
-          )
-        (when (and (entity-by-name "fac-elevator-a-2") (= (-> (level-get-target-inside *level*) name) 'factoryc))
-          (set! (cdr (res-lump-struct (entity-by-name "fac-elevator-a-2") 'on-notice pair))
-            '((when (task-closed? "city-win-resolution") (send-event self 'move-to 'top) (send-event self 'go-dormant))))
-          )
-        (when (entity-by-name "fac-warp-effect-1")
-          (add-data! (entity-by-name "fac-warp-effect-1") (new 'static 'res-tag :name 'on-notice :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") '("vinroom-warp" #f #f))))
-          )
+
+        ;; fac-warp-effect-1 - add-data-to-entity! - on-notice
+        (add-data-to-entity! "fac-warp-effect-1" 'on-notice 1 pair (the pointer '(when (task-closed? "desert-final-boss-resolution") '("vinroom-warp" #f #f)))))
 
         ;; Temple to Eco Mine
 
-        (when (and (entity-by-name "tpl-mardoor-4") (= (-> (level-get-target-inside *level*) name) 'templea))
-          ;; on-notice
-          (set! (cdr (res-lump-struct (entity-by-name "tpl-mardoor-4") 'on-notice pair)) 
-            '((and (task-closed? "desert-final-boss-resolution") (not (task-closed? "city-win-resolution"))) '(templea templec)))
+        ;; tpl-mardoor-4 - on-notice
+        (when (= (-> (level-get-target-inside *level*) name) 'templea)
+          (set-pair-script! "tpl-mardoor-4" 'on-notice '((and (task-closed? "desert-final-boss-resolution") (not (task-closed? "city-win-resolution"))) '(templea templec)))
           )
         (when (= (-> (level-get-target-inside *level*) name) 'templea)
-          (set! (-> (region-lookup-by-id 1372) on-enter) (the-as pair '(when (task-closed? "desert-final-boss-resolution") (want-load 'templea 'templeb 'templec) (want-display 'templeb 'display) (want-display 'templec 'display))))
-          (set! (-> (region-lookup-by-id 1372) on-exit) (the-as pair '(when (task-closed? "desert-final-boss-resolution") (want-display 'templec #f))))
+          (set-region-data! 1372 "on-enter" '(when (task-closed? "desert-final-boss-resolution") (want-load 'templea 'templeb 'templec) (want-display 'templeb 'display) (want-display 'templec 'display)))
+          (set-region-data! 1372 "on-exit" '(when (task-closed? "desert-final-boss-resolution") (want-display 'templec #f)))
           )
-        (when (entity-by-name "tpl-door-a-15")
-          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-a-15") 'on-notice pair)) '((not (task-closed? "city-win-resolution")) '(templec)))
-          )
-        (when (entity-by-name "tpl-door-a-2")
-          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-a-2") 'on-notice pair)) '((not (task-closed? "city-win-resolution")) '(templeb templec)))
-          )
-        (when (entity-by-name "tpl-door-a-7")
-          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-a-7") 'on-notice pair)) '((and (task-closed? "temple-tests-oracle") (not (task-closed? "city-win-resolution"))) '(templeb)))
-          )
-        (when (entity-by-name "tpl-door-b-1")
-          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-b-1") 'on-notice pair)) '((and (task-closed? "temple-tests-oracle") (not (task-closed? "city-win-resolution"))) '(templea templeb templec)))
-          )
-        (when (entity-by-name "tpl-door-a-8")
-          (set! (cdr (res-lump-struct (entity-by-name "tpl-door-a-8") 'on-notice pair)) '((not (task-closed? "city-win-resolution")) '(templea templeb templed)))
-          )
-        (when (entity-by-name "tpl-mardoor-5")
-          (set! (cdr (res-lump-struct (entity-by-name "tpl-mardoor-5") 'on-notice pair)) '((not (task-closed? "city-win-resolution")) '(templed)))
-          )
-        (when (entity-by-name "min-elevator-6")
-          (set! (cdr (res-lump-struct (entity-by-name "min-elevator-6") 'on-notice pair)) '((task-closed? "mine-return-introduction") (when (and (not (send-event self 'query 'bottom?)) (not (task-closed? "mine-explore-resolution"))) (send-event self 'jump-to 'bottom)) (send-event self 'go-dormant)))
-          )
-        (when (entity-by-name "com-airlock-inner-117")
-          (add-data! (entity-by-name "com-airlock-inner-117") (new 'static 'res-tag :name 'on-activate :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") (want-load 'mined 'minee) (want-display 'mined 'display) (want-display 'minee 'display))))
-          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-117") 'on-notice pair)) '((mined)))
-          )
-        (when (entity-by-name "com-airlock-outer-15")
-          (add-data! (entity-by-name "com-airlock-outer-15") (new 'static 'res-tag :name 'on-activate :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") (want-load 'ctywide 'ctygenb 'minee) (want-display 'ctywide 'display) (want-display 'ctygenb 'display) (want-display 'minee 'display))))
-          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-outer-15") 'on-notice pair)) '((ctygenb)))
-          (add-data! (entity-by-name "com-airlock-outer-15") (new 'static 'res-tag :name 'on-cross :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") (scene-play "minee-genb-entrance"))))
-          )
-        (when (entity-by-name "com-airlock-inner-103")
-          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-103") 'on-notice pair)) '((ctygenb)))
-          )
-        )
+
+        (set-pair-script! "tpl-door-a-15" 'on-notice '((not (task-closed? "city-win-resolution")) '(templec)))
+        (set-pair-script! "tpl-door-a-2"  'on-notice '((not (task-closed? "city-win-resolution")) '(templeb templec)))
+        (set-pair-script! "tpl-door-a-3" 'on-notice '((not (task-closed? "city-win-resolution")) '(templeb)))
+        (set-pair-script! "tpl-door-a-7"  'on-notice '((and (task-closed? "temple-tests-oracle") (not (task-closed? "city-win-resolution"))) '(templeb)))
+        (set-pair-script! "tpl-door-b-1"  'on-notice '((and (task-closed? "temple-tests-oracle") (not (task-closed? "city-win-resolution"))) '(templea templeb templec)))
+        (set-pair-script! "tpl-door-a-8"  'on-notice '((not (task-closed? "city-win-resolution")) '(templea templeb templed)))
+        (set-pair-script! "tpl-mardoor-5" 'on-notice '((not (task-closed? "city-win-resolution")) '(templed)))
+        
+        ;; min-elevator-6 - on-notice
+        (set-pair-script! "min-elevator-6" 'on-notice
+          '((task-closed? "mine-return-introduction")
+            (when (and (not (send-event self 'query 'bottom?)) (not (task-closed? "mine-explore-resolution")))
+              (send-event self 'jump-to 'bottom))
+            (send-event self 'go-dormant)))
+
+        ;; com-airlock-inner-117 - add-data-to-entity! - on-activate
+        (add-data-to-entity! "com-airlock-inner-117" 'on-activate 1 pair
+          (the pointer '(when (task-closed? "desert-final-boss-resolution")
+                          (want-load 'mined 'minee)
+                          (want-display 'mined 'display)
+                          (want-display 'minee 'display))))
+
+        ;; com-airlock-inner-117 - on-notice
+        (set-pair-script! "com-airlock-inner-117" 'on-notice '((mined)))
+
+        ;; com-airlock-outer-15 - add-data-to-entity! - on-activate
+        (add-data-to-entity! "com-airlock-outer-15" 'on-activate 1 pair
+          (the pointer '(when (task-closed? "desert-final-boss-resolution")
+                          (want-load 'ctywide 'ctygenb 'minee)
+                          (want-display 'ctywide 'display)
+                          (want-display 'ctygenb 'display)
+                          (want-display 'minee 'display))))
+
+        ;; com-airlock-outer-15 - on-notice
+        (set-pair-script! "com-airlock-outer-15" 'on-notice '((ctygenb)))
+
+        ;; com-airlock-outer-15 - add-data-to-entity! - on-cross
+        (add-data-to-entity! "com-airlock-outer-15" 'on-cross 1 pair
+          (the pointer '(when (task-closed? "desert-final-boss-resolution")
+                          (scene-play "minee-genb-entrance"))))
+
+        ;; com-airlock-inner-103 - on-notice
+        (set-pair-script! "com-airlock-inner-103" 'on-notice '((ctygenb)))
+
+        (load-levels-in-bubble! 4124.84 44.50 4431.53 40.0 'templed 'templeb 'templea) ;; load (templed, templeb, templea) in pole room
+        (load-levels-in-bubble! 4124.20 44.41 4374.42 100.0 'templec 'templeb 'templea) ;; load (templec, templeb, templea) in watchers room
+        (load-levels-in-bubble! 4212.38 52.41 4702.73 50.0 'templed 'templeb 'templea) ;; load (templed, templeb, templea) in oracle room
+        (load-levels-in-bubble! 4111.05 52.41 4707.49 50.0 'templec 'templeb 'templea) ;; load (templec, templeb, templea) in oracle room
+        (load-levels-in-bubble! 4289.76 44.27 4766.90 50.0 'templed 'templeb 'templea) ;; load (templed, templeb, templea) in oracle room
+
+        ;; force `tpl-holo-eye-1` to spawn
+        (clear-kill-mask! "tpl-holo-eye-1" (task-mask task6))
+        
 
         ;; Reopen catacomb task
 

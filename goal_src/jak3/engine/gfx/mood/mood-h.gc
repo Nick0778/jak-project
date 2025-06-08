@@ -1,3 +1,4 @@
+
 ;;-*-Lisp-*-
 (in-package goal)
 
@@ -280,7 +281,6 @@
     (adjust-num-clouds (_type_ mood-control-work) none)
     (gen-lightning-and-thunder! (_type_ int) none)
     (play-or-stop-lightning-sfx! (_type_ sound-spec vector) none)
-    (play-or-stop-lightning-sfx-hack! (_type_ string) none) ;; added - for thunder sfx hack
     )
   )
 

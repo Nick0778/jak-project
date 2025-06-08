@@ -1542,3 +1542,308 @@
 (set! (-> *part-hellcat-dust-landing-fac-curve-settings* scale-x-scalar) *curve-fac-dust-scale-x*)
 
 (set! (-> *part-hellcat-dust-landing-fac-curve-settings* scale-y-scalar) *curve-fac-dust-scale-y*)
+
+(load-scene (new 'static 'scene
+              :name "factory-return-intro"
+              :extra #f
+              :info #f
+              :scene-flags (scene-flags scf1 scf2 scf3 scf4)
+              :mask-to-clear (process-mask movie projectile)
+              :entity "scene-stage-150"
+              :art-group "scenecamera"
+              :anim "factory-sky-battle-intro-b"
+              :parts 8
+              :command-list '((0
+                  (fadein (frame-time-30 10))
+                  (kill "lfac-hanger-door-1")
+                  (part-tracker
+                    "group-fma-hellcat-heathaze-ground"
+                    entity
+                    "particleman"
+                    joint
+                    "particleA"
+                    track
+                    #t
+                    duration
+                    (frame-range 0 297)
+                    )
+                  (apply ,(lambda :behavior scene-player
+                            ()
+                            (set-lfacrm1-door! 0.0)
+                            (let ((v1-1 (level-get *level* 'lfaccity)))
+                              (if v1-1
+                                  (logclear! (-> v1-1 info level-flags) (level-flags use-camera-other))
+                                  )
+                              )
+                            (none)
+                            )
+                         )
+                  )
+                (262 (part-tracker
+                       "group-hellcat-thrusters-fire"
+                       entity
+                       "particleman"
+                       joint
+                       "particleB"
+                       track
+                       #t
+                       duration
+                       (frame-range 262 285)
+                       )
+                     )
+                (266 (part-tracker
+                       "group-hellcat-dust-landing-fac"
+                       entity
+                       "particleman"
+                       joint
+                       "particleD"
+                       track
+                       #t
+                       duration
+                       (frame-range 266 285)
+                       )
+                     )
+                (270 (part-tracker
+                       "group-hellcat-thrusters-fire"
+                       entity
+                       "particleman"
+                       joint
+                       "particleC"
+                       track
+                       #t
+                       duration
+                       (frame-range 270 285)
+                       )
+                     )
+                (286
+                  (part-tracker
+                    "group-hellcat-thrusters-fac"
+                    entity
+                    "particleman"
+                    joint
+                    "particleB"
+                    track
+                    #t
+                    duration
+                    (frame-range 286 704)
+                    )
+                  (part-tracker
+                    "group-hellcat-thrusters-fac"
+                    entity
+                    "particleman"
+                    joint
+                    "particleC"
+                    track
+                    #t
+                    duration
+                    (frame-range 286 704)
+                    )
+                  (part-tracker
+                    "group-hellcat-dust-landing-fac"
+                    entity
+                    "particleman"
+                    joint
+                    "particleD"
+                    track
+                    #t
+                    duration
+                    (frame-range 286 400)
+                    )
+                  )
+                (297 (part-tracker
+                       "group-fma-hellcat-heathaze"
+                       entity
+                       "particleman"
+                       joint
+                       "particleA"
+                       track
+                       #t
+                       duration
+                       (frame-range 298 701)
+                       )
+                     )
+                (510 (apply ,(lambda :behavior scene-player () (none))))
+                (690 (apply ,(lambda :behavior scene-player
+                               ()
+                               (when (not (-> self aborted?))
+                                 (disable *screen-filter*)
+                                 (setup
+                                   *screen-filter*
+                                   (new 'static 'vector :x 255.0 :y 255.0 :z 255.0)
+                                   (new 'static 'vector :x 255.0 :y 255.0 :z 255.0 :w 128.0)
+                                   (* 1.1111112 (seconds-per-frame))
+                                   (bucket-id tex-hud-pris2)
+                                   #x3fffff
+                                   #x33001
+                                   #t
+                                   )
+                                 (set-setting! 'allow-blackout #f 0.0 0)
+                                 )
+                               (none)
+                               )
+                            )
+                     )
+                (701 (want-display 'factoryb 'display))
+                (702
+                  (part-tracker
+                    "group-hellcat-thrusters-follow"
+                    entity
+                    "particleman"
+                    joint
+                    "particleB"
+                    track
+                    #t
+                    duration
+                    (frame-range 702 1000)
+                    )
+                  (part-tracker
+                    "group-hellcat-thrusters-follow"
+                    entity
+                    "particleman"
+                    joint
+                    "particleC"
+                    track
+                    #t
+                    duration
+                    (frame-range 702 1000)
+                    )
+                  )
+                (720 (apply ,(lambda :behavior scene-player
+                               ()
+                               (when (not (-> self aborted?))
+                                 (remove-setting! 'allow-blackout)
+                                 (setup
+                                   *screen-filter*
+                                   (new 'static 'vector :x 255.0 :y 255.0 :z 255.0 :w 128.0)
+                                   (new 'static 'vector :x 255.0 :y 255.0 :z 255.0)
+                                   (* 1.1111112 (seconds-per-frame))
+                                   (bucket-id tex-hud-pris2)
+                                   #x3fffff
+                                   #x33001
+                                   #t
+                                   )
+                                 (set-filter-color! 1.0 1.0 1.0)
+                                 )
+                               (none)
+                               )
+                            )
+                     )
+                (870 (fadeout (frame-time-30 30)))
+                (10000
+                  (apply ,(lambda :behavior scene-player
+                            ()
+                            (let ((v1-1 (level-get *level* 'lfaccity)))
+                              (if v1-1
+                                  (logior! (-> v1-1 info level-flags) (level-flags use-camera-other))
+                                  )
+                              )
+                            (none)
+                            )
+                         )
+                  (task-close! "factory-sky-battle-hanger")
+                  )
+                )
+              :cut-list '(111 210 297 701)
+              :wait-ground-time (seconds 1)
+              :actor (new 'static 'boxed-array :type scene-actor
+                (new 'static 'scene-actor
+                  :name "scenecamera"
+                  :level #f
+                  :art-group "skel-scenecamera"
+                  :prefix ""
+                  :draw-frames '((min max))
+                  :scissor-frames '()
+                  :shadow-frames '((min max))
+                  :cloth-reset-frames '()
+                  :cloth-commands '()
+                  :camera 4
+                  :shadow-flags -1
+                  :shadow-volume-joint #f
+                  )
+                (new 'static 'scene-actor
+                  :name "jakc-highres"
+                  :level 'factorya
+                  :art-group "skel-jakc-highres"
+                  :prefix ""
+                  :draw-frames '((min max))
+                  :scissor-frames '()
+                  :shadow-frames '((min max))
+                  :cloth-reset-frames '()
+                  :cloth-commands '()
+                  :light-index #xa
+                  :flags #x1
+                  :shadow-flags -1
+                  :shadow-volume-joint #f
+                  :no-draw-seg #x80
+                  )
+                (new 'static 'scene-actor
+                  :name "sidekick-highres"
+                  :level 'factorya
+                  :art-group "skel-sidekick-highres"
+                  :prefix ""
+                  :draw-frames '((min max))
+                  :scissor-frames '()
+                  :shadow-frames '((min max))
+                  :cloth-reset-frames '()
+                  :cloth-commands '()
+                  :light-index #xa
+                  :flags #x1
+                  :shadow-flags -1
+                  :shadow-volume-joint #f
+                  )
+                (new 'static 'scene-actor
+                  :name "hellcat-movie"
+                  :level 'factorya
+                  :art-group "skel-hellcat-movie"
+                  :prefix ""
+                  :draw-frames '((min max))
+                  :scissor-frames '()
+                  :shadow-frames '((min max))
+                  :cloth-reset-frames '()
+                  :cloth-commands '()
+                  :light-index #xa
+                  :flags #x1
+                  :shadow-flags -1
+                  :shadow-volume-joint #f
+                  :no-draw-seg #x1fe
+                  )
+                (new 'static 'scene-actor
+                  :name "particleman"
+                  :level 'factorya
+                  :art-group "skel-particleman"
+                  :prefix ""
+                  :draw-frames '((min max))
+                  :scissor-frames '()
+                  :shadow-frames '((min max))
+                  :cloth-reset-frames '()
+                  :cloth-commands '()
+                  :shadow-flags -1
+                  :shadow-volume-joint #f
+                  )
+                (new 'static 'scene-actor
+                  :name "lfac-hanger-door"
+                  :level 'factorya
+                  :art-group "skel-lfac-hanger-door"
+                  :prefix ""
+                  :draw-frames '((min max))
+                  :scissor-frames '()
+                  :shadow-frames '((min max))
+                  :cloth-reset-frames '()
+                  :cloth-commands '()
+                  :light-index #xa
+                  :flags #x1
+                  :shadow-flags -1
+                  :shadow-volume-joint #f
+                  )
+                )
+              :load-point "factorya-intro-b"
+              :end-point "factoryc-start"
+              :borrow '((factorya 1 lfacrm1 copy))
+              :sfx-volume -1.0
+              :ambient-volume -1.0
+              :music-delay 1500.0
+              :on-running #f
+              :on-complete #f
+              )
+            )
+            

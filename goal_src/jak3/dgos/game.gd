@@ -363,6 +363,7 @@
   "pckernel.o" ;; added
   "subtitle3-h.o" ;; added
   "subtitle3.o" ;; added
+  "functions-util.o" ;; added
   "main.o"
   "collide-cache.o"
   "collide-debug.o"
