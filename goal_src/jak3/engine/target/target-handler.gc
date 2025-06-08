@@ -1233,7 +1233,7 @@
                      )
                  )
                 ((= v1-0 'loading)
-                 (if (not (or (and (logtest? (-> self control mod-surface flags) (surface-flag air))
+                 #|(if (not (or (and (logtest? (-> self control mod-surface flags) (surface-flag air))
                                    (not (logtest? (-> self control status) (collide-status on-surface)))
                                    )
                               (or (logtest? (water-flag touch-water) (-> self water flags))
@@ -1246,7 +1246,7 @@
                               )
                           )
                      (go target-load-wait)
-                     )
+                     )|#
                  )
                 ((begin
                    (b! (!= v1-0 'gun-combo) cfg-66 :delay (nop!))
