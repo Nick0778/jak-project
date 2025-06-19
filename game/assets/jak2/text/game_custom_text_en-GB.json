@@ -207,6 +207,7 @@
   "1314": "Warning!",
   "1315": "This setting is highly experimental. When not played at 60 frames per second, visual and gameplay issues may arise as a result.",
   "1316": "Local Score",
+  "1317": "Analog Sensitivity",
   "1320": "None",
   "1321": "Spin",
   "1322": "Boost",
@@ -249,5 +250,8 @@
   "1347": "Čeština",
   "1348": "Hrvatski",
   "1349": "Galego",
-  "1350": "Torn's Symbols"
+  "134a": "Pressure Sensitivity",
+  "134b": "Swap R1 and R2",
+  "134c": "Trigger Effects",
+  "134d": "Torn's Symbols"
 }
