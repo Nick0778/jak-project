@@ -2,39 +2,24 @@
 (in-package goal)
 
 (defun sig6-default-check-too-far ((arg0 sig-sewer))
-  (let ((v0-0 (bot-simple-check-too-far arg0)))
-    (if (logtest? (-> arg0 bot-task-bits) (bot-task-bits botbits-2))
-        (set! v0-0 2)
+  (let ((target-pos (-> *target* control trans))
+        (self-pos (-> arg0 root trans))
+        (too-far-dist (-> arg0 too-far-warn-dist))
+        (fail-delta (-> arg0 too-far-fail-dist-delta))
+        (dist 0.0)
         )
-    (the-as symbol v0-0)
-    )
-  )
-
-(defun sig6-near-start-check-too-far ((arg0 sig-sewer))
-  (let ((gp-0 0))
-    (let ((v1-0 (target-pos 0)))
-      (cond
-        ((>= (-> v1-0 z) 2399957.0)
-         (set! gp-0 2)
-         )
-        ((>= (-> v1-0 z) 2221453.2)
-         (set! gp-0 1)
-         )
-        ((and (>= (-> v1-0 y) -159744.0) (>= (-> (get-trans *target* 1) y) -159744.0))
-         (set! gp-0 2)
-         )
-        )
+    (set! dist (vector-vector-xz-distance self-pos target-pos))
+    (cond
+      ((>= dist (+ too-far-dist fail-delta))
+       2
+       ) 
+      ((>= dist too-far-dist)
+       1
+       )
+      (else
+       0
+       )
       )
-    gp-0
-    )
-  )
-
-(defun sig6-below-elevator-a-check-too-far ((arg0 sig-sewer))
-  (let ((gp-0 0))
-    (if (and (>= (-> (target-pos 0) y) -212402.17) (>= (-> (get-trans *target* 1) y) -212402.17))
-        (set! gp-0 2)
-        )
-    gp-0
     )
   )
 
@@ -108,7 +93,6 @@
           (set! (-> arg0 too-far-warn-dist) 327680.0)
           (set! (-> arg0 too-far-fail-dist-delta) 163840.0)
           (set! (-> arg0 notice-enemy-dist) 0.0)
-          ;(set-setting! 'airlock #f 0.0 0)
           (play-speech arg0 0) ;; "Here we go!"
           (set-setting! 'music 'tomb 0.0 0)
           (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
@@ -133,7 +117,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-near-start-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 3
@@ -161,7 +145,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-near-start-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 4
@@ -197,7 +181,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-near-start-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 5
@@ -241,7 +225,7 @@
           (none)
           )
         :on-skipping-here #f
-        :check-too-far 'sig6-near-start-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 6
@@ -281,7 +265,7 @@
           (none)
           )
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 7
@@ -348,7 +332,7 @@
           (none)
           )
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 8
@@ -377,7 +361,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 9
@@ -411,7 +395,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 10
@@ -445,7 +429,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 11
@@ -475,7 +459,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 12
@@ -505,7 +489,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 13
@@ -555,7 +539,7 @@
           (none)
           )
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 14
@@ -584,7 +568,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 15
@@ -613,7 +597,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 16
@@ -642,7 +626,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 17
@@ -673,7 +657,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 18
@@ -705,7 +689,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 19
@@ -742,7 +726,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-near-start-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 20
@@ -774,7 +758,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 21
@@ -821,7 +805,7 @@
           (none)
           )
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 22
@@ -852,7 +836,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 23
@@ -881,7 +865,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 24
@@ -910,7 +894,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 25
@@ -946,7 +930,7 @@
           (logior! (-> arg0 bot-flags) (bot-flags bf06))
           (none)
           )
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 26
@@ -994,7 +978,7 @@
           (none)
           )
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint ;; ACTIVATE REPAIRING GUN MODE
         :waypoint-id 27
@@ -1034,7 +1018,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint ;; REPAIRING GUN MODE LOGIC
         :waypoint-id 28
@@ -1097,7 +1081,7 @@
           (none)
           )
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 29
@@ -1136,7 +1120,7 @@
           (none)
           )
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 30
@@ -1166,7 +1150,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 31
@@ -1196,7 +1180,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 32
@@ -1226,7 +1210,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 33
@@ -1267,7 +1251,7 @@
           (none)
           )
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 34
@@ -1308,7 +1292,7 @@
           (none)
           )
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 35
@@ -1339,7 +1323,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far #f
         )
       (new 'static 'bot-waypoint
         :waypoint-id 36
@@ -1368,7 +1352,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 37
@@ -1397,7 +1381,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 38
@@ -1426,7 +1410,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 39
@@ -1455,7 +1439,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'sig6-default-check-too-far
         )
       (new 'static 'bot-waypoint
         :waypoint-id 40
@@ -1516,7 +1500,7 @@
           )
         :on-update #f
         :on-skipping-here #f
-        :check-too-far 'sig6-below-elevator-a-check-too-far
+        :check-too-far 'bot-check-too-far-always-okay
         )
       )
     :speeches (new 'static 'inline-array bot-speech-info 60
@@ -1672,4 +1656,3 @@
   )
 
 (set! (-> *bot-course-table* course 100) *sig6-course*)
-
