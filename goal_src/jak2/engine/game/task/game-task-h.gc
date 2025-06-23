@@ -121,7 +121,8 @@
   (stadium-burning-bush-race-class2-r 108)
   (stadium-burning-bush-race-class1-r 109)
   (atoll-destroy-turrets 110) ;; added - atoll custom task
-  (max 111))
+  (sewer-sig 111) ;; added - sewer custom task
+  (max 112))
 ;; ---game-task
 
 ;; +++game-task-node
@@ -456,6 +457,9 @@
   (atoll-destroy-turrets-destroy)
   (atoll-destroy-turrets-turn-on-valve)
   (atoll-destroy-turrets-resolution)
+  (sewer-sig-introduction)
+  (sewer-sig-protect)
+  (sewer-sig-resolution)
   )
 ;; ---game-task-node
 

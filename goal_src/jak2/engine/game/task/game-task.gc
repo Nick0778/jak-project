@@ -1044,6 +1044,17 @@
             :play-node (game-task-node atoll-destroy-turrets-destroy)
             :play-continue "atoll-start"
             :kiosk-play-continue "hideout-start"
+            )
+          ;; added - sewer custom task
+          (new 'static 'game-task-info
+            :name "sewer-sig"
+            :text-name (text-id progress-missions-sewer-sig)
+            :pre-play-node (game-task-node sewer-sig-introduction)
+            :kiosk-play-node (game-task-node sewer-sig-protect)
+            :pre-play-continue "hideout-start"
+            :play-node (game-task-node sewer-sig-protect)
+            :play-continue "sewesc-start"
+            :kiosk-play-continue "sewesc-start"
             )  
           )
         )
@@ -1080,6 +1091,7 @@
               (introcst 0 lintcstb #f)
               (onintent 0 ltentout display)
               (atoll 0 #f #f) ;; added
+              (sewesc 0 #f #f) ;; added
               )
             :open? #f
             :on-close #f
@@ -12442,6 +12454,121 @@
             :on-open #f
             :info #f
             :borrow '((atoll 0 latoturret display))
+            :open? #f
+            :on-close #f
+            )
+          ;; added - sewer custom task
+          (new 'static 'game-task-node-info
+            :level 'sewer
+            :task (game-task atoll-destroy-turrets)
+            :name "sewer-sig-introduction"
+            :when-open (new 'static 'boxed-array :type game-task-event
+              (new 'static 'game-task-event
+                :actor (game-task-actor minimap)
+                :action (game-task-action show)
+                :tex (game-task-icon gaticon-06)
+                :scene #f
+                )
+              )
+            :flags (game-task-node-flag save-on-life intro-wait task-manager)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node atoll-destroy-turrets-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :task-mask (task-mask task3)
+            :on-open #f
+            :info (new 'static 'task-manager-info
+              :mask (task-manager-mask intro-scene)
+              :level 'ctywide
+              :intro-scene "krew001" ;; placeholder 
+              :resolution-scene #f
+              :resolution-scene-continue #f
+              :retry-continue #f
+              :fail-continue #f
+              :init-hook #f
+              :cleanup-hook #f
+              :update-hook #f
+              :code-hook #f
+              :complete-hook #f
+              :fail-hook #f
+              :event-hook #f
+              :final-node (game-task-node sewer-sig-introduction)
+              :intro-delay #x258
+              :on-complete #f
+              :on-fail #f
+              )
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :description (text-id progress-missions-sewer-sig)
+            )
+          (new 'static 'game-task-node-info
+            :level 'sewer
+            :task (game-task sewer-sig)
+            :name "sewer-sig-protect"
+            :when-open (new 'static 'boxed-array :type game-task-event
+              (new 'static 'game-task-event
+                :actor (game-task-actor minimap)
+                :action (game-task-action show)
+                :tex (game-task-icon gaticon-06)
+                :scene #f
+                )
+              )
+            :flags (game-task-node-flag save-on-life task-manager)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node sewer-sig-introduction)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :info (new 'static 'task-manager-info
+              :level 'lsigsew
+              :intro-scene #f
+              :resolution-scene #f
+              :resolution-scene-continue #f
+              :retry-continue "sewesc-start"
+              :fail-continue #f
+              :init-hook #f
+              :cleanup-hook #f
+              :update-hook #f
+              :code-hook #f
+              :complete-hook #f
+              :fail-hook #f
+              :event-hook #f
+              :final-node (game-task-node sewer-sig-resolution)
+              :on-complete #f
+              :on-fail #f
+              )
+            :borrow '((sewesc 0 lsigsew display))
+            :open? #f
+            :on-close #f
+            :description (text-id progress-missions-sewer-sig)
+            )
+          (new 'static 'game-task-node-info
+            :level 'sewer
+            :task (game-task sewer-sig)
+            :name "sewer-sig-resolution"
+            :when-open (new 'static 'boxed-array :type game-task-event
+              (new 'static 'game-task-event
+                :actor (game-task-actor minimap)
+                :action (game-task-action show)
+                :tex (game-task-icon gaticon-06)
+                :scene #f
+                )
+              )
+            :flags (game-task-node-flag save-on-life close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node sewer-sig-protect)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :info #f
+            :borrow '((sewesc 0 lsigsew display))
             :open? #f
             :on-close #f
             )
