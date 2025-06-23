@@ -255,6 +255,5 @@
   "134c": "Trigger Effects",
 
   "3000": "Destroy Turrets in <COLOR_WHITE>Pumping Station",
-  
-  "4000": "Turn the valve to bring the water back"
+  "3001": "Protect Sig in <COLOR_WHITE>Sewers"
 }

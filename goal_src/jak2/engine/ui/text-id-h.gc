@@ -851,9 +851,7 @@
 
   ;; custom task progress texts
   (progress-missions-atoll-destroy-turrets #x3000) ;; "Destroy turrets in Pumping Station"
-
-  ;; custom task hint texts
-  (hint-turn-valve #x4000)
+  (progress-missions-sewer-sig #x3001) ;; "Protect Sig in Sewers"
 )
 ;; ---text-id
 
