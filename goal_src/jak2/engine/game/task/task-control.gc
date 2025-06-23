@@ -2441,6 +2441,13 @@
            (task-node-close! (game-task-node atoll-destroy-turrets-resolution))
            )
          )
+
+        ;; checker for sewer custom task (close the task after protecting Sig and after leaving from sewer)
+        (when (task-closed? "sewer-sig-protect")
+          (when (!= (-> (level-get-target-inside *level*) name) 'sewesc)
+            (task-node-close! (game-task-node sewer-sig-resolution))
+            )
+          )
       (suspend)
       )
     )
