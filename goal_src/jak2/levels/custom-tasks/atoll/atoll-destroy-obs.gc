@@ -144,8 +144,6 @@
 
 (deftype atoll-turn-valve (process-drawable)
   ((joint              joint-mod-rotate-local)
-   (actor-group        (pointer actor-group))
-   (actor-group-count  int32)
    (water-height       float)
    (spin               float)
    (spin-rate          float)
