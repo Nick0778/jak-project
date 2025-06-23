@@ -3852,6 +3852,7 @@
                   (send-event (process-by-name "squid-2" *active-pool*) 'skip)
                   (send-event (process-by-name "metalkor-1" *active-pool*) 'skip)
                   (send-event (process-by-name "sig-under-1" *active-pool*) 'skip)
+                  (send-event (process-by-name "sig-sewer-1" *active-pool*) 'skip)
                   )
                )
              (menu

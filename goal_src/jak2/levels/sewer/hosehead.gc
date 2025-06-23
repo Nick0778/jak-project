@@ -2326,9 +2326,16 @@
 
 ;; WARN: Return type mismatch object vs none.
 (defmethod go-idle ((this hosehead))
-  (if (-> this sentry?)
-      (go (method-of-object this idle-sentry))
-      (go (method-of-object this idle))
+  (cond
+    ((and (task-node-closed? (game-task-node sewer-sig-introduction)) (not (task-node-closed? (game-task-node sewer-sig-resolution))))
+      (go (method-of-object this die-fast))
       )
+    (else
+      (if (-> this sentry?)
+        (go (method-of-object this idle-sentry))
+        (go (method-of-object this idle))
+        )
+      )
+    )
   (none)
   )
