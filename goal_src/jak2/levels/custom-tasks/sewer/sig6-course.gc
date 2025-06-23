@@ -1,0 +1,1675 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+(defun sig6-default-check-too-far ((arg0 sig-sewer))
+  (let ((v0-0 (bot-simple-check-too-far arg0)))
+    (if (logtest? (-> arg0 bot-task-bits) (bot-task-bits botbits-2))
+        (set! v0-0 2)
+        )
+    (the-as symbol v0-0)
+    )
+  )
+
+(defun sig6-near-start-check-too-far ((arg0 sig-sewer))
+  (let ((gp-0 0))
+    (let ((v1-0 (target-pos 0)))
+      (cond
+        ((>= (-> v1-0 z) 2399957.0)
+         (set! gp-0 2)
+         )
+        ((>= (-> v1-0 z) 2221453.2)
+         (set! gp-0 1)
+         )
+        ((and (>= (-> v1-0 y) -159744.0) (>= (-> (get-trans *target* 1) y) -159744.0))
+         (set! gp-0 2)
+         )
+        )
+      )
+    gp-0
+    )
+  )
+
+(defun sig6-below-elevator-a-check-too-far ((arg0 sig-sewer))
+  (let ((gp-0 0))
+    (if (and (>= (-> (target-pos 0) y) -212402.17) (>= (-> (get-trans *target* 1) y) -212402.17))
+        (set! gp-0 2)
+        )
+    gp-0
+    )
+  )
+
+(define *sig6-course*
+  (new 'static 'bot-course
+    :course-id #x64
+    :speech-count #x3c
+    :spot-count #x30
+    :too-far-warn-speeches (new 'static 'bot-speech-list-shuffle
+      :flags #xa
+      :last-local-index -1
+      :speech-indexes (new 'static 'boxed-array :type int16 35 36 37)
+      )
+    :too-far-fail-speeches (new 'static 'bot-speech-list-shuffle
+      :flags #xa
+      :last-local-index -1
+      :speech-indexes (new 'static 'boxed-array :type int16 38 43 44 45 48 49 50 51)
+      )
+    :attack-player-speeches (new 'static 'bot-speech-list
+      :flags #x2
+      :last-local-index -1
+      :speech-indexes (new 'static 'boxed-array :type int16 42 41 39 40 46 47)
+      )
+    :default-check-too-far 'bot-simple-check-too-far
+    :waypoints (new 'static 'boxed-array :type bot-waypoint
+      (new 'static 'bot-waypoint
+        :waypoint-id 1
+        :skip-to 25
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((a0-1 25))
+            (set! (-> arg0 hit-points) a0-1)
+            (set! (-> arg0 enemy-info default-hit-points) a0-1)
+            )
+          (set! (-> arg0 waypoint-time0) 0)
+          (process-entity-status! arg0 (entity-perm-status no-kill) #t)
+          (clear-speech-flags! arg0)
+          (logior! (-> arg0 focus-status) (focus-status disable))
+          (logclear! (-> arg0 waypoint-bits) (waypoint-bits wabits-0)) 
+          (move-to-point! (-> arg0 root) (the-as vector (-> arg0 course spots 0)))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 0)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer)) 
+                      (when *target*
+                        (when (>= (- (-> (target-pos 0) x) (-> arg1 root trans x)) -42846.0)
+                          (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                          (go-to-waypoint! arg1 2 #f)
+                          (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                          #t
+                          )
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far #f
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 2
+        :skip-to 25
+        :on-set (lambda ((arg0 sig-sewer))
+          (logior! (-> arg0 bot-flags) (bot-flags bf06))
+          (set! (-> arg0 too-far-warn-dist) 327680.0)
+          (set! (-> arg0 too-far-fail-dist-delta) 163840.0)
+          (set! (-> arg0 notice-enemy-dist) 0.0)
+          ;(set-setting! 'airlock #f 0.0 0)
+          (play-speech arg0 0) ;; "Here we go!"
+          (set-setting! 'music 'tomb 0.0 0)
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 1)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 3 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-near-start-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 3
+        :skip-to 25
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 2)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 4 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-near-start-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 4
+        :nav-mesh-index 1
+        :skip-to 25
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 3)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (not (logtest? (-> arg1 waypoint-bits) (waypoint-bits wabits-0)))
+                        (set-time! (-> arg1 waypoint-time0))
+                        (logior! (-> arg1 waypoint-bits) (waypoint-bits wabits-0))
+                        )
+                      (when (and (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f) (time-elapsed? (-> arg1 waypoint-time0) (seconds 3.5)))
+                        (perform-event-message-block arg1 1 'move-to (cons (the-as uint 'bottom) '()) 0) ;; move `sew-elevator-22` to bottom
+                        (when (= (perform-event-message-block arg1 1 'query (cons (the-as uint 'path-pos?) '()) 0) 1.0)
+                          (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                          (go-to-waypoint! arg1 5 #f)
+                          (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                          #t
+                          )
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-near-start-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 5
+        :nav-mesh-index 1
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-choose-jump arg0)))
+            (set! (-> v1-3 bytes 5) 3)
+            (set! (-> v1-3 bytes 6) 4)
+            (set! (-> v1-3 bytes 7) 5)
+            (set! (-> v1-3 bytes 8) 6)
+            (set! (-> v1-3 bytes 10) 7)
+            (set! (-> v1-3 bytes 11) 8)
+            (set! (-> v1-3 bytes 12) 9)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-choose-jump v1-3) check-done)
+                  (the-as
+                    (function sigt-choose-jump sig symbol)
+                    (lambda ((arg0 ai-task-control) (arg1 sig-sewer))
+                      (when (or (ai-task-control-method-12 arg0 arg1)
+                                (< (-> arg1 root trans y) (+ -3072.0 (-> arg1 sig-course6 spots 4 center y)))
+                                )
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 6 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      (none)
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update (lambda ((arg0 sig-sewer))
+          (when (perform-event-message-block arg0 1 'query (cons (the-as uint 'hostile) '()) 1) ;; ´sew-battle-1´ is hostile
+            (perform-event-message-block arg0 0 'cue-chase (cons '() '()) 2) ;; trigger `juicer-1`
+            (perform-event-message-block arg0 0 'cue-chase (cons '() '()) 3) ;; trigger `juicer-2`
+            (set! (-> arg0 notice-enemy-dist) 122880.0)
+            )
+          (none)
+          )
+        :on-skipping-here #f
+        :check-too-far 'sig6-near-start-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 6
+        :nav-mesh-index 2
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (logclear! (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+          (when (< (vector-vector-xz-distance (-> arg0 root trans) (target-pos 0)) 40960.0)
+            (play-speech arg0 1) ;; "Follow me!"
+            )
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 10)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 7 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update (lambda ((arg0 sig-sewer))
+          (when (perform-event-message-block arg0 1 'query (cons (the-as uint 'hostile) '()) 1) ;; ´sew-battle-1´ is hostile
+            (perform-event-message-block arg0 0 'cue-chase (cons '() '()) 2) ;; trigger `juicer-1`
+            (perform-event-message-block arg0 0 'cue-chase (cons '() '()) 3) ;; trigger `juicer-2`
+            (set! (-> arg0 notice-enemy-dist) 122880.0)
+            )
+          (none)
+          )
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 7
+        :nav-mesh-index 2
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 12)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (perform-event-message-block arg1 1 'query (cons (the-as uint 'beaten) '()) 1)
+                        (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                          (set! (-> arg1 notice-enemy-dist) 122880.0)
+                          (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                          (go-to-waypoint! arg1 8 #f)
+                          (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                          #t
+                          )
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update (lambda ((arg0 sig-sewer))
+          (cond
+            ((not (perform-event-message-block arg0 1 'query (cons (the-as uint 'beaten) '()) 1)) ;; `sew-battle-1` is not beaten
+              (when (and (time-elapsed? (-> arg0 waypoint-time0) (seconds 0.5))
+                    (not (speech-playing? arg0 56))
+                    (not (channel-active? arg0 (gui-channel none)))
+                    (perform-event-message-block arg0 1 'query (cons (the-as uint 'idle) '()) 1)
+                    )
+                (play-speech arg0 56) ;; "Did you hear something?"
+                (logior! (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+                )
+              (when (time-elapsed? (-> arg0 waypoint-time0) (seconds 2.5))
+                (perform-event-message-block arg0 0 'trigger (cons '() '()) 1) ;; trigger `sew-battle-1`
+                )
+              (when (perform-event-message-block arg0 1 'query (cons (the-as uint 'hostile) '()) 1) ;; ´sew-battle-1´ is hostile
+                (perform-event-message-block arg0 0 'cue-chase (cons '() '()) 2) ;; trigger `juicer-1`
+                (perform-event-message-block arg0 0 'cue-chase (cons '() '()) 3) ;; trigger `juicer-2`
+                (when (and (not (speech-playing? arg0 25)) (not (channel-active? arg0 (gui-channel none))))
+                  (play-speech arg0 25) ;; "Waste the suckers!"
+                  (set! (-> arg0 notice-enemy-dist) 122880.0)
+                  (logior! (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+                  )
+                )
+              )
+            (else ;; `sew-battle-1` is beaten
+              (when (logtest? (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+                (when (and (not (speech-playing? arg0 57))
+                      (not (channel-active? arg0 (gui-channel none)))
+                      )
+                  (play-speech arg0 57) ;; "Born to kill, baby!"
+                  )
+                )
+              )
+            )
+          (none)
+          )
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 8
+        :nav-mesh-index 2
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 12)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 9 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 9
+        :nav-mesh-index 2
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (perform-event-message-block arg0 0 'trigger (cons '() '()) 4) ;; trigger `sew-battle-2`
+          (play-speech arg0 33) ;; "Here comes trouble."
+          (logclear! (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 13)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (when (perform-event-message-block arg1 1 'query (cons (the-as uint 'beaten) '()) 4) ;; check if `sew-battle-2` is beaten
+                          (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                          (go-to-waypoint! arg1 10 #f)
+                          (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                          #t
+                          )
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 10
+        :nav-mesh-index 2
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (play-speech arg0 20) ;; "Great, no time to celebrate"
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 13)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (not (logtest? (-> arg1 waypoint-bits) (waypoint-bits wabits-0)))
+                        (set-time! (-> arg1 waypoint-time0))
+                        (logior! (-> arg1 waypoint-bits) (waypoint-bits wabits-0))
+                        )
+                      (when (and (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f) (time-elapsed? (-> arg1 waypoint-time0) (seconds 2.5)))
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 11 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 11
+        :nav-mesh-index 3
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (play-speech arg0 52) ;; "Let's move!"
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 14)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 12 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 12
+        :nav-mesh-index 3
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (logclear! (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 15)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 13 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 13
+        :nav-mesh-index 3
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 16)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (perform-event-message-block arg1 0 'trigger (cons '() '()) 5) ;; trigger `sew-battle-3`
+                        (perform-event-message-block arg1 0 'cue-chase (cons '() '()) 6)
+                        (perform-event-message-block arg1 0 'cue-chase (cons '() '()) 7)
+                        (when (and (perform-event-message-block arg1 1 'query (cons (the-as uint 'hostile) '()) 5)
+                              (not (speech-playing? arg1 5))
+                              (not (channel-active? arg1 (gui-channel none)))
+                              )
+                          (play-speech arg1 5) ;; "Toast those bad boys up ahead."
+                          (logior! (-> arg1 waypoint-bits) (waypoint-bits wabits-0))
+                          )
+                        (when (perform-event-message-block arg1 1 'query (cons (the-as uint 'beaten) '()) 5) ;; check if `sew-battle-3` is beaten
+                          (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                          (go-to-waypoint! arg1 14 #f)
+                          (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                          #t
+                          )
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update (lambda ((arg0 sig-sewer))
+          (when (and (perform-event-message-block arg0 1 'query (cons (the-as uint 'beaten) '()) 5)
+                   (not (speech-playing? arg0 6))
+                   (not (channel-active? arg0 (gui-channel none)))
+                   (logtest? (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+                   )
+              (play-speech arg0 6) ;; "Great, kid, great! Don't get cocky."
+              )
+          (none)
+          )
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 14
+        :nav-mesh-index 3
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 17)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 15 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 15
+        :nav-mesh-index 3
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 18)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 16 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 16
+        :nav-mesh-index 3
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 19)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 17 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 17
+        :nav-mesh-index 3
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 20)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (logclear! (-> arg1 waypoint-bits) (waypoint-bits wabits-0))
+                        (set! (-> arg1 waypoint-time0) 0)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 18 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 18
+        :nav-mesh-index 4
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 21)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (and (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f) (time-elapsed? (-> arg1 waypoint-time0) (seconds 5.5)))
+                        (perform-event-message-block arg1 1 'move-to (cons (the-as uint 'bottom) '()) 8) ;; move `sew-elevator-24` to bottom
+                        (when (= (perform-event-message-block arg1 1 'query (cons (the-as uint 'path-pos?) '()) 8) 1.0)
+                          (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                          (go-to-waypoint! arg1 19 #f)
+                          (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                          #t
+                          )
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 19
+        :nav-mesh-index 4
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-choose-jump arg0)))
+            (set! (-> v1-3 bytes 5) 3)
+            (set! (-> v1-3 bytes 6) 22)
+            (set! (-> v1-3 bytes 7) 23)
+            (set! (-> v1-3 bytes 8) 24)
+            (set! (-> v1-3 bytes 10) 25)
+            (set! (-> v1-3 bytes 11) 26)
+            (set! (-> v1-3 bytes 12) 27)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-choose-jump v1-3) check-done)
+                  (the-as
+                    (function sigt-choose-jump sig symbol)
+                    (lambda ((arg0 ai-task-control) (arg1 sig-sewer))
+                      (when (or (ai-task-control-method-12 arg0 arg1)
+                                (< (-> arg1 root trans y) (+ -3072.0 (-> arg1 sig-course6 spots 22 center y)))
+                                )
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 20 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      (none)
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-near-start-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 20
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (play-speech arg0 53) ;; "Let's go!"
+          (logclear! (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+          (logior! (-> arg0 enemy-flags) (enemy-flag check-water check-water-backup))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 28)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 21 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 21
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (set-setting! 'allow-look-around #f 0.0 0)
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 29)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (perform-event-message-block arg1 0 'trigger (cons '() '()) 9) ;; trigger `sew-battle-4`
+                        (when (perform-event-message-block arg1 1 'query (cons (the-as uint 'beaten) '()) 9) ;; check if `sew-battle-4` is beaten
+                          (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                          (go-to-waypoint! arg1 22 #f)
+                          (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                          #t
+                          )
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update (lambda ((arg0 sig-sewer))
+          (when (and (perform-event-message-block arg0 1 'query (cons (the-as uint 'hostile) '()) 9)
+                   (not (speech-playing? arg0 26))
+                   (not (channel-active? arg0 (gui-channel none)))
+                   )
+              (play-speech arg0 26) ;; "Look out! We've got company!"
+              )
+          (when (and (perform-event-message-block arg0 1 'query (cons (the-as uint 'beaten) '()) 9)
+                   (not (speech-playing? arg0 55))
+                   (not (channel-active? arg0 (gui-channel none)))
+                   )
+              (play-speech arg0 55) ;; "Just a walk in the park."
+              )
+          (none)
+          )
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 22
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (remove-setting! 'allow-look-around)
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 30)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (logclear! (-> arg1 enemy-flags) (enemy-flag check-water check-water-backup))
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 23 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 23
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 31)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 24 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 24
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 32)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 25 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 25
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (logclear! (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 33)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 26 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here (lambda ((arg0 sig-sewer))
+          (ai-task-control-method-12 (-> arg0 ai-ctrl) arg0)
+          (send-event arg0 'move-trans (-> arg0 sig6-course spots 33))
+          (send-event *target* 'continue (get-continue-by-name *game-info* "hal2-wall2"))
+          (logior! (-> arg0 bot-flags) (bot-flags bf06))
+          (none)
+          )
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 26
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (set-setting! 'allow-look-around #f 0.0 0)
+          (when (not (logtest? (-> arg0 bot-task-bits) (bot-task-bits botbits-2)))
+              (logior! (-> arg0 bot-task-bits) (bot-task-bits botbits-2))
+              (perform-event-message-block arg0 0 'trigger (cons '() '()) 10) ;; trigger `sew-battle-5`
+              )
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 34)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (logtest? (-> arg1 waypoint-bits) (waypoint-bits wabits-0))
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 27 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update (lambda ((arg0 sig-sewer))
+          (when (not (speech-playing? arg0 13))
+            (if (time-elapsed? (-> arg0 waypoint-time0) (seconds 0.5))
+              (play-speech arg0 13) ;; "Take 'em all out!"
+              )
+            )
+          (when (and (not (logtest? (-> arg0 waypoint-bits) (waypoint-bits wabits-0)))
+                     (time-elapsed? (-> arg0 waypoint-time0) (seconds 8))
+                     )
+            (logior! (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+            (logior! (-> arg0 focus-status) (focus-status disable))
+            (set! (-> arg0 notice-enemy-dist) 16384.0)
+            )
+          (none)
+          )
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint ;; ACTIVATE REPAIRING GUN MODE
+        :waypoint-id 27
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (logclear! (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 36)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (cond
+                        ((logtest? (bot-flags bf19) (-> arg1 bot-flags)) ;; checks if Sig shoot failed, then he will start repairing the gun
+                          (format 0 "Repair Gun~%")
+                          (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                          (go-to-waypoint! arg1 28 #f)
+                          (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                          #t
+                          )
+                        (else
+                          (if (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                            (logior! (-> arg1 bot-flags) (bot-flags bf20)) ;; Sig shoot failed, activate repairing gun mode
+                            (logclear! (-> arg1 bot-flags) (bot-flags bf20))
+                            )
+                          #f
+                          )
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint ;; REPAIRING GUN MODE LOGIC
+        :waypoint-id 28
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 36)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (not (logtest? (-> arg1 bot-flags) (bot-flags bf19))) ;; checks if Sig's gun was repaired
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 29 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update (lambda ((arg0 sig-sewer))
+          (when (perform-event-message-block arg0 1 'query (cons (the-as uint 'hostile) '()) 10)
+            (cond
+              ((not (speech-playing? arg0 27))
+                (if (time-elapsed? (-> arg0 waypoint-time0) (seconds 0.5))
+                    (play-speech arg0 27) ;; "Damn! My gun's jammed, take over!"
+                    )
+                )
+              ((not (logtest? (-> arg0 waypoint-bits) (waypoint-bits wabits-0)))
+                (when (speech-ended? arg0 27)
+                  (logior! (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+                  (logclear! (-> arg0 focus-status) (focus-status disable))
+                  (set! (-> arg0 notice-enemy-dist) 122880.0)
+                  (set-time! (-> arg0 waypoint-time0))
+                  )
+                )
+              ((not (logtest? (-> arg0 waypoint-bits) (waypoint-bits wabits-1)))
+                (cond
+                  ((time-elapsed? (-> arg0 waypoint-time0) (seconds 10)) ;; the time till Sig repair his gun
+                    (format #t "Gun Repaired~%")
+                    (logclear! (-> arg0 bot-flags) (bot-flags bf20))
+                    (logior! (-> arg0 bot-flags) (bot-flags bf21)) ;; deactivate Sig repairing gun mode
+                    (logior! (-> arg0 waypoint-bits) (waypoint-bits wabits-1))
+                    )
+                  (else
+                    (if (and (time-elapsed? (-> arg0 waypoint-time0) (seconds 4)) (not (speech-playing? arg0 28)))
+                      (play-speech arg0 28) ;; "Get 'em while I fix my gun!"
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          (none)
+          )
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 29
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (play-speech arg0 29) ;; "Okay, the Peacemaker is back online. Let's move!"
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 35)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (perform-event-message-block arg1 1 'query (cons (the-as uint 'beaten) '()) 10) ;; check if `sew-battle-5` is beaten
+                          (remove-setting! 'allow-look-around)
+                          (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                          (go-to-waypoint! arg1 30 #f)
+                          (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                          #t
+                          )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update (lambda ((arg0 sig-sewer))
+          (when (and (perform-event-message-block arg0 1 'query (cons (the-as uint 'beaten) '()) 10)
+                   (not (speech-playing? arg0 30))
+                   (not (channel-active? arg0 (gui-channel none)))
+                   )
+              (play-speech arg0 30) ;; "Thanks for covering my butt, that was close!"
+              )
+          (none)
+          )
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 30
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (logior! (-> arg0 enemy-flags) (enemy-flag check-water check-water-backup))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 37)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 31 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 31
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 38)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (logclear! (-> arg1 enemy-flags) (enemy-flag check-water check-water-backup))
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 32 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 32
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (logclear! (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 39)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 33 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 33
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (clear-speech-flags! arg0)
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 40)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (logtest? (-> arg1 waypoint-bits) (waypoint-bits wabits-0))
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 34 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update (lambda ((arg0 sig-sewer))
+          (when (and (time-elapsed? (-> arg0 waypoint-time0) (seconds 3))
+                   (not (speech-playing? arg0 56))
+                   (not (channel-active? arg0 (gui-channel none)))
+                   )
+              (play-speech arg0 56) ;; "Did you hear something?"
+              )
+          (when (time-elapsed? (-> arg0 waypoint-time0) (seconds 5))
+            (logior! (-> arg0 waypoint-bits) (waypoint-bits wabits-0))
+            )
+          (none)
+          )
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 34
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (play-speech arg0 26) ;; "Look out! We've got company!"
+          (set-setting! 'allow-look-around #f 0.0 0)
+          (perform-event-message-block arg0 0 'trigger (cons '() '()) 11) ;; trigger `sew-battle-6`
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 40)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (perform-event-message-block arg1 1 'query (cons (the-as uint 'beaten) '()) 11) ;; check if `sew-battle-6` is beaten
+                          (remove-setting! 'allow-look-around)
+                          (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                          (go-to-waypoint! arg1 35 #f)
+                          (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                          #t
+                          )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update (lambda ((arg0 sig-sewer))
+          (when (and (perform-event-message-block arg0 1 'query (cons (the-as uint 'beaten) '()) 11)
+                   (not (speech-playing? arg0 54))
+                   (not (channel-active? arg0 (gui-channel none)))
+                   )
+              (play-speech arg0 54) ;; "I love the smell of burning metal!"
+              )
+          (none)
+          )
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 35
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (logior! (-> arg0 enemy-flags) (enemy-flag check-water check-water-backup))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 41)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (play-speech arg1 58) ;; "Over here!"
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 36 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 36
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 42)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 37 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 37
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 43)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 38 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 38
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 44)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 39 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 39
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 45)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 40 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 40
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 46)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      (when (outside-spot-radius? arg1 (the-as bot-spot #f) (the-as vector #f) #f)
+                        (play-speech arg1 30) ;; "Thanks for covering my butt, that was close!"
+                        (ai-task-control-method-12 (-> arg1 ai-ctrl) arg1)
+                        (go-to-waypoint! arg1 41 #f)
+                        (ai-task-control-method-10 (-> arg1 ai-ctrl) arg1)
+                        #t
+                        )
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'bot-check-too-far-always-okay
+        )
+      (new 'static 'bot-waypoint
+        :waypoint-id 41
+        :nav-mesh-index 5
+        :skip-to -1
+        :on-set (lambda ((arg0 sig-sewer))
+          (task-node-close! (game-task-node sewer-sig-protect))
+          (process-entity-status! arg0 (entity-perm-status bit-4) #f)
+          (logclear! (-> arg0 enemy-flags) (enemy-flag cam-attack-mode))
+          (logclear! (-> arg0 bot-flags) (bot-flags bf06))
+          (bot-method-196 arg0)
+          (logior! (-> arg0 bot-flags) (bot-flags bf22))
+          (remove-setting! 'music)
+          (let ((v1-3 (get-task-by-type (-> arg0 ai-ctrl) sigt-wait-spot arg0)))
+            (set! (-> v1-3 bytes 5) 1)
+            (set! (-> v1-3 bytes 6) 46)
+            (set! (-> v1-3 bytes 4) -1)
+            (set! (-> (the-as sigt-wait-spot v1-3) check-done)
+                  (the-as
+                    (function sigt-wait-spot sig symbol)
+                    (lambda ((arg0 object) (arg1 sig-sewer))
+                      #f
+                      )
+                    )
+                  )
+            )
+          (none)
+          )
+        :on-update #f
+        :on-skipping-here #f
+        :check-too-far 'sig6-below-elevator-a-check-too-far
+        )
+      )
+    :speeches (new 'static 'inline-array bot-speech-info 60
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt003") ;; 0
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt004") ;; 1
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt005") ;; 2
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt006") ;; 3
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt007") ;; 4
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt008") ;; 5
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt020") ;; 6
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt009") ;; 7
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt010") ;; 8
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt011") ;; 9
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt012") ;; 10
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt013") ;; 11
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt014") ;; 12
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt058") ;; 13
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt015") ;; 14
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt021") ;; 16
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt022") ;; 17
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt023") ;; 18
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt024") ;; 19
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt057") ;; 20
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt059") ;; 21
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt025") ;; 22
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt026") ;; 23
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt027") ;; 24
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt028") ;; 25
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt019") ;; 26
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt029") ;; 27
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt030") ;; 28
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt031") ;; 29
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt032") ;; 30
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt039") ;; 31
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt033") ;; 32
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt038") ;; 33
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt036") ;; 34
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt037") ;; 35
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt043") ;; 36
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt044") ;; 37
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt045") ;; 38
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt049") ;; 39
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt046") ;; 40
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt047") ;; 41
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt056") ;; 42
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt082") ;; 43
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt054") ;; 44
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt052") ;; 45
+      (new 'static 'bot-speech-info :flags (speech-flags sf01) :hold-time #x5a :slave-id -1 :name "sigt053") ;; 46
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt083") ;; 47
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt087") ;; 48
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt089") ;; 49
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt090") ;; 50
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt091") ;; 51
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt092") ;; 52
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt101") ;; 53
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt105") ;; 54
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt102") ;; 55
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt103") ;; 56
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt062") ;; 57
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt112") ;; 58
+      (new 'static 'bot-speech-info :hold-time #x5a :slave-id -1 :name "sigt107") ;; 59
+      )
+    :speech-tunings (new 'static 'inline-array bot-speech-tuning 1
+      (new 'static 'bot-speech-tuning :fo-min 30 :fo-max #x78 :fo-curve 11 :trans? #t)
+      )
+    :spots (new 'static 'inline-array bot-spot 48
+      (new 'static 'bot-spot :center (new 'static 'vector :x 4596244.5 :y -206929.92 :z 2100469.8 :w 8192.0)) ;; 0
+      (new 'static 'bot-spot :center (new 'static 'vector :x 4862894.0 :y -206929.92 :z 2109808.8 :w 8192.0)) ;; 1
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1196.32) :y (meters -51.62) :z (meters 523.69) :w 8192.0)) ;; 2
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1206.23) :y (meters -51.81) :z (meters 512.26) :w 8192.0)) ;; 3
+      (new 'static 'bot-spot
+        :center (new 'static 'vector :x 4937974.0 :y -260751.36 :z 2088386.5 :w 6144.0)
+        :blocked-xz-dist 8192.0
+        ) ;; 4
+      (new 'static 'bot-spot
+        :center (new 'static 'vector :x 4927242.0 :y -260751.36 :z 2082365.5 :w 6144.0)
+        :blocked-xz-dist 8192.0
+        ) ;; 5
+      (new 'static 'bot-spot
+        :center (new 'static 'vector :x 4919337.0 :y -260751.36 :z 2090270.8 :w 6144.0)
+        :blocked-xz-dist 8192.0
+        ) ;; 6
+      (new 'static 'bot-spot
+        :center (new 'static 'vector :x 4943544.5 :y -269885.44 :z 2078310.4 :w 4096.0)
+        :blocked-xz-dist 8192.0
+        ) ;; 7
+      (new 'static 'bot-spot
+        :center (new 'static 'vector :x 4928553.0 :y -270172.16 :z 2072535.0 :w 4096.0)
+        :blocked-xz-dist 8192.0
+        ) ;; 8
+      (new 'static 'bot-spot
+        :center (new 'static 'vector :x 4912783.5 :y -271073.28 :z 2083102.8 :w 4096.0)
+        :blocked-xz-dist 8192.0
+        ) ;; 9
+      (new 'static 'bot-spot :center (new 'static 'vector :x 4943298.5 :y -273735.7 :z 2031247.4 :w 8192.0)) ;; 10
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1207.07) :y (meters -66.40) :z (meters 463.47) :w 14336.0)) ;; 11
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1152.17) :y (meters -66.85) :z (meters 463.23) :w 14336.0)) ;; 12
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1149.43) :y (meters -66.85) :z (meters 450.18) :w 8192.0)) ;; 13
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1137.09) :y (meters -66.85) :z (meters 406.91) :w 8192.0)) ;; 14
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1137.53) :y (meters -65.11) :z (meters 386.81) :w 8192.0)) ;; 15
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1147.64) :y (meters -62.76) :z (meters 361.06) :w 8192.0)) ;; 16
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1150.79) :y (meters -62.44) :z (meters 346.96) :w 8192.0)) ;; 17
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1163.44) :y (meters -60.68) :z (meters 330.34) :w 8192.0)) ;; 18
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1177.46) :y (meters -58.87) :z (meters 317.92) :w 8192.0)) ;; 19
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1197.96) :y (meters -57.73) :z (meters 321.46) :w 8192.0)) ;; 20
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1197.30) :y (meters -58.00) :z (meters 346.04) :w 8192.0)) ;; 21
+      (new 'static 'bot-spot
+        :center (new 'static 'vector :x 4883702.0 :y -353198.1 :z 1400627.2 :w 6144.0)
+        :blocked-xz-dist 8192.0
+        ) ;; 22
+      (new 'static 'bot-spot
+        :center (new 'static 'vector :x 4885872.5 :y -353198.1 :z 1409638.4 :w 6144.0)
+        :blocked-xz-dist 8192.0
+        ) ;; 23
+      (new 'static 'bot-spot
+        :center (new 'static 'vector :x 4888289.5 :y -353198.1 :z 1424138.2 :w 6144.0)
+        :blocked-xz-dist 8192.0
+        ) ;; 24
+      (new 'static 'bot-spot
+        :center (new 'static 'vector :x 4870103.0 :y -363806.72 :z 1398046.8 :w 4096.0)
+        :blocked-xz-dist 8192.0
+        ) ;; 25
+      (new 'static 'bot-spot
+        :center (new 'static 'vector :x 4872438.0 :y -363806.72 :z 1416396.8 :w 4096.0)
+        :blocked-xz-dist 8192.0
+        ) ;; 26
+      (new 'static 'bot-spot
+        :center (new 'static 'vector :x 4886855.5 :y -363806.72 :z 1434869.8 :w 4096.0)
+        :blocked-xz-dist 8192.0
+        ) ;; 27
+      (new 'static 'bot-spot :center (new 'static 'vector :x 4928184.5 :y -363806.72 :z 1480785.9 :w 8192.0)) ;; 28
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1261.89) :y (meters -90.73) :z (meters 363.26) :w 8192.0)) ;; 29
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1318.10) :y (meters -88.85) :z (meters 363.34) :w 8192.0)) ;; 30
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1356.49) :y (meters -88.85) :z (meters 363.25) :w 8192.0)) ;; 31
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1369.67) :y (meters -88.85) :z (meters 405.56) :w 8192.0)) ;; 32
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1361.36) :y (meters -88.85) :z (meters 441.58) :w 8192.0)) ;; 33
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1382.69) :y (meters -88.85) :z (meters 453.40) :w 8192.0)) ;; 34
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1400.84) :y (meters -88.85) :z (meters 445.65) :w 24576.0)) ;; 35
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1400.84) :y (meters -88.85) :z (meters 445.65) :w 10240.0)) ;; 36
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1414.91) :y (meters -88.85) :z (meters 451.03) :w 8192.0)) ;; 37
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1412.97) :y (meters -91.18) :z (meters 489.91) :w 8192.0)) ;; 38
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1382.37) :y (meters -88.85) :z (meters 480.08) :w 8192.0)) ;; 39
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1365.35) :y (meters -88.85) :z (meters 485.01) :w 8192.0)) ;; 40
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1390.65) :y (meters -88.85) :z (meters 503.49) :w 8192.0)) ;; 41
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1400.45) :y (meters -88.85) :z (meters 531.33) :w 8192.0)) ;; 42
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1403.06) :y (meters -88.67) :z (meters 551.07) :w 8192.0)) ;; 43
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1393.35) :y (meters -88.79) :z (meters 570.27) :w 8192.0)) ;; 44
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1374.90) :y (meters -88.85) :z (meters 591.74) :w 8192.0)) ;; 45
+      (new 'static 'bot-spot :center (new 'static 'vector :x (meters 1360.34) :y (meters -88.85) :z (meters 602.56) :w 8192.0)) ;; 46
+      )
+    )
+  )
+
+(set! (-> *bot-course-table* course 100) *sig6-course*)
+

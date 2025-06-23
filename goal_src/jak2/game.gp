@@ -314,6 +314,13 @@
 (goal-src "levels/custom-tasks/atoll/atoll-destroy-turret.gc" "process-focusable") ;; mission code
 (custom-level-cgo "LAT.DGO" "latoturret/latoturret.gd")
 
+;; sewer custom task level
+(build-custom-level "lsigsew")
+(goal-src "levels/custom-tasks/sewer/sig-sewer-h.gc" "process-focusable") ;; type and method definitions code
+(goal-src "levels/custom-tasks/sewer/sig-sewer-util-funcs.gc" "process-focusable") ;; some util functions code
+(goal-src "levels/custom-tasks/sewer/sig6-course.gc" "process-focusable") ;; bot course code
+(custom-level-cgo "LSS.DGO" "lsigsew/lsigsew.gd")
+
 ;;;;;;;;;;;;;;;;;;;;;
 ;; ANIMATIONS
 ;;;;;;;;;;;;;;;;;;;;;

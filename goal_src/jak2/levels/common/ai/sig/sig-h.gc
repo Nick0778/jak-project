@@ -79,6 +79,7 @@
    (sig-path-prev-time   time-frame)
    (plasma               sig-plasma  :inline :offset 1048)
    (sig-path-prev-pos    vector      :inline :overlay-at event-param-point)
+   (sig-course6          sig-course  :overlay-at course) ;; added
    )
   (:state-methods
     whip
@@ -181,4 +182,18 @@
 
 (deftype sigt-repair-gun (ai-task)
   ()
+  )
+
+;; added - allow sig to choose an jump to an destination
+(deftype sigt-choose-jump (ai-task)
+  ((check-done         (function sigt-choose-jump sig symbol)    :overlay-at (-> bytes 0))
+   (which-spot         int8                                          :overlay-at (-> bytes 4))
+   (num-spots          uint8                                         :overlay-at (-> bytes 5))
+   (src-spot-indexes   uint8                                       4 :overlay-at (-> bytes 6))
+   (dest-spot-indexes  uint8                                       4 :overlay-at (-> bytes 10))
+   )
+  (:methods
+    (sigt-choose-jump-method-12 (_type_ sig) symbol)
+    (sigt-choose-jump-method-13 (_type_ sig) int)
+    )
   )

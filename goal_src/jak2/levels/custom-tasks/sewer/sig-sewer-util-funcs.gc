@@ -1,0 +1,46 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; function to search for an entity reference stored in the `alt-actor` lump using the provided index
+(defun search-alt-actor-entity ((sig sig-sewer) (idx int))
+  (let ((entity (the-as entity-actor #f)))
+    (when (and (> (-> sig alt-actor-max-count) 0) (< idx (-> sig alt-actor-max-count)))
+      (dotimes (i (-> sig alt-actor-max-count))
+        (when (= i idx)
+          (set! entity (entity-actor-lookup (-> sig entity) 'alt-actor i))
+          )
+        )
+      )
+    (when (not entity)
+      (format 0 "ERROR: couldn't find entity at index: ~D~ from alt-actor!" idx)
+      )
+    entity
+    )
+  )
+
+;; function to perform an event-message-block
+(defun perform-event-message-block ((sig sig-sewer) (num-params int) (msg symbol) (params pair) (alt-actor-idx int))
+  (with-pp
+    (let ((a1-0 (new 'stack-no-clear 'event-message-block)))
+      (set! (-> a1-0 from) (process->ppointer pp))
+      (set! (-> a1-0 num-params) num-params)
+      (set! (-> a1-0 message) msg)
+      (let ((it params))
+        (dotimes (i num-params)
+          (set! (-> a1-0 param i) (the-as uint (car it)))
+          (set! it (cdr it))
+          )
+        )
+      (let ((t9-0 send-event-function)
+            (v1-7 (search-alt-actor-entity sig alt-actor-idx))
+            )
+        (t9-0
+          (if v1-7
+            (-> v1-7 extra process)
+            )
+          a1-0
+          )
+        )
+      )
+    )
+  )
