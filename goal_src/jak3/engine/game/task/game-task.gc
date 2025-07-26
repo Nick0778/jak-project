@@ -11178,7 +11178,7 @@
               :on-complete '(auto-save (quote auto-save))
               :on-fail #f
               )
-            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
+            :borrow '((foresta 0 lforring display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11249,7 +11249,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
+            :borrow '((foresta 0 lforring display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11320,7 +11320,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
+            :borrow '((foresta 0 lforring display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11391,7 +11391,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
+            :borrow '((foresta 0 lforring display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11462,7 +11462,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
+            :borrow '((foresta 0 lforring display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11533,7 +11533,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
+            :borrow '((foresta 0 lforring display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
@@ -11622,7 +11622,7 @@
               :on-complete '(begin (talker-spawn "sam006"))
               :on-fail #f
               )
-            :borrow '((foresta 0 lforring display) (foresta 1 lfortest display))
+            :borrow '((foresta 0 lforring display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info
