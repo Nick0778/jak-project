@@ -148,12 +148,10 @@
   (city-gun-course-play-for-fun 135)
   (city-jetboard-bbush 136)
   (desert-bbush-destroy-interceptors 137)
-  ;(comb-travel-return 138)
-  ;(mine-return 139)
-  (city-destroy-kg-turrets 138) ;; custom mission
-  (comb-travel-return 139)
-  (factory-mine-return 140)
-  (max 141)
+  ;(city-destroy-kg-turrets 138) ;; custom mission
+  (comb-travel-return 138) ;; allow to replay catacomb to mine travel mission
+  (factory-mine-return 139) ;; some setup to allow jak return to factory and mine
+  (max 140)
   )
 ;; ---game-task
 
@@ -570,12 +568,8 @@
   (city-jetboard-bbush-resolution)
   (desert-bbush-destroy-interceptors-introduction)
   (desert-bbush-destroy-interceptors-resolution)
-  ;(comb-travel-return-introduction)
-  ;(comb-travel-return-resolution)
-  ;(mine-return-introduction)
-  ;(mine-return-resolution)
-  (city-destroy-kg-turrets-introduction) ;; custom mission
-  (city-destroy-kg-turrets-resolution) ;; custom mission
+  ;(city-destroy-kg-turrets-introduction) ;; custom mission
+  ;(city-destroy-kg-turrets-resolution) ;; custom mission
   (comb-travel-return-introduction)
   (comb-travel-return-resolution)
   (factory-mine-return-introduction)
