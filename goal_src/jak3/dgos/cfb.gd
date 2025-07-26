@@ -1,5 +1,6 @@
 ("CFB.DGO"
  ("ctyfarm-obs.o"
+  "yakow.o"
   "ctyfarma-part.o"
   "ctyfarmb-part.o"
   "tpage-258.go"
