@@ -70,7 +70,27 @@
 (defstate arrived (fac-elevator-a)
   :virtual #t
   :code (behavior ()
-    (go-virtual dormant)
+    (cond
+      ((not (task-closed? "desert-final-boss-resolution"))
+        (go-virtual dormant)
+        )
+      (else
+        (suspend-for (seconds 1.5) '())
+        (ja-no-eval :group! fac-elevator-a-gate_down-ja :num! (seek!) :frame-num 0.0)
+        (until (ja-done? 0)
+          (suspend)
+          (ja :num! (seek!))
+          )
+        (sleep-code)
+        )
+      )
+    )
+  :trans (behavior ()
+    (let ((t9-0 (-> (method-of-type elevator arrived) trans)))
+      (if t9-0
+          (t9-0)
+          )
+      )
     )
   )
 

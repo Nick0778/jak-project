@@ -3572,6 +3572,15 @@
             )
           )
 
+        ;; lfacrm2 region hacks + elevators up/down cameras hacks
+        
+        (when (= (level-status? *level* 'lfacrm2 #f) 'active)
+          (set-region-data! 1314 "on-enter" '(when (task-closed? "desert-final-boss-resolution") (want-load 'factorya 'factoryc)))
+          (set-region-data! 1313 "on-enter" '(when (task-closed? "desert-final-boss-resolution") (want-display 'factoryc 'display)))
+          (add-data-to-entity! "fac-elevator-a-1" 'on-up 1 pair (the pointer '(begin (send-event self 'use-camera "camera-318"))))
+          (add-data-to-entity! "fac-elevator-a-2" 'on-down 1 pair (the pointer '(begin (send-event self 'use-camera "camera-319"))))
+          )
+
         ;;; EXTRA AND CRAZY STUFF
 
         ;; Sewer locked airlock
