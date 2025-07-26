@@ -3499,67 +3499,69 @@
 
         ;; Temple to Eco Mine
 
-        ;; tpl-mardoor-4 - on-notice
-        (when (= (-> (level-get-target-inside *level*) name) 'templea)
-          (set-pair-script! "tpl-mardoor-4" 'on-notice '((and (task-closed? "desert-final-boss-resolution") (not (task-closed? "city-win-resolution"))) '(templea templec)))
-          )
-        (when (= (-> (level-get-target-inside *level*) name) 'templea)
-          (set-region-data! 1372 "on-enter" '(when (task-closed? "desert-final-boss-resolution") (want-load 'templea 'templeb 'templec) (want-display 'templeb 'display) (want-display 'templec 'display)))
-          (set-region-data! 1372 "on-exit" '(when (task-closed? "desert-final-boss-resolution") (want-display 'templec #f)))
-          )
-
-        (set-pair-script! "tpl-door-a-15" 'on-notice '((not (task-closed? "city-win-resolution")) '(templec)))
-        (set-pair-script! "tpl-door-a-2"  'on-notice '((not (task-closed? "city-win-resolution")) '(templeb templec)))
-        (set-pair-script! "tpl-door-a-3" 'on-notice '((not (task-closed? "city-win-resolution")) '(templeb)))
-        (set-pair-script! "tpl-door-a-7"  'on-notice '((and (task-closed? "temple-tests-oracle") (not (task-closed? "city-win-resolution"))) '(templeb)))
-        (set-pair-script! "tpl-door-b-1"  'on-notice '((and (task-closed? "temple-tests-oracle") (not (task-closed? "city-win-resolution"))) '(templea templeb templec)))
-        (set-pair-script! "tpl-door-a-8"  'on-notice '((not (task-closed? "city-win-resolution")) '(templea templeb templed)))
-        (set-pair-script! "tpl-mardoor-5" 'on-notice '((not (task-closed? "city-win-resolution")) '(templed)))
-        
-        ;; min-elevator-6 - on-notice
-        (set-pair-script! "min-elevator-6" 'on-notice
-          '((task-closed? "mine-return-introduction")
-            (when (and (not (send-event self 'query 'bottom?)) (not (task-closed? "mine-explore-resolution")))
-              (send-event self 'jump-to 'bottom))
-            (send-event self 'go-dormant)))
-
-        ;; com-airlock-inner-117 - add-data-to-entity! - on-activate
-        (add-data-to-entity! "com-airlock-inner-117" 'on-activate 1 pair
-          (the pointer '(when (task-closed? "desert-final-boss-resolution")
-                          (want-load 'mined 'minee)
-                          (want-display 'mined 'display)
-                          (want-display 'minee 'display))))
-
-        ;; com-airlock-inner-117 - on-notice
-        (set-pair-script! "com-airlock-inner-117" 'on-notice '((mined)))
-
-        ;; com-airlock-outer-15 - add-data-to-entity! - on-activate
-        (add-data-to-entity! "com-airlock-outer-15" 'on-activate 1 pair
-          (the pointer '(when (task-closed? "desert-final-boss-resolution")
-                          (want-load 'ctywide 'ctygenb 'minee)
-                          (want-display 'ctywide 'display)
-                          (want-display 'ctygenb 'display)
-                          (want-display 'minee 'display))))
-
-        ;; com-airlock-outer-15 - on-notice
-        (set-pair-script! "com-airlock-outer-15" 'on-notice '((ctygenb)))
-
-        ;; com-airlock-outer-15 - add-data-to-entity! - on-cross
-        (add-data-to-entity! "com-airlock-outer-15" 'on-cross 1 pair
-          (the pointer '(when (task-closed? "desert-final-boss-resolution")
-                          (scene-play "minee-genb-entrance"))))
-
-        ;; com-airlock-inner-103 - on-notice
-        (set-pair-script! "com-airlock-inner-103" 'on-notice '((ctygenb)))
-
-        (load-levels-in-bubble! 4124.84 44.50 4431.53 40.0 'templed 'templeb 'templea) ;; load (templed, templeb, templea) in pole room
-        (load-levels-in-bubble! 4124.20 44.41 4374.42 100.0 'templec 'templeb 'templea) ;; load (templec, templeb, templea) in watchers room
-        (load-levels-in-bubble! 4212.38 52.41 4702.73 50.0 'templed 'templeb 'templea) ;; load (templed, templeb, templea) in oracle room
-        (load-levels-in-bubble! 4111.05 52.41 4707.49 50.0 'templec 'templeb 'templea) ;; load (templec, templeb, templea) in oracle room
-        (load-levels-in-bubble! 4289.76 44.27 4766.90 50.0 'templed 'templeb 'templea) ;; load (templed, templeb, templea) in oracle room
-
-        ;; force `tpl-holo-eye-1` to spawn
-        (clear-kill-mask! "tpl-holo-eye-1" (task-mask task6))
+        (when (task-closed? "desert-final-boss-resolution") 
+          ;; tpl-mardoor-4 - on-notice
+          (when (= (-> (level-get-target-inside *level*) name) 'templea)
+            (set-pair-script! "tpl-mardoor-4" 'on-notice '((and (task-closed? "desert-final-boss-resolution") (not (task-closed? "city-win-resolution"))) '(templea templec)))
+            )
+          (when (= (-> (level-get-target-inside *level*) name) 'templea)
+            (set-region-data! 1372 "on-enter" '(when (task-closed? "desert-final-boss-resolution") (want-load 'templea 'templeb 'templec) (want-display 'templeb 'display) (want-display 'templec 'display)))
+            (set-region-data! 1372 "on-exit" '(when (task-closed? "desert-final-boss-resolution") (want-display 'templec #f)))
+            )
+  
+          (set-pair-script! "tpl-door-a-15" 'on-notice '((not (task-closed? "city-win-resolution")) '(templec)))
+          (set-pair-script! "tpl-door-a-2"  'on-notice '((not (task-closed? "city-win-resolution")) '(templeb templec)))
+          (set-pair-script! "tpl-door-a-3" 'on-notice '((not (task-closed? "city-win-resolution")) '(templeb)))
+          (set-pair-script! "tpl-door-a-7"  'on-notice '((and (task-closed? "temple-tests-oracle") (not (task-closed? "city-win-resolution"))) '(templeb)))
+          (set-pair-script! "tpl-door-b-1"  'on-notice '((and (task-closed? "temple-tests-oracle") (not (task-closed? "city-win-resolution"))) '(templea templeb templec)))
+          (set-pair-script! "tpl-door-a-8"  'on-notice '((not (task-closed? "city-win-resolution")) '(templea templeb templed)))
+          (set-pair-script! "tpl-mardoor-5" 'on-notice '((not (task-closed? "city-win-resolution")) '(templed)))
+          
+          ;; min-elevator-6 - on-notice
+          (set-pair-script! "min-elevator-6" 'on-notice
+            '((task-closed? "mine-return-introduction")
+              (when (and (not (send-event self 'query 'bottom?)) (not (task-closed? "mine-explore-resolution")))
+                (send-event self 'jump-to 'bottom))
+              (send-event self 'go-dormant)))
+  
+          ;; com-airlock-inner-117 - add-data-to-entity! - on-activate
+          (add-data-to-entity! "com-airlock-inner-117" 'on-activate 1 pair
+            (the pointer '(when (task-closed? "desert-final-boss-resolution")
+                            (want-load 'mined 'minee)
+                            (want-display 'mined 'display)
+                            (want-display 'minee 'display))))
+  
+          ;; com-airlock-inner-117 - on-notice
+          (set-pair-script! "com-airlock-inner-117" 'on-notice '((mined)))
+  
+          ;; com-airlock-outer-15 - add-data-to-entity! - on-activate
+          (add-data-to-entity! "com-airlock-outer-15" 'on-activate 1 pair
+            (the pointer '(when (task-closed? "desert-final-boss-resolution")
+                            (want-load 'ctywide 'ctygenb 'minee)
+                            (want-display 'ctywide 'display)
+                            (want-display 'ctygenb 'display)
+                            (want-display 'minee 'display))))
+  
+          ;; com-airlock-outer-15 - on-notice
+          (set-pair-script! "com-airlock-outer-15" 'on-notice '((ctygenb)))
+  
+          ;; com-airlock-outer-15 - add-data-to-entity! - on-cross
+          (add-data-to-entity! "com-airlock-outer-15" 'on-cross 1 pair
+            (the pointer '(when (task-closed? "desert-final-boss-resolution")
+                            (scene-play "minee-genb-entrance"))))
+  
+          ;; com-airlock-inner-103 - on-notice
+          (set-pair-script! "com-airlock-inner-103" 'on-notice '((ctygenb)))
+  
+          (load-levels-in-bubble! 4124.84 44.50 4431.53 40.0 'templed 'templeb 'templea) ;; load (templed, templeb, templea) in pole room
+          (load-levels-in-bubble! 4124.20 44.41 4374.42 100.0 'templec 'templeb 'templea) ;; load (templec, templeb, templea) in watchers room
+          (load-levels-in-bubble! 4212.38 52.41 4702.73 50.0 'templed 'templeb 'templea) ;; load (templed, templeb, templea) in oracle room
+          (load-levels-in-bubble! 4111.05 52.41 4707.49 50.0 'templec 'templeb 'templea) ;; load (templec, templeb, templea) in oracle room
+          (load-levels-in-bubble! 4289.76 44.27 4766.90 50.0 'templed 'templeb 'templea) ;; load (templed, templeb, templea) in oracle room
+  
+          ;; force `tpl-holo-eye-1` to spawn
+          ;(clear-kill-mask! "tpl-holo-eye-1" (task-mask task6))
+        )
         
 
         ;; Reopen catacomb task
@@ -3576,17 +3578,17 @@
 
         #|
         (when (and (entity-by-name "com-airlock-outer-40") (= (-> (level-get-target-inside *level*) name) 'sewb))
-          (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'on-notice :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") '(sewb))))
-          (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'next-actor :key-frame -1000000000.0 :elt-count 1 :elt-type uint32) (the pointer 40938))
-          (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 20.0000)))
-          (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'idle-distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 40.0000)))
-          (add-data! (entity-by-name "com-airlock-outer-40") (new 'static 'res-tag :name 'on-cross :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(scene-play "sewer-ate-entrance")))
+          (add-data-to-entity! "com-airlock-outer-40" 'on-notice 1 pair (the pointer '(when (task-closed? "desert-final-boss-resolution") '(sewb))))
+          (add-data-to-entity! "com-airlock-outer-40" 'next-actor 1 uint32 (the pointer 40938))
+          (add-data-to-entity! "com-airlock-outer-40" 'distance 1 float (the pointer (meters 20.0000)))
+          (add-data-to-entity! "com-airlock-outer-40" 'idle-distance 1 float (the pointer (meters 40.0000)))
+          (add-data-to-entity! "com-airlock-outer-40" 'on-cross 1 pair (the pointer '(scene-play "sewer-ate-entrance")))
           )
         (when (and (entity-by-name "com-airlock-inner-51") (= (-> (level-get-target-inside *level*) name) 'sewb))
-          (add-data! (entity-by-name "com-airlock-inner-51") (new 'static 'res-tag :name 'on-notice :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(when (task-closed? "desert-final-boss-resolution") '(sewb))))
-          (add-data! (entity-by-name "com-airlock-inner-51") (new 'static 'res-tag :name 'next-actor :key-frame -1000000000.0 :elt-count 1 :elt-type uint32) (the pointer 40939))
-          (add-data! (entity-by-name "com-airlock-inner-51") (new 'static 'res-tag :name 'distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 20.0000)))
-          (add-data! (entity-by-name "com-airlock-inner-51") (new 'static 'res-tag :name 'idle-distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 40.0000)))
+          (add-data-to-entity! "com-airlock-inner-51" 'on-notice 1 pair (the pointer '(when (task-closed? "desert-final-boss-resolution") '(sewb))))
+          (add-data-to-entity! "com-airlock-inner-51" 'next-actor 1 uint32 (the pointer 40939))
+          (add-data-to-entity! "com-airlock-inner-51" 'distance 1 float (the pointer (meters 20.0000)))
+          (add-data-to-entity! "com-airlock-inner-51" 'idle-distance 1 float (the pointer (meters 40.0000)))
           )
         |#
 
@@ -3594,17 +3596,17 @@
 
         #|
         (when (and (entity-by-name "com-airlock-inner-17") (= (level-status? *level* 'atollext #f) 'active))
-          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-17") 'on-inside pair)) '((want-load 'atollext 'atoll #f)))
-          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-17") 'on-enter pair)) '((want-display 'atollext 'display) (want-display 'sewa 'display)))
-          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-17") 'on-notice pair)) '((atollext)))
-          (add-data! (entity-by-name "com-airlock-inner-17") (new 'static 'res-tag :name 'on-cross :key-frame -1000000000.0 :elt-count 1 :elt-type pair) (the pointer '(scene-play "ate-elevator-exit")))
-          (add-data! (entity-by-name "com-airlock-inner-17") (new 'static 'res-tag :name 'distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 10.0000)))
-          (add-data! (entity-by-name "com-airlock-inner-17") (new 'static 'res-tag :name 'idle-distance :key-frame -1000000000.0 :elt-count 1 :elt-type float) (the pointer (meters 40.0000)))
+          (set-pair-script! "com-airlock-inner-17" 'on-inside '((want-load 'atollext 'atoll #f)))
+          (set-pair-script! "com-airlock-inner-17" 'on-enter '((want-display 'atollext 'display) (want-display 'sewa 'display)))
+          (set-pair-script! "com-airlock-inner-17" 'on-notice '((atollext)))
+          (add-data-to-entity! "com-airlock-inner-17" 'on-cross 1 pair (the pointer '(scene-play "ate-elevator-exit")))
+          (add-data-to-entity! "com-airlock-inner-17" 'distance 1 float (the pointer (meters 10.0000)))
+          (add-data-to-entity! "com-airlock-inner-17" 'idle-distance 1 float (the pointer (meters 40.0000)))
           )
 
         (when (and (entity-by-name "com-airlock-inner-18") (= (level-status? *level* 'atollext #f) 'active))
-          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-18") 'on-inside pair)) '((want-load 'atollext 'sewa #f)))
-          (set! (cdr (res-lump-struct (entity-by-name "com-airlock-inner-18") 'on-exit pair)) '((want-load  'atollext 'sewa #f)))
+          (set-pair-script! "com-airlock-inner-18" 'on-inside '((want-load 'atollext 'sewa #f)))
+          (set-pair-script! "com-airlock-inner-18" 'on-exit '((want-load 'atollext 'sewa #f)))
           )
         |#
 
@@ -3612,22 +3614,20 @@
 
         #|
         (when (entity-by-name "scoutbot-9")
-          (set! (-> (the entity-actor (entity-by-name "scoutbot-9")) extra kill-mask) (task-mask task3))
+          (clear-kill-mask! "scoutbot-9" (task-mask never))
           (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "scoutbot-9") 5))) 67294)
-          ;;(set! (-> (region-lookup-by-id 1094) on-enter) (the-as pair '(send-event "scoutbot-9" 'trigger)))
-          (add-data! (entity-by-name "scoutbot-9") (new 'static 'res-tag :name 'alt-actor :key-frame -1000000000.0 :elt-count 1 :elt-type uint32) (the pointer 67421))
+          ;(set-region-data! 1094 "on-enter" '(send-event "scoutbot-9" 'trigger))
+          (add-data-to-entity! "scoutbot-9" 'alt-actor 1 uint32 (the pointer 67421))
           )
-        (when (entity-by-name "sewer-elec-gate-4")
-          (set! (-> (the (pointer pair) (get-tag-index-data (entity-by-name "sewer-elec-gate-4") 0))) '(send-event "scoutbot-9" 'trigger))
-          )
+        (set-entity-tag-data! "sewer-elec-gate-4" pair 0 '(send-event "scoutbot-9" 'trigger))
         |#
         
         ;; Chickalopes
 
         #|
         (when (entity-by-name "chickalope-5")
-          (set! (-> (the entity-actor (entity-by-name "chickalope-5")) extra kill-mask) (task-mask task3))
-          ;(set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "chickalope-5") 5))) 67294)
+          (clear-kill-mask! "chickalope-5" (task-mask never))
+          ;(set-entity-tag-data! "chickalope-5" uint32 5 67294)
           )
         |#
       (suspend)
