@@ -523,6 +523,189 @@ void resumeAllSounds() {
   std::cout << "All sounds have resumed!" << std::endl;
 }
 
+//MiniAudioLib::ma_sound* g_cust_music;
+
+bool g_cust_engine_initialized = false;
+
+MiniAudioLib::ma_engine g_ma_engine_cust;
+
+MiniAudioLib::ma_sound* g_cust_music = nullptr;
+
+float get_custom_music_vol() {
+  auto volume = jak3::call_goal_function_by_name("custom-music-player-volume");
+
+  int int_volume = static_cast<int>(volume);
+
+  float vol = static_cast<float>(int_volume) / 100.0f;
+
+  if (vol < 0.f)
+    vol = 0.f;
+  if (vol > 1.f)
+    vol = 1.f;
+
+  return vol;
+}
+
+void lerp_custom_music(float vol, bool pause) {
+  auto lerp = [](float a, float b, float t) { return a + t * (b - a); };
+  float val;
+  if (pause) {
+    float time_elapsed = 1.f;
+    float start = vol;
+    float end = 0.f;
+    val = start;
+    while (val >= 0.01f) {
+      val = lerp(start, end, 1.0f - time_elapsed);
+      MiniAudioLib::ma_sound_set_volume(g_cust_music, std::min<float>(1.f, val));
+      time_elapsed -= 0.01f;
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+  } else {
+    float time_elapsed = 0.f;
+    float start = 0.f;
+    float end = vol;
+    val = start;
+    while (val < vol) {
+      val = lerp(start, end, time_elapsed);
+      MiniAudioLib::ma_sound_set_volume(g_cust_music, std::min<float>(1.f, val));
+      time_elapsed += 0.01f;
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+  }
+}
+
+void stop_custom_music(bool force) {
+  if (g_cust_music) {
+    if (force) {
+      MiniAudioLib::ma_sound_stop(g_cust_music);
+      MiniAudioLib::ma_sound_uninit(g_cust_music);
+#ifdef MA_UNIX
+      MiniAudioLib::ma_engine_stop(&g_ma_engine_cust);
+      MiniAudioLib::ma_engine_uninit(&g_ma_engine_cust);
+#endif
+      jak3::intern_from_c(-1, 0x40U, "*custom-music-playing?*")->value() = offset_of_s7();
+      return;
+    }
+    lerp_custom_music(get_custom_music_vol(), true);
+    MiniAudioLib::ma_sound_stop(g_cust_music);
+    MiniAudioLib::ma_sound_uninit(g_cust_music);
+    delete g_cust_music;
+    g_cust_music = nullptr;
+    jak3::intern_from_c(-1, 0x40U, "*custom-music-playing?*")->value() = offset_of_s7();
+  }
+}
+
+void pause_custom_music(bool lerp) {
+  if (g_cust_music) {
+    if (lerp) {
+      lerp_custom_music(get_custom_music_vol(), true);
+    }
+    MiniAudioLib::ma_sound_stop(g_cust_music);
+  }
+}
+
+u32 play_custom_music(u32 file_name, u32 volume) {
+  auto music_playing = jak3::intern_from_c(-1, 0x40U, "*custom-music-playing?*")->value() ==
+                       offset_of_s7() + jak3_symbols::FIX_SYM_TRUE;
+  auto music_is_playing = music_playing;
+  if (music_is_playing) {
+    printf("Custom music is already playing!\n");
+    return offset_of_s7();
+  }
+
+  std::thread music_thread([=] {
+    std::string name_str = Ptr<String>(file_name)->data();
+    std::string rel_path = "audio/music/" + name_str + ".wav";
+    std::string full_path =
+        (file_util::get_jak_project_dir() / "custom_assets" / "jak3" / rel_path).string();
+
+    if (!file_util::file_exists(full_path)) {
+      printf("Music file not found: %s\n", full_path.c_str());
+      return;
+    }
+
+    static std::mutex engine_init_mutex;
+    {
+      std::lock_guard<std::mutex> lock(engine_init_mutex);
+      if (!g_cust_engine_initialized) {
+        auto init_result = MiniAudioLib::ma_engine_init(nullptr, &g_ma_engine_cust);
+        if (init_result != MiniAudioLib::MA_SUCCESS) {
+          printf("Failed to initialize MiniAudio engine (error code: %d)\n", init_result);
+          return;
+        }
+        g_cust_engine_initialized = true;
+      }
+    }
+
+    auto* music = new MiniAudioLib::ma_sound;
+    auto result = MiniAudioLib::ma_sound_init_from_file(&g_ma_engine_cust, full_path.c_str(), 0,
+                                                        nullptr, nullptr, music);
+    if (result != MiniAudioLib::MA_SUCCESS) {
+      printf("Failed to load music: %s (error code: %d)\n", full_path.c_str(), result);
+      delete music;
+      return;
+    }
+
+    float vol = get_custom_music_vol();
+    printf("Playing music: %s (volume %f)\n", name_str.c_str(), vol);
+
+    MiniAudioLib::ma_sound_set_volume(music, 0.f);
+    MiniAudioLib::ma_sound_set_looping(music, MA_TRUE);
+    MiniAudioLib::ma_sound_start(music);
+
+    jak3::intern_from_c(-1, 0x40U, "*custom-music-playing?*")->value() =
+        offset_of_s7() + jak3_symbols::FIX_SYM_TRUE;
+    g_cust_music = music;
+    lerp_custom_music(vol, false);
+
+    auto paused_func = [](MiniAudioLib::ma_sound* music) {
+      while (!MiniAudioLib::ma_sound_is_playing(music)) {
+        auto pause = jak3::call_goal_function_by_name("custom-music-player-paused?");
+        if (pause == offset_of_s7()) {
+          auto fade = jak3::intern_from_c(-1, 0x40U, "*custom-music-fade?*")->value() ==
+                      offset_of_s7() + jak3_symbols::FIX_SYM_TRUE;
+          MiniAudioLib::ma_sound_start(music);
+          if (fade) {
+            lerp_custom_music(get_custom_music_vol(), false);
+          }
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+      }
+    };
+
+    auto play_func = [&music, &paused_func]() {
+      while (MiniAudioLib::ma_sound_is_playing(music)) {
+        if (MasterExit != RuntimeExitStatus::RUNNING) {
+          stop_custom_music(true);
+          return;
+        }
+        auto stop = jak3::intern_from_c(-1, 0x40U, "*custom-music-stop*")->value();
+        if (stop == offset_of_s7() + jak3_symbols::FIX_SYM_TRUE) {
+          jak3::intern_from_c(-1, 0x40U, "*custom-music-stop*")->value() = offset_of_s7();
+          stop_custom_music(false);
+          return;
+        }
+        float vol = get_custom_music_vol();
+        MiniAudioLib::ma_sound_set_volume(music, std::min<float>(1.f, vol));
+        auto paused = jak3::call_goal_function_by_name("custom-music-player-paused?");
+        if (paused != offset_of_s7()) {
+          auto fade = jak3::intern_from_c(-1, 0x40U, "*custom-music-fade?*")->value() ==
+                      offset_of_s7() + jak3_symbols::FIX_SYM_TRUE;
+          pause_custom_music(fade);
+          paused_func(music);
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+      }
+    };
+
+    play_func();
+  });
+
+  music_thread.detach();
+  return offset_of_s7() + jak3_symbols::FIX_SYM_TRUE;
+}
+
+
 /*!
  * Not checked super carefully for jak 2, but looks the same
  */
@@ -1571,6 +1754,9 @@ void init_common_pc_port_functions(
   // Pause/Resume all sounds
   make_func_symbol_func("pause-all-sounds", (void*)pauseAllSounds);
   make_func_symbol_func("resume-all-sounds", (void*)resumeAllSounds);
+
+  // Play custom music
+  make_func_symbol_func("play-custom-music", (void*)play_custom_music);
 
   // discord rich presence
   make_func_symbol_func("pc-discord-rpc-set", (void*)set_discord_rpc);

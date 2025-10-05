@@ -1,0 +1,209 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+(define *custom-music-player-level-info*
+  (new 'static 'boxed-array :type string "sewerhum")
+  )
+
+(define *sewer-music-level-group*
+  (new 'static 'boxed-array :type string
+    "sewk"
+    "sewg"
+    "sewh"
+    "sewi"
+    "sewj"
+    )
+  )
+
+(define *custom-music-playing?* #f)
+
+(define *custom-music-paused?* #f)
+
+(define *custom-music-stop* #f)
+
+(define *custom-music-fade?* #f)
+
+(deftype custom-music-player (process)
+  ((lvl symbol)
+    )
+  (:methods
+   (play! (_type_) object)
+   (stop! (_type_) object)
+   (set-level! (_type_) object)
+   )
+  (:state-methods
+   idle
+   playing
+   fade
+   )
+  )
+
+(define-perm *custom-music-player* custom-music-player (the custom-music-player #f))
+
+(defun custom-music-player-volume ()
+  (the int (* (-> *setting-control* user-current music-volume) 100.0))
+  )
+
+(defun custom-music-player-paused? ()
+  (or (paused?) *custom-music-paused?* (-> *setting-control* user-current music))
+  )
+
+(defmethod set-level! ((this custom-music-player))
+  (set! (-> this lvl) (aif (level-get-target-inside *level*) (-> it name) #f))
+  )
+
+#|
+(defun custom-level-has-music? ((lev symbol))
+  (dotimes (i (-> *custom-music-player-level-info* length))
+    (when (= lev (string->symbol (-> *custom-music-player-level-info* i)))
+      (return #t)
+      )
+    )
+  #f
+  )
+|#
+
+(defun sewer-level-has-custom-music? ((lev symbol))
+  (dotimes (i (-> *sewer-music-level-group* length))
+    (when (= lev (string->symbol (-> *sewer-music-level-group* i)))
+      (return #t)
+      )
+    )
+  #f
+  )
+
+#|
+(defun custom-music->string ((mode symbol) (music symbol))
+  (let ((info (case mode
+                (('level) *custom-music-player-level-info*)
+                (else (the (array string) #f))))
+                )
+    (when info
+      (dotimes (i (-> info length))
+        (when (= music (string->symbol (-> info i)))
+          (return (the string (-> info i)))
+          )
+        )
+      )
+    )
+  (the string #f)
+  )
+|#
+
+(defun custom-music->string ((music symbol))
+  (cond
+    ((sewer-level-has-custom-music? music)
+      "sewerhum"
+      )
+    (else
+      (the string #f)
+      )
+    )
+  )
+
+(defmethod play! ((this custom-music-player))
+  ;; (format #t "custom-music-player::play!~%")
+  (when (sewer-level-has-custom-music? (-> this lvl))
+    (if *custom-music-playing?* (stop! this))
+    (play-custom-music (custom-music->string (-> this lvl)) (custom-music-player-volume))
+    )
+  )
+
+(defmethod stop! ((this custom-music-player))
+  ;; (format #t "custom-music-player::stop!~%")
+  (when *custom-music-playing?*
+    (true! *custom-music-stop*)
+    )
+  )
+
+(defmethod deactivate ((this custom-music-player))
+  (stop! this)
+  (false! *custom-music-playing?*)
+  (false! *custom-music-stop*)
+  (false! *custom-music-paused?*)
+  (set! *custom-music-player* (the custom-music-player #f))
+  (call-parent-method this)
+  )
+
+(defmethod relocate ((this custom-music-player) (offset int))
+  (if *custom-music-player* (&+! *custom-music-player* offset))
+  (call-parent-method this offset)
+  )
+
+(defbehavior custom-music-player-init-by-other custom-music-player ()
+  (set! *custom-music-player* self)
+  (process-mask-clear! (-> self mask) pause menu)
+  (set-level! self)
+  (go-virtual idle)
+  )
+
+(defevent custom-music-player
+  (case message
+    (('pause) (true! *custom-music-fade?*) (true! *custom-music-paused?*))
+    (('unpause) (false! *custom-music-paused?*))
+    )
+  )
+
+(defpost custom-music-player
+  (let* ((new-level (aif (level-get-target-inside *level*) (-> it name) #f))
+         (current-level (-> self lvl))
+         )
+    (format *stdcon* "lvl: ~s~%" (the string (-> self lvl)))
+    (when (and (or (!= current-level new-level) (= (level-status? *level* 'sewa #f) 'active))
+               (not (and (sewer-level-has-custom-music? current-level) 
+               (sewer-level-has-custom-music? new-level))))
+      (set-level! self)
+      (stop! self)
+      )
+    )
+  )
+
+(defstatehandler custom-music-player :event custom-music-player-event-handler :post custom-music-player-post)
+
+(defstate idle (custom-music-player)
+  :virtual #t
+  :code (behavior ()
+      (until (and *target*
+                  (not (= (-> *target* next-state name) 'target-continue))
+                  (aif (level-get-target-inside *level*) (not (symbol-member? (-> it status) '(loading loading-bt login))))
+                  (-> self lvl)
+                  (time-elapsed? (-> *target* state-time) (seconds 0.032))
+                  (sewer-level-has-custom-music? (-> self lvl)))
+        (suspend)
+        )
+      (format *stdcon* "lvl: ~s~%" (the string (-> self lvl)))
+      (go-virtual playing)
+    )
+  )
+
+(defstate playing (custom-music-player)
+  :virtual #t
+  :enter (behavior ()
+    (when (not *custom-music-playing?*)
+      (play! self)
+      )
+    )
+  :code (behavior ()
+    (format 0 "lvl: ~s~%" (the string (-> self lvl)))
+    (suspend-for (seconds 0.1667))
+    (while *custom-music-playing?*
+      (suspend)
+      )
+    (go-virtual fade)
+    )
+  )
+
+(defstate fade (custom-music-player)
+  :virtual #t
+  :code (behavior ()
+    (when *custom-music-playing?*
+      (stop! self)
+      )
+    (suspend-for (seconds 0.1667))
+    (go-virtual idle)
+    )
+  )
+
+(if (or (zero? *custom-music-player*) (not *custom-music-player*)) 
+  (process-spawn custom-music-player)
+  )

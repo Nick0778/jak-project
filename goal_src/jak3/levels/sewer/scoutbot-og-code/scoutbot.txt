@@ -11,6 +11,7 @@
               ((scoutbot-lod0-mg (meters 999999)))
               :bounds (static-spherem 0 0 0 6)
               :shadow scoutbot-shadow-mg
+              :shadow-joint-index 3
               )
 
 (deftype scoutbot-foot (structure)
@@ -48,8 +49,7 @@
    (next-attack-time        time-frame)
    (next-close-attack-time  time-frame)
    (shoot-left-right        symbol)
-   (event-actor             entity) ;; added - send a 'shutdown' message for the `event-actor` after scoutbot die
-   (in-ambush?              symbol) ;; added - check if the scoutbot is in `ambush` state
+   (event-actor             entity) ;; Added in PC Port - Allow to 'shutdown' objects which have this event after scoutbot dying
    )
   (:state-methods
     dormant
@@ -58,7 +58,6 @@
     attack-shoot
     close-attack
     die
-    explode
     )
   (:methods
     (toggle-cspec-deadly (_type_ symbol int) none)
@@ -284,28 +283,6 @@
                                 )
                               )
         )
-
-(define *scoutbot-debris-params*
-  (new 'static 'debris-static-params
-    :joints (new 'static 'boxed-array :type debris-static-joint-params
-      (new 'static 'debris-static-joint-params :parent-joint-index 3 :group "skel-kg-debris-a")
-      (new 'static 'debris-static-joint-params :parent-joint-index 4 :group "skel-kg-debris-b")
-      (new 'static 'debris-static-joint-params :parent-joint-index 6 :group "skel-kg-debris-c")
-      (new 'static 'debris-static-joint-params :parent-joint-index 7 :group "skel-kg-debris-d")
-      (new 'static 'debris-static-joint-params :parent-joint-index 13 :group "skel-kg-debris-a")
-      (new 'static 'debris-static-joint-params :parent-joint-index 14 :group "skel-kg-debris-b")
-      (new 'static 'debris-static-joint-params :parent-joint-index 15 :group "skel-kg-debris-c")
-      (new 'static 'debris-static-joint-params :parent-joint-index 16 :group "skel-kg-debris-d")
-      (new 'static 'debris-static-joint-params :parent-joint-index 36 :group "skel-kg-debris-a")
-      (new 'static 'debris-static-joint-params :parent-joint-index 37 :group "skel-kg-debris-b")
-      (new 'static 'debris-static-joint-params :parent-joint-index 38 :group "skel-kg-debris-d")
-      (new 'static 'debris-static-joint-params :parent-joint-index 45 :group "skel-kg-debris-a")
-      (new 'static 'debris-static-joint-params :parent-joint-index 46 :group "skel-kg-debris-b")
-      )
-    :collide-spec (collide-spec backgnd)
-    :sound-hit (static-sound-name "kg-debris")
-    )
-  )
 
 (defmethod toggle-cspec-deadly ((this scoutbot) (arg0 symbol) (arg1 int))
   (let ((v1-1 (-> this root root-prim)))
@@ -617,12 +594,6 @@
 
 (defstate ambush (scoutbot)
   :virtual #t
-  :enter (behavior ()
-    (set! (-> self in-ambush?) #t) ;; added - scoutbot is in `ambush` state
-    )
-  :exit (behavior ()
-    (set! (-> self in-ambush?) #f) ;; added - scoutbot is no longer in `ambush` state
-    )
   :code (behavior ()
     (let ((f30-0 (rnd-float-range self 0.9 1.1)))
       (ja-no-eval :group! scoutbot-intro1-ja :num! (seek! max f30-0) :frame-num 0.0)
@@ -1095,7 +1066,6 @@
   )
 
 ;; Added in PC Port - Implemented a 'die' state
-#|
 (defstate die (scoutbot)
   :virtual #t
   :event enemy-event-handler
@@ -1140,92 +1110,6 @@
     )
   :post enemy-simple-post
   )
-|#
-
-(defstate die (scoutbot)
-  :virtual #t
-  :event enemy-event-handler
-  :enter (behavior ()
-    (set-time! (-> self state-time))
-    (set! (-> self hit-points) 0.0)
-    )
-  :code (behavior ()
-    (ja-channel-push! 1 (seconds 0.075))
-    (let ((f30-0 (rnd-float-range self 0.8 1.2)))
-      (ja-no-eval :group! scoutbot-idle-ja :num! (seek! max f30-0) :frame-num 0.0)
-      (until (ja-done? 0)
-        (suspend)
-        (ja :num! (seek! max f30-0))
-        )
-      )
-    (let ((v1-34 (-> self root root-prim)))
-      (set! (-> v1-34 prim-core collide-as) (collide-spec))
-      (set! (-> v1-34 prim-core collide-with) (collide-spec))
-      )
-    0
-    (while (-> self child)
-      (suspend)
-      )
-    (go-virtual explode)
-    )
-  :post enemy-simple-post
-  )
-
-(defstate explode (scoutbot)
-  :virtual #t
-  :enter (behavior ()
-    (let ((v1-1 (-> self root root-prim)))
-      (set! (-> v1-1 prim-core collide-as) (collide-spec))
-      (set! (-> v1-1 prim-core collide-with) (collide-spec))
-      )
-    0
-    (logior! (-> self draw status) (draw-control-status no-draw))
-    (set! (-> self root root-prim local-sphere w) 491520.0)
-    (sound-play "robo-explode")
-    )
-  :code (behavior ()
-    (let ((a1-1 (new 'stack 'debris-tuning (the-as uint 1))))
-      (set! (-> a1-1 hit-xz-reaction) 0.95)
-      (set! (-> a1-1 hit-y-reaction) 0.6)
-      (set! (-> a1-1 scale-rand-lo) 1.9)
-      (set! (-> a1-1 scale-rand-hi) 2.6)
-      (vector-copy! (-> a1-1 fountain-rand-transv-lo) (-> self incoming attack-position))
-      (debris-spawn self a1-1 *scoutbot-debris-params* (the-as process-drawable #f))
-      )
-    (let ((v1-8 (vector<-cspace! (new 'stack-no-clear 'vector) (joint-node scoutbot-lod0-jg main))))
-      (cond
-        ((logtest? (-> *part-group-id-table* 1048 flags) (sp-group-flag sp13))
-         (vector-copy! (-> *launch-matrix* trans) v1-8)
-         (part-tracker-spawn part-tracker-subsampler :to self :group (-> *part-group-id-table* 1048))
-         )
-        (else
-          (vector-copy! (-> *launch-matrix* trans) v1-8)
-          (part-tracker-spawn part-tracker :to self :group (-> *part-group-id-table* 1048))
-          )
-        )
-      )
-    ;; added - send a 'shutdown' message for the `event-actor` after scoutbot die
-    (let ((a1-2 (new 'stack-no-clear 'event-message-block)))
-      (set! (-> a1-2 from) (process->ppointer self))
-      (set! (-> a1-2 num-params) 0)
-      (set! (-> a1-2 message) 'shutdown)
-      (let ((t9-4 send-event-function)
-            (v1-22 (-> self event-actor))
-            )
-        (t9-4
-          (if v1-22
-              (-> v1-22 extra process)
-              )
-          a1-2
-          )
-        )
-      )
-    (while (-> self child)
-      (suspend)
-      )
-    (cleanup-for-death self)
-    )
-  )
 
 ;; Added in PC Port - After noticing Jak, go to 'hostile' state immediately
 (defstate notice (scoutbot)
@@ -1244,47 +1128,21 @@
 (defmethod event-handler ((this scoutbot) (arg0 process) (arg1 int) (arg2 symbol) (arg3 event-message-block))
   (case arg2
     (('hit 'hit-knocked)
-      (when (not (-> this in-ambush?))
-        (set! (-> this hit-points) (+ (-> this hit-points) -1.0))
-        (cond
-          ((<= (-> this hit-points) 0.0)
-            (if (not (and (-> this next-state) (= (-> this next-state name) 'die)))
-                (go-virtual die)
-                )
+     (set! (-> this hit-points) (+ (-> this hit-points) -1.0))
+     (cond
+       ((<= (-> this hit-points) 0.0)
+        (if (not (and (-> this next-state) (= (-> this next-state name) 'die)))
+            (go-virtual die)
             )
-          (else
-            (go (method-of-object this hit))
-            )
-          )
         )
+       (else
+         (go (method-of-object this hit))
+         )
+       )
      #t
      )
     (else
       ((method-of-type nav-enemy event-handler) this arg0 arg1 arg2 arg3)
-      )
-    )
-  )
-
-;; added - override `msg-for-incoming-attack` method from `enemy` type
-(defmethod msg-for-incoming-attack ((this scoutbot) (arg0 process) (arg1 event-message-block) (arg2 float))
-  "Given an attack message, what do we do next? Returns a message name that should be sent to self."
-  (let ((gp-0 (-> this incoming penetrate-using)))
-    (cond
-      ((and (logtest? (penetrate jak-dark-blackhole) gp-0) #t)
-       'go-gun-dark-2-stretch
-       )
-      ((and (logtest? (penetrate jak-dark-nuke) (-> this incoming penetrate-using)) (can-be-nuked? this))
-       'go-gun-dark-3-nuke
-       )
-      ((and (logtest? gp-0 (-> this penetrate-flinch)) (not (-> this in-ambush?)))
-       'hit-flinch
-       )
-      ((and (logtest? gp-0 (-> this penetrate-knocked)) (not (-> this in-ambush?)))
-       'hit-knocked
-       )
-      (else
-        'hit
-        )
       )
     )
   )
@@ -1484,3 +1342,4 @@
     )
     (none)
   )
+

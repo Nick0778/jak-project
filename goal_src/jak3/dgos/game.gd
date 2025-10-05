@@ -492,4 +492,5 @@
   "shield-sphere.o"
   "entity-debug.o" ;; added
   "cty-guard-turret-ag.go" ;; added
+  ;"custom-music-player.o" ;; added
  ))

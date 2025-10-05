@@ -19,6 +19,9 @@
 (define-extern *master-exit* symbol)
 (declare-type crate process-focusable)
 
+;; added - custom music player stuff
+(define-extern *custom-music-fade?* symbol)
+
 ;; DECOMP BEGINS
 
 (defun get-current-language ()
@@ -118,6 +121,8 @@
      )
     (('music)
      (set! (-> this music) arg1)
+     ;; added - custom music fade
+     (true! *custom-music-fade?*)
      )
     (('extra-bank)
      (when (< (-> this extra-bank-count) (the-as uint 3))

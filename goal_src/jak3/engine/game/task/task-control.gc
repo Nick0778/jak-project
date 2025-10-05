@@ -3621,15 +3621,19 @@
 
         ;; Sewer Scoutbot
 
-        #|
+      (when (= (level-status? *level* 'sewh #f) 'active)
         (when (entity-by-name "scoutbot-9")
           (clear-kill-mask! "scoutbot-9" (task-mask never))
-          (set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "scoutbot-9") 5))) 67294)
+          ;(set! (-> (the (pointer uint32) (get-tag-index-data (entity-by-name "scoutbot-9") 5))) 67294)
+          (set-entity-tag-data! "scoutbot-9" uint32 6 (the pointer 67294))
+          (set! (-> (the (pointer meters) (get-tag-index-data (entity-by-name "scoutbot-9") 5))) 819200.0)
           ;(set-region-data! 1094 "on-enter" '(send-event "scoutbot-9" 'trigger))
           (add-data-to-entity! "scoutbot-9" 'alt-actor 1 uint32 (the pointer 67421))
+          (set-entity-tag-data! "scoutbot-9" uint32 4 (the pointer 0))
           )
-        (set-entity-tag-data! "sewer-elec-gate-4" pair 0 '(send-event "scoutbot-9" 'trigger))
-        |#
+        (set-entity-tag-data! "battle-99" pair 1 (the pointer '(send-event "scoutbot-9" 'trigger)))
+        ;(set-entity-tag-data! "sewer-elec-gate-4" pair 0 '(send-event "scoutbot-9" 'trigger))
+        )
         
         ;; Chickalopes
 

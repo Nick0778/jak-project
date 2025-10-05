@@ -767,21 +767,3 @@
   0
   (none)
   )
-
-(defpartgroup group-scoutbot-explosion
-  :id 1048
-  :duration (seconds 2)
-  :linger-duration (seconds 1)
-  :flags (sp0 sp5 sp6 sp7)
-  :bounds (static-bspherem 0 0 0 15)
-  :rotate ((degrees 0) (degrees 90) (degrees 0))
-  :scale (1.2 1.2 1.2)
-  :parts ((sp-item 883 :flags (sp6 sp7) :period (seconds 3) :length (seconds 0.017))
-    (sp-item 884 :flags (sp6 sp7) :period (seconds 3) :length (seconds 0.017))
-    (sp-item 885 :flags (sp7) :period (seconds 3) :length (seconds 0.05))
-    (sp-item 886 :fade-after (meters 60) :flags (sp7) :period (seconds 3) :length (seconds 0.035) :offset 10)
-    (sp-item 887 :fade-after (meters 60) :falloff-to (meters 60) :flags (sp7) :period (seconds 3) :length (seconds 0.167) :offset 20)
-    (sp-item 888 :fade-after (meters 200) :falloff-to (meters 200) :flags (sp7) :period (seconds 3) :length (seconds 0.085) :offset 20)
-    (sp-item 889 :fade-after (meters 150) :falloff-to (meters 150) :flags (sp7) :period (seconds 3) :length (seconds 0.067) :offset 30)
-    )
-  )

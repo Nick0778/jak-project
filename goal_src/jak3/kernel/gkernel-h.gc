@@ -538,6 +538,23 @@
       )
   )
 
+;; added
+(defmacro defevent (&key (name #f) type &rest body)
+  "Define an event handler for a process."
+  `(defbehavior ,(if name name (string->symbol-format "{}-event-handler" type)) ,type ((proc process) (argc int) (message symbol) (block event-message-block))
+    ,@body
+    )
+  )
+
+;; added
+(defmacro defpost (&key (name #f) type &rest body)
+  "Define an event handler for a process."
+  `(defbehavior ,(if name name (string->symbol-format "{}-post" type)) ,type ()
+    ,@body
+    (none)
+    )
+  )
+
 (defmacro process-stack-used (proc)
   "get how much stack the top thread of a process has used."
   `(- (the int (-> ,proc top-thread stack-top))

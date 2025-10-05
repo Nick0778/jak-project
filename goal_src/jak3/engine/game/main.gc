@@ -163,6 +163,8 @@
        (if (is-any-sound-playing?)
         (pause-all-sounds)
         )
+       ;; added - custom music player stuff
+       (false! *custom-music-fade?*)
        )
       (('freeze)
        (logior! (-> *setting-control* user-default process-mask) (process-mask freeze))
@@ -175,6 +177,8 @@
        (logclear! (-> *setting-control* user-default process-mask) (process-mask freeze pause progress))
        (sound-group-pause (the-as sound-group #xffffffff))
        (set! *pause-lock* #f)
+       ;; added - custom music player stuff
+       (false! *custom-music-fade?*)
        )
       (('progress)
        (logclear! (-> *setting-control* user-default process-mask) (process-mask freeze pause menu))
@@ -190,11 +194,15 @@
        (if (is-any-sound-playing?)
         (pause-all-sounds)
         )
+       ;; added - custom music player stuff
+       (false! *custom-music-fade?*)
        )
       (('game)
        (logclear! (-> *setting-control* user-default process-mask) (process-mask freeze pause menu))
        (sound-group-continue (the-as sound-group #xffffffff))
        (resume-all-sounds) ;; Resume all custom audios
+       ;; added - custom music player stuff
+       (false! *custom-music-fade?*)
        )
       )
     (apply-settings *setting-control*)

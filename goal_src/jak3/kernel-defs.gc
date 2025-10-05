@@ -430,3 +430,6 @@
 ;;pause/resume all sounds
 (define-extern pause-all-sounds (function none))
 (define-extern resume-all-sounds (function none))
+
+;; play custom music
+(define-extern play-custom-music (function string int symbol))
