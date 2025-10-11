@@ -1388,9 +1388,9 @@
               (precura 0 lmech copy)
               (precurc 0 #f #f)
               (stadiuma 0 #f #f)
-              (sewa 0 sewb-elev copy)
-              (sewa 1 ate-elev copy)
-              (atoll 0 ato-actors copy)
+              ;(sewa 0 sewb-elev copy)
+              ;(sewa 1 ate-elev copy)
+              ;(atoll 0 ato-actors copy)
               )
             :open? #f
             :on-close #f
