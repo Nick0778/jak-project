@@ -1,0 +1,827 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; failed to figure out what this is:
+(defpartgroup group-for-turret-shot-hit
+  :id 413
+  :duration (seconds 2)
+  :flags (sp0)
+  :bounds (static-bspherem 0 0 0 8)
+  :parts ((sp-item 1690 :flags (sp3 sp6) :period (seconds 20) :length (seconds 0.067))
+    (sp-item 1691 :flags (sp3 sp6) :period (seconds 20) :length (seconds 0.067))
+    (sp-item 1692 :fade-after (meters 160) :falloff-to (meters 160) :period (seconds 20) :length (seconds 0.067))
+    (sp-item 1693 :period (seconds 20) :length (seconds 1))
+    )
+  )
+
+;; failed to figure out what this is:
+(defpart 1692
+  :init-specs ((:texture (diamond-star level-default-sprite))
+    (:num 1.0 1.0)
+    (:scale-x (meters 0.5) (meters 1))
+    (:scale-y :copy scale-x)
+    (:r 128.0)
+    (:g 128.0)
+    (:b 128.0)
+    (:a 128.0)
+    (:vel-y (meters 0.06666667) (meters 0.06666667))
+    (:fade-r -0.42666668)
+    (:fade-g -0.42666668)
+    (:fade-a -0.42666668)
+    (:accel-y (meters 0.001))
+    (:friction 0.9)
+    (:timer (seconds 1) (seconds 0.997))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3))
+    (:conerot-x (degrees 0) (degrees 3600))
+    (:conerot-y (degrees 0) (degrees 3600))
+    (:conerot-z (degrees 0) (degrees 3600))
+    )
+  )
+
+;; failed to figure out what this is:
+(defpart 1693
+  :init-specs ((:texture (glow level-default-sprite))
+    (:num 2.0)
+    (:scale-x (meters 6) (meters 2))
+    (:rot-x (degrees 22.5))
+    (:rot-z (degrees 0) (degrees 360))
+    (:scale-y :copy scale-x)
+    (:r 128.0)
+    (:g 128.0)
+    (:b 128.0)
+    (:a 16.0 2.0)
+    (:timer (seconds 0.017))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3 glow))
+    (:userdata 12288.0)
+    )
+  )
+
+;; failed to figure out what this is:
+(defpart 1694
+  :init-specs ((:texture (laser-hit2-add level-default-sprite))
+    (:num 1.0)
+    (:scale-x (meters 4) (meters 2))
+    (:rot-x (degrees 22.5))
+    (:rot-z (degrees 0) (degrees 360))
+    (:scale-y :copy scale-x)
+    (:r 0.0)
+    (:g 0.0 64.0)
+    (:b 255.0)
+    (:a 32.0 32.0)
+    (:timer (seconds 0.035))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3 glow))
+    (:userdata 12288.0)
+    )
+  )
+
+;; failed to figure out what this is:
+(defpart 1691
+  :init-specs ((:texture (glow level-default-sprite))
+    (:num 1.0)
+    (:scale-x (meters 32))
+    (:rot-x (degrees 22.5))
+    (:rot-z (degrees 0) (degrees 3600))
+    (:scale-y :copy scale-x)
+    (:r 255.0)
+    (:g 255.0)
+    (:b 255.0)
+    (:a 64.0)
+    (:scalevel-x (meters -1.6))
+    (:scalevel-y :copy scalevel-x)
+    (:timer (seconds 0.085))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3 glow))
+    (:userdata 12288.0)
+    )
+  )
+
+;; failed to figure out what this is:
+(defpart 1690
+  :init-specs ((:texture (new 'static 'texture-id :index #x7f :page #x4))
+    (:num 2.0)
+    (:scale-x (meters 1) (meters 1))
+    (:rot-z (degrees 0) (degrees 360))
+    (:scale-y :copy scale-x)
+    (:r 255.0)
+    (:g 255.0)
+    (:b 255.0)
+    (:a 255.0)
+    (:scalevel-x (meters 0.1) (meters 0.1))
+    (:scalevel-y :copy scalevel-x)
+    (:fade-r -3.4)
+    (:fade-g -3.4)
+    (:timer (seconds 0.5))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3 left-multiply-quat))
+    (:next-time (seconds 0.167))
+    (:next-launcher 1695)
+    )
+  )
+
+;; failed to figure out what this is:
+(defpart 1695
+  :init-specs ((:scalevel-x (meters 0.033333335)) (:scalevel-y :copy scalevel-x) (:fade-a -2.55))
+  )
+
+;; failed to figure out what this is:
+(defpart 1696
+  :init-specs ((:texture (diamond-star level-default-sprite))
+    (:birth-func 'birth-func-set-quat)
+    (:num 1.0)
+    (:scale-x (meters 6))
+    (:scale-y (meters 8))
+    (:r 128.0)
+    (:g 128.0)
+    (:b 128.0)
+    (:a 64.0 64.0)
+    (:fade-a -2.56)
+    (:timer (seconds 0.167))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3 sp-cpuinfo-flag-14 left-multiply-quat))
+    )
+  )
+
+;; failed to figure out what this is:
+(defpartgroup group-for-turret-shot-fired
+  :id 414
+  :duration (seconds 0.017)
+  :linger-duration (seconds 0.017)
+  :flags (sp0)
+  :bounds (static-bspherem 0 0 0 8)
+  :parts ((sp-item 1697 :flags (sp3 sp6)) (sp-item 1698))
+  )
+
+;; failed to figure out what this is:
+(defpart 1697
+  :init-specs ((:texture (diamond-star level-default-sprite))
+    (:num 1.0)
+    (:scale-x (meters 3.5) (meters 0.5))
+    (:rot-x (degrees 4.5))
+    (:rot-z (degrees 0) (degrees 3600))
+    (:scale-y :copy scale-x)
+    (:r 128.0)
+    (:g 128.0)
+    (:b 128.0)
+    (:a 64.0 64.0)
+    (:scalevel-x (meters 0))
+    (:scalevel-y :copy scalevel-x)
+    (:fade-a -3.2)
+    (:timer (seconds 0.135))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3 glow))
+    (:userdata 4096.0)
+    )
+  )
+
+;; failed to figure out what this is:
+(defpart 1698
+  :init-specs ((:texture (motion-blur-part level-default-sprite))
+    (:num 32.0)
+    (:scale-x (meters 2.5))
+    (:rot-x 4)
+    (:scale-y (meters 0.04) (meters 0.03))
+    (:r 0.0)
+    (:g 0.0 128.0)
+    (:b 255.0)
+    (:a 128.0)
+    (:omega (degrees 0.01125) (degrees 0.01125))
+    (:vel-y (meters 0.1) (meters 0.3))
+    (:fade-g -2.55 -2.55)
+    (:fade-a -0.256 -0.256)
+    (:accel-y (meters -0.0033333334))
+    (:friction 0.8 0.02)
+    (:timer (seconds 0.335) (seconds 0.497))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3))
+    (:func 'sparticle-motion-blur)
+    (:conerot-x (degrees 0) (degrees 3600))
+    (:conerot-y (degrees 0) (degrees 3600))
+    (:conerot-z (degrees 0) (degrees 3600))
+    )
+  )
+
+;; failed to figure out what this is:
+(defpartgroup group-for-turret-shot-trail
+  :id 415
+  :bounds (static-bspherem 0 0 0 1)
+  :parts ((sp-item 1699 :flags (sp6)) (sp-item 1700 :flags (sp6)) (sp-item 1701 :flags (sp6)))
+  )
+
+;; failed to figure out what this is:
+(defpart 1700
+  :init-specs ((:texture (diamond-star level-default-sprite))
+    (:num 1.0)
+    (:scale-x (meters 2.25) (meters 0.1))
+    (:rot-x (degrees 2.25))
+    (:scale-y :copy scale-x)
+    (:r 255.0)
+    (:g 255.0)
+    (:b 255.0)
+    (:a 128.0 64.0)
+    (:timer (seconds 0.017))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3 glow))
+    (:userdata 2048.0)
+    )
+  )
+
+;; failed to figure out what this is:
+(defpart 1701
+  :init-specs ((:texture (colorflash level-default-sprite))
+    (:num 1.0)
+    (:scale-x (meters 10))
+    (:rot-x (degrees 2.25))
+    (:scale-y :copy scale-x)
+    (:r 128.0)
+    (:g 128.0)
+    (:b 128.0)
+    (:a 64.0)
+    (:timer (seconds 0.017))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3 glow))
+    (:userdata 2048.0)
+    )
+  )
+
+;; failed to figure out what this is:
+(defpart 1699
+  :init-specs ((:texture (rainbow-halo level-default-sprite))
+    (:num 1.0)
+    (:scale-x (meters 2))
+    (:scale-y :copy scale-x)
+    (:r 128.0)
+    (:g 128.0)
+    (:b 128.0)
+    (:a 64.0 128.0)
+    (:timer (seconds 0.017))
+    (:flags (sp-cpuinfo-flag-3 sp-cpuinfo-flag-14))
+    )
+  )
+
+;; failed to figure out what this is:
+(set! (-> *lightning-spec-id-table* 20) (new 'static 'lightning-spec
+                                          :name "lightning-for-turret-shot-attack"
+                                          :flags (lightning-spec-flags lsf0)
+                                          :start-color (new 'static 'rgba :r #xff :g #xff :b #xff :a #x80)
+                                          :end-color (new 'static 'rgba :r #xff :g #xff :b #xff :a #x80)
+                                          :fade-to-color (new 'static 'rgba :r #xbf :b #x8f :a #x5)
+                                          :fade-start-factor 1.0
+                                          :fade-time 30.0
+                                          :texture (new 'static 'texture-id :index #x96 :page #x4)
+                                          :reduction 0.42
+                                          :num-points 16
+                                          :box-size 8192.0
+                                          :merge-factor 0.6
+                                          :merge-count 2
+                                          :radius 3276.8
+                                          :duration 45.0
+                                          :duration-rand 60.0
+                                          :sound (static-sound-spec "stretched-zap")
+                                          )
+      )
+
+;; failed to figure out what this is:
+(set! (-> *lightning-spec-id-table* 21) (new 'static 'lightning-spec
+                                          :name "lightning-for-turret-shot-attack-thick"
+                                          :flags (lightning-spec-flags lsf0)
+                                          :start-color (new 'static 'rgba :r #xff :g #xff :b #xff :a #x80)
+                                          :end-color (new 'static 'rgba :r #xff :g #xff :b #xff :a #x80)
+                                          :fade-to-color (new 'static 'rgba :r #xbf :b #x8f :a #x5)
+                                          :fade-start-factor 1.0
+                                          :fade-time 30.0
+                                          :texture (new 'static 'texture-id :index #x96 :page #x4)
+                                          :reduction 0.42
+                                          :num-points 16
+                                          :box-size 8192.0
+                                          :merge-factor 0.6
+                                          :merge-count 2
+                                          :radius 3276.8
+                                          :duration 60.0
+                                          :sound (static-sound-spec "stretched-zap")
+                                          )
+      )
+
+;; failed to figure out what this is:
+(defpartgroup group-lightning-for-turret-shot-tip-hit
+  :id 416
+  :flags (sp0 sp4)
+  :bounds (static-bspherem 0 0 0 10)
+  :parts ((sp-item 1702))
+  )
+
+;; failed to figure out what this is:
+(defpart 1702
+  :init-specs ((:texture (diamond-star level-default-sprite))
+    (:num 2.0 3.0)
+    (:scale-x (meters 0.1) (meters 0.1))
+    (:scale-y :copy scale-x)
+    (:r 128.0)
+    (:g 128.0)
+    (:b 128.0)
+    (:a 64.0 64.0)
+    (:vel-z (meters 0.016666668) (meters 0.006666667))
+    (:scalevel-x (meters 0.006666667) (meters 0.006666667))
+    (:scalevel-y :copy scalevel-x)
+    (:fade-a -1.7)
+    (:accel-y (meters -0.001))
+    (:friction 0.99)
+    (:timer (seconds 0.5))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3 launch-along-z))
+    (:rotate-y (degrees 0) (degrees 3600))
+    )
+  )
+
+;; failed to figure out what this is:
+(defpart 1703
+  :init-specs ((:texture (colorflash level-default-sprite))
+    (:num 1.0)
+    (:scale-x (meters 1) (meters 4))
+    (:rot-x (degrees 11.25))
+    (:rot-z (degrees 0) (degrees 360))
+    (:scale-y :copy scale-x)
+    (:r 128.0)
+    (:g 128.0)
+    (:b 128.0)
+    (:a 64.0)
+    (:timer (seconds 0.017))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3 glow))
+    (:userdata 4096.0)
+    (:conerot-x (degrees 0) (degrees 3600))
+    (:conerot-y (degrees 0) (degrees 3600))
+    (:conerot-z (degrees 0) (degrees 3600))
+    (:conerot-radius (meters -0.1) (meters 0.5))
+    )
+  )
+
+;; definition of type for-turret-shot
+(deftype for-turret-shot (projectile)
+  ((blast-radius   float)
+   (core-position  vector  :inline)
+   (core-velocity  vector  :inline)
+   (spin-vector    vector  :inline)
+   (track-target   handle)
+   (size-t         float)
+   (result-array   handle  16)
+   (charge-sound   uint32)
+   (fire-sound     uint32)
+   (trail-sound    uint32)
+   (explode-sound  uint32)
+   (start-pilot?   symbol)
+   )
+  (:state-methods
+    fizzle
+    )
+  )
+
+;; definition for method 3 of type for-turret-shot
+(defmethod inspect ((this for-turret-shot))
+  (when (not this)
+    (set! this this)
+    (goto cfg-4)
+    )
+  (let ((t9-0 (method-of-type projectile inspect)))
+    (t9-0 this)
+    )
+  (format #t "~2Tblast-radius: ~f~%" (-> this blast-radius))
+  (format #t "~2Tcore-position: #<vector @ #x~X>~%" (-> this core-position))
+  (format #t "~2Tcore-velocity: #<vector @ #x~X>~%" (-> this core-velocity))
+  (format #t "~2Tspin-vector: #<vector @ #x~X>~%" (-> this spin-vector))
+  (format #t "~2Ttrack-target: ~D~%" (-> this track-target))
+  (format #t "~2Tsize-t: ~f~%" (-> this size-t))
+  (format #t "~2Tresult-array[16] @ #x~X~%" (-> this result-array))
+  (format #t "~2Tcharge-sound: ~D~%" (-> this charge-sound))
+  (format #t "~2Tfire-sound: ~D~%" (-> this fire-sound))
+  (format #t "~2Ttrail-sound: ~D~%" (-> this trail-sound))
+  (format #t "~2Texplode-sound: ~D~%" (-> this explode-sound))
+  (format #t "~2Tstart-pilot?: ~A~%" (-> this start-pilot?))
+  (label cfg-4)
+  this
+  )
+
+;; failed to figure out what this is:
+(defskelgroup skel-for-turret for-turret for-turret-lod0-jg for-turret-idle-ja
+              ((for-turret-lod0-mg (meters 20)) (for-turret-lod1-mg (meters 40)) (for-turret-lod2-mg (meters 999999)))
+              :bounds (static-spherem 0 1.8 0.7 6)
+              :shadow-joint-index 3
+              )
+
+;; definition for function gun-for-turret-reaction
+;; INFO: Used lq/sq
+(defun gun-for-turret-reaction ((arg0 control-info) (arg1 collide-query) (arg2 vector) (arg3 vector))
+  (cshape-reaction-update-state arg0 arg1 arg3)
+  (vector-copy! arg2 arg3)
+  (cond
+    ((logtest? (-> arg0 status) (collide-status touch-wall))
+     (send-event (-> arg0 process) 'impact-small)
+     )
+    ((let ((f0-1 (vector-dot (vector-normalize-copy! (new 'stack-no-clear 'vector) arg3 1.0) (-> arg0 surface-normal))))
+       (< -0.3 f0-1)
+       )
+     (let ((v1-9 (new 'stack-no-clear 'vector)))
+       (vector-copy! v1-9 (-> arg0 trans))
+       (+ 1228.8 (-> v1-9 y))
+       )
+     (vector-flatten! arg2 arg3 (-> arg0 surface-normal))
+     (send-event (-> arg0 process) 'slide-now (-> arg0 surface-normal))
+     )
+    (else
+      (send-event (-> arg0 process) 'impact)
+      )
+    )
+  (-> arg0 status)
+  )
+
+;; definition for method 59 of type for-turret-shot
+;; ERROR: function has no type analysis. Cannot decompile.
+
+;; definition for method 30 of type for-turret-shot
+;; WARN: Return type mismatch int vs none.
+(defmethod setup-collision! ((this for-turret-shot))
+  (let ((s5-0 (new 'process 'collide-shape-moving this (collide-list-enum hit-by-player))))
+    (set! (-> s5-0 dynam) (copy *standard-dynamics* 'process))
+    (set! (-> s5-0 reaction) cshape-reaction-projectile)
+    (set! (-> s5-0 no-reaction)
+          (the-as (function collide-shape-moving collide-query vector vector object) nothing)
+          )
+    (let ((v1-6 (new 'process 'collide-shape-prim-sphere s5-0 (the-as uint 0))))
+      (set! (-> v1-6 prim-core collide-as) (collide-spec projectile))
+      (set! (-> v1-6 prim-core collide-with)
+            (collide-spec
+              backgnd
+              jak
+              bot
+              crate
+              civilian
+              enemy
+              obstacle
+              vehicle-sphere
+              hit-by-others-list
+              player-list
+              pusher
+              )
+            )
+      (set! (-> v1-6 prim-core action) (collide-action solid))
+      (set-vector! (-> v1-6 local-sphere) 0.0 0.0 0.0 5324.8)
+      (set! (-> s5-0 total-prims) (the-as uint 1))
+      (set! (-> s5-0 root-prim) v1-6)
+      )
+    (set! (-> s5-0 nav-radius) (* 0.75 (-> s5-0 root-prim local-sphere w)))
+    (let ((v1-9 (-> s5-0 root-prim)))
+      (set! (-> s5-0 backup-collide-as) (-> v1-9 prim-core collide-as))
+      (set! (-> s5-0 backup-collide-with) (-> v1-9 prim-core collide-with))
+      )
+    (set! (-> s5-0 max-iteration-count) (the-as uint 2))
+    (set! (-> s5-0 event-self) 'touched)
+    (set! (-> this root) s5-0)
+    )
+  (set! (-> this root pat-ignore-mask)
+        (new 'static 'pat-surface :noentity #x1 :nojak #x1 :probe #x1 :noproj #x1 :noendlessfall #x1 :board #x1)
+        )
+  0
+  (none)
+  )
+
+;; definition for method 31 of type for-turret-shot
+;; WARN: Return type mismatch int vs none.
+(defmethod init-proj-settings! ((this for-turret-shot))
+  (set! (-> this attack-mode) 'turret)
+  (vector-normalize! (-> this root transv) (+ 225280.0 (* 225280.0 (-> this charge-level))))
+  (set! (-> this part) (create-launch-control (-> *part-group-id-table* 415) this))
+  (set! (-> this blast-radius) 24576.0)
+  (set! (-> this size-t) 0.0)
+  (set! (-> this damage) 6.0)
+  (set! (-> this charge-sound) (the-as uint (new-sound-id)))
+  (set! (-> this fire-sound) (the-as uint (new-sound-id)))
+  (set! (-> this trail-sound) (the-as uint (new-sound-id)))
+  (set! (-> this explode-sound)
+        (the-as uint (add-process *gui-control* this (gui-channel background) (gui-action queue) "pmkrxplo" -99.0 0))
+        )
+  (sound-params-set! *gui-control* (the-as sound-id (-> this explode-sound)) #t 50 150 11 -1.0)
+  (set! (-> this start-pilot?) #f)
+  ((method-of-type projectile init-proj-settings!) this)
+  0
+  (none)
+  )
+
+;; definition for method 25 of type for-turret-shot
+(defmethod projectile-method-25 ((this for-turret-shot))
+  (set! (-> *part-id-table* 1700 init-specs 2 initial-valuef) (lerp 409.6 9216.0 (-> this size-t)))
+  (set! (-> *part-id-table* 1701 init-specs 2 initial-valuef) (lerp 409.6 12288.0 (-> this size-t)))
+  (set! (-> *part-id-table* 1699 init-specs 2 initial-valuef) (lerp 409.6 16384.0 (-> this size-t)))
+  (spawn (-> this part) (-> this root trans))
+  (ja-post)
+  (none)
+  )
+
+;; definition for method 32 of type for-turret-shot
+;; WARN: Return type mismatch int vs none.
+(defmethod projectile-method-32 ((this for-turret-shot))
+  (go (method-of-object this startup))
+  0
+  (none)
+  )
+
+;; failed to figure out what this is:
+(defstate startup (for-turret-shot)
+  :virtual override
+  :event (behavior ((proc process) (argc int) (message symbol) (block event-message-block))
+    (case message
+      (('trigger)
+       (cond
+         ((time-elapsed? (-> self state-time) (seconds 0.3))
+          (go-virtual moving)
+          #t
+          )
+         (else
+           #f
+           )
+         )
+       )
+      (('die)
+       (go-virtual dissipate)
+       )
+      (('set-damage)
+       (set! (-> self damage) (the-as float (-> block param 0)))
+       )
+      )
+    )
+  :enter (behavior ()
+    (set-time! (-> self state-time))
+    )
+  :exit (behavior ()
+    (set! (-> self size-t) 1.0)
+    (let ((v1-1 (the-as sound-rpc-set-param (get-sound-buffer-entry))))
+      (set! (-> v1-1 command) (sound-command set-param))
+      (set! (-> v1-1 id) (the-as sound-id (-> self charge-sound)))
+      (set! (-> v1-1 params volume) -4)
+      (set! (-> v1-1 auto-time) 24)
+      (set! (-> v1-1 auto-from) 2)
+      (set! (-> v1-1 params mask) (the-as uint 17))
+      (-> v1-1 id)
+      )
+    )
+  :code sleep-code
+  :post (behavior ()
+    (set! (-> self size-t) (fmin 1.0 (* 0.016666668 (the float (- (current-time) (-> self state-time))))))
+    (send-event (handle->process (-> self notify-handle)) 'shot-pos (-> self root trans))
+    (sound-play "pmkr-charge" :id (the-as sound-id (-> self charge-sound)) :position (-> self root trans))
+    (projectile-method-25 self)
+    )
+  )
+
+;; failed to figure out what this is:
+(defstate moving (for-turret-shot)
+  :virtual #t
+  :enter (behavior ()
+    (let ((t9-0 (-> (method-of-type projectile moving) enter)))
+      (if t9-0
+          (t9-0)
+          )
+      )
+    (change-parent self *entity-pool*)
+    (set! (-> self size-t) 1.0)
+    (vector-copy! (-> self core-position) (-> self root trans))
+    (vector-copy!
+      (-> self core-velocity)
+      (-> (the-as process-focusable (handle->process (-> self notify-handle))) node-list data 6 bone transform fvec)
+      )
+    (set-vector! (-> self spin-vector) (-> self core-velocity z) 0.0 (- (-> self core-velocity x)) 1.0)
+    (let ((f0-6 (vector-length (-> self spin-vector))))
+      (if (< f0-6 1.0)
+          (set-vector! (-> self spin-vector) 1.0 0.0 0.0 1.0)
+          (vector-float*! (-> self spin-vector) (-> self spin-vector) (/ 1.0 f0-6))
+          )
+      )
+    (set-time! (-> self state-time))
+    (let ((gp-0 (-> *part-group-id-table* 414)))
+      (let ((v1-21
+              (cond
+                ((logtest? (-> gp-0 flags) (sp-group-flag sp13))
+                 (let ((s5-0 *launch-matrix*))
+                   (vector-copy! (-> s5-0 trans) (-> self root trans))
+                   (let ((s4-0 (get-process *default-dead-pool* part-tracker-subsampler #x4000 0)))
+                     (when s4-0
+                       (let ((t9-3 (method-of-type part-tracker-subsampler activate)))
+                         (t9-3
+                           (the-as part-tracker-subsampler s4-0)
+                           *entity-pool*
+                           "part-tracker-subsampler"
+                           (the-as pointer #x70004000)
+                           )
+                         )
+                       (let ((t9-4 run-function-in-process))
+                         (let ((a0-20 s4-0))
+                           (let ((a1-8 part-tracker-subsampler-init))
+                             (let ((v1-23 *part-tracker-subsampler-params-default*))
+                               (s.w! v1-23 gp-0)
+                               )
+                             (set! (-> *part-tracker-subsampler-params-default* duration) 0)
+                             (set! (-> *part-tracker-subsampler-params-default* group) #f)
+                             (set! (-> *part-tracker-subsampler-params-default* callback) #f)
+                             (set! (-> *part-tracker-subsampler-params-default* target) #f)
+                             (set! (-> *part-tracker-subsampler-params-default* mat-joint) s5-0)
+                             (set! (-> *part-tracker-subsampler-params-default* subsample-num) 1.0)
+                             ((the-as (function object object object none) t9-4) a0-20 a1-8 *part-tracker-subsampler-params-default*)
+                             )
+                           )
+                         )
+                       (-> s4-0 ppointer)
+                       )
+                     )
+                   )
+                 )
+                (else
+                  (let ((s5-1 (get-process *default-dead-pool* part-tracker #x4000 0)))
+                    (when s5-1
+                      (let ((t9-6 (method-of-type part-tracker activate)))
+                        (t9-6 (the-as part-tracker s5-1) *entity-pool* "part-tracker" (the-as pointer #x70004000))
+                        )
+                      (let ((t9-7 run-function-in-process))
+                        (let ((a0-23 s5-1))
+                          (let ((a1-11 part-tracker-init))
+                            (let ((a3-4 0))
+                              )
+                            (vector-copy! (-> *launch-matrix* trans) (-> self root trans))
+                            ((the-as (function object object object none) t9-7) a0-23 a1-11 gp-0)
+                            )
+                          )
+                        )
+                      (-> s5-1 ppointer)
+                      )
+                    )
+                  )
+                )
+              )
+            )
+        (let ((a1-12 (new 'stack-no-clear 'event-message-block)))
+          (set! (-> a1-12 from) (process->ppointer self))
+          (set! (-> a1-12 num-params) 1)
+          (set! (-> a1-12 message) 'clock)
+          (set! (-> a1-12 param 0) (the-as uint self))
+          (send-event-function (ppointer->process v1-21) a1-12)
+          )
+        )
+      )
+    (draw-beam (-> *part-id-table* 1696) (-> self root trans) (-> self core-velocity) #f)
+    )
+  :trans (behavior ()
+    (local-vars (at-0 int))
+    (rlet ((vf0 :class vf)
+           (vf1 :class vf)
+           (vf2 :class vf)
+           )
+      (init-vf0-vector)
+      (let ((gp-0 (new 'stack-no-clear 'vector)))
+        (let ((s5-0 (new 'stack-no-clear 'matrix)))
+          (let ((s4-0 (new 'stack-no-clear 'vector)))
+            (vector-normalize-copy! s4-0 (-> self core-velocity) 1.0)
+            (+! (-> self spin-vector x) (-> s4-0 z))
+            (set! (-> self spin-vector z) (- (-> self spin-vector z) (-> s4-0 x)))
+            (vector-flatten! (-> self spin-vector) (-> self spin-vector) s4-0)
+            (matrix-axis-angle! s5-0 s4-0 (* 2002.4889 (-> self clock time-adjust-ratio)))
+            (vector-matrix*! (-> self spin-vector) (-> self spin-vector) s5-0)
+            (let ((f0-7 (the float (- (current-time) (-> self state-time))))
+                  (f30-0 0.0)
+                  )
+              (cond
+                ((< 450.0 f0-7)
+                 (go-virtual impact)
+                 )
+                ((< f0-7 90.0)
+                 (set! f30-0 (lerp-scale 0.0 4096.0 f0-7 0.0 90.0))
+                 )
+                (else
+                  (set! f30-0 (lerp-scale 4096.0 1228.8 f0-7 30.0 300.0))
+                  )
+                )
+              (let ((f30-1 (/ f30-0 2)))
+                (vector-normalize! (-> self spin-vector) f30-1)
+                (vector-normalize! (-> self core-velocity) 7372.8)
+                (vector-copy! (-> s5-0 fvec) s4-0)
+                (vector-copy! (-> s5-0 uvec) (-> self spin-vector))
+                (vector-float*! (-> s5-0 uvec) (-> s5-0 uvec) (/ 1.0 f30-1))
+                )
+              )
+            )
+          (vector-cross! (-> s5-0 rvec) (-> s5-0 uvec) (-> s5-0 fvec))
+          (matrix->quaternion (-> self root quat) s5-0)
+          )
+        (vector+! (-> self core-position) (-> self core-position) (-> self core-velocity))
+        (vector+! gp-0 (-> self core-position) (-> self spin-vector))
+        (vector-! (-> self root transv) gp-0 (-> self root trans))
+        )
+      (let ((v1-26 (-> self root transv)))
+        (.lvf vf1 (&-> (-> self root transv) quad))
+        (let ((f0-11 (-> self clock frames-per-second)))
+          (.mov at-0 f0-11)
+          )
+        (.mov vf2 at-0)
+        (.mov.vf.w vf1 vf0)
+        (.mul.x.vf.xyz vf1 vf1 vf2)
+        (.svf (&-> v1-26 quad) vf1)
+        )
+      (projectile-move-fill-line-sphere self)
+      (if (logtest? (-> self root status) (collide-status touch-surface))
+          (go-virtual impact)
+          )
+      (sound-play "pmkr-fire" :id (the-as sound-id (-> self fire-sound)) :position (-> self root trans))
+      (sound-play "pmkr-trail" :id (the-as sound-id (-> self trail-sound)) :position (-> self root trans))
+      )
+    )
+  )
+
+;; failed to figure out what this is:
+(defstate fizzle (for-turret-shot)
+  :virtual #t
+  :enter (behavior ()
+    (set-time! (-> self state-time))
+    )
+  :trans (behavior ()
+    (process-drawable-shock-effect-replace
+      self
+      (-> *lightning-spec-id-table* 20)
+      lightning-probe-callback
+      256
+      0
+      40960.0
+      )
+    (launch-particles (-> *part-id-table* 1692) (-> self root trans))
+    (launch-particles (-> *part-id-table* 1694) (-> self root trans))
+    (let ((gp-0 (-> *part-id-table* 1703)))
+      (when gp-0
+        (let ((v1-7 (get-field-spec-by-id gp-0 (sp-field-id spt-timer))))
+          (if v1-7
+              (set! (-> v1-7 initial-valuef) (the-as float #xf))
+              )
+          )
+        (let ((t9-4 sp-launch-particles-var)
+              (a0-6 *sp-particle-system-2d*)
+              (a2-3 *launch-matrix*)
+              )
+          (vector-copy! (-> a2-3 trans) (-> self root trans))
+          (t9-4 a0-6 gp-0 a2-3 (the-as sparticle-launch-state #f) (the-as sparticle-launch-control #f) 1.0)
+          )
+        )
+      )
+    )
+  :code (behavior ()
+    (suspend-for (seconds 1)
+      )
+    (go-virtual die)
+    )
+  )
+
+;; definition for function for-turret-shot-init-fizzle
+;; INFO: Used lq/sq
+;; WARN: Return type mismatch object vs none.
+(defbehavior for-turret-shot-init-fizzle gun-dark-shot ((arg0 vector))
+  (let ((s5-0 (new 'process 'collide-shape-moving self (collide-list-enum hit-by-player))))
+    (set! (-> s5-0 dynam) (copy *standard-dynamics* 'process))
+    (set! (-> s5-0 reaction) cshape-reaction-projectile)
+    (set! (-> s5-0 no-reaction)
+          (the-as (function collide-shape-moving collide-query vector vector object) nothing)
+          )
+    (let ((v1-6 (new 'process 'collide-shape-prim-sphere s5-0 (the-as uint 0))))
+      (set! (-> v1-6 prim-core collide-as) (collide-spec projectile))
+      (set! (-> v1-6 prim-core collide-with) (collide-spec
+                                               backgnd
+                                               jak
+                                               bot
+                                               crate
+                                               civilian
+                                               enemy
+                                               obstacle
+                                               vehicle-sphere
+                                               hit-by-others-list
+                                               player-list
+                                               pusher
+                                               shield
+                                               )
+            )
+      (set! (-> v1-6 prim-core action) (collide-action solid))
+      (set-vector! (-> v1-6 local-sphere) 0.0 5324.8 0.0 6144.0)
+      (set! (-> s5-0 total-prims) (the-as uint 1))
+      (set! (-> s5-0 root-prim) v1-6)
+      )
+    (set! (-> s5-0 nav-radius) (* 0.75 (-> s5-0 root-prim local-sphere w)))
+    (let ((v1-9 (-> s5-0 root-prim)))
+      (set! (-> s5-0 backup-collide-as) (-> v1-9 prim-core collide-as))
+      (set! (-> s5-0 backup-collide-with) (-> v1-9 prim-core collide-with))
+      )
+    (set! (-> s5-0 max-iteration-count) (the-as uint 2))
+    (set! (-> s5-0 event-self) 'touched)
+    (set! (-> self root) s5-0)
+    )
+  (vector-copy! (-> self root trans) arg0)
+  (let ((v1-16 (-> self root root-prim)))
+    (set! (-> v1-16 prim-core collide-as) (collide-spec))
+    (set! (-> v1-16 prim-core collide-with) (collide-spec))
+    )
+  0
+  (logclear! (-> self mask) (process-mask actor-pause))
+  (go-virtual fizzle)
+  (none)
+  )
+
+;; failed to figure out what this is:
+(defstate impact (for-turret-shot)
+  :virtual #t
+  :code L1
+  )
+
+
+
+
