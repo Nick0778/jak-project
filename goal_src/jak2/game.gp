@@ -308,6 +308,10 @@
 ;; to also generate a collide-mesh, add :gen-mesh #t
 (build-actor "test-actor" :force-run #t :gen-mesh #t)
 
+(build-custom-level "lwided")
+;; the DGO file
+(custom-level-cgo "LWD.DGO" "lwided/lwided.gd")
+
 ;;;;;;;;;;;;;;;;;;;;;
 ;; ANIMATIONS
 ;;;;;;;;;;;;;;;;;;;;;

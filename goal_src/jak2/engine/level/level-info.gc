@@ -15809,3 +15809,63 @@
 (#when PC_PORT
   (cons! *level-load-list* 'test-zone)
   )
+
+(define lwided (new 'static 'level-load-info
+                 :index #x9f
+                 :task-level #x1
+                 :name 'lwided
+                 :visname 'lwided-vis
+                 :nickname 'lwd
+                 :dbname 'lwided
+                 :taskname 'city
+                 :packages '()
+                 :memory-mode (load-buffer-mode borrow)
+                 :music-bank #f
+                 :ambient-sounds '()
+                 :mood-func 'update-mood-ctywide
+                 :mood-init #f
+                 :ocean #f
+                 :sky #f
+                 :use-camera-other #f
+                 :continues '()
+                 :tasks '()
+                 :priority 100
+                 :load-commands '()
+                 :alt-load-commands '()
+                 :bsp-mask #xffffffffffffffff
+                 :buttom-height (meters -20)
+                 :run-packages '("common")
+                 :wait-for-load #f
+                 :login-func #f
+                 :activate-func 'lwide-activate
+                 :deactivate-func 'lwide-deactivate
+                 :kill-func 'lwide-kill ;; og:preserve-this required to suppress rogue entity errors
+                 :borrow-level (new 'static 'array symbol 2 #f #f)
+                 :borrow-display? (new 'static 'array symbol 2 #f #f)
+                 :texture-anim-tfrag #f
+                 :texture-anim-pris #f
+                 :texture-anim-shrub #f
+                 :texture-anim-alpha #f
+                 :texture-anim-water #f
+                 :texture-anim-twarp #f
+                 :texture-anim-pris2 #f
+                 :texture-anim-sprite #f
+                 :texture-anim-map #f
+                 :texture-anim-sky #f
+                 :draw-priority 10.0
+                 :level-flags #x1
+                 :fog-height 327680.0
+                 :bigmap-id (bigmap-id city)
+                 :ocean-near-translucent? #t
+                 :ocean-far? #f
+                 :mood-range (new 'static 'mood-range :data (new 'static 'array float 4 0.0 1.0 0.0 1.0))
+                 :max-rain 1.0
+                 :fog-mult 1.0
+                 :ocean-alpha 1.0
+                 :extra-sound-bank '((ctywide3 castle2))
+                 )
+        )
+
+(#when PC_PORT
+  (cons! *level-load-list* 'lwided)
+  )
