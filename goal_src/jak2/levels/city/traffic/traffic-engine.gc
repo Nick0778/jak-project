@@ -1023,7 +1023,6 @@
   (none)
   )
 
-;; traffic system is acting weird with the changes I made here
 (defmethod activate-one-vehicle ((this traffic-engine) (arg0 nav-segment) (arg1 float))
   (let ((a1-1 0))
     (dotimes (v1-0 11)
@@ -1042,24 +1041,6 @@
   0
   (none)
   )
-
-;; original `activate-one-vehicle` method
-#|
-(defmethod activate-one-vehicle ((this traffic-engine) (arg0 nav-segment) (arg1 float))
-  (let ((a1-1 0))
-    (dotimes (v1-0 11)
-      (if (zero? (-> this object-type-info-array v1-0 inactive-count))
-          (set! a1-1 (logior a1-1 (ash 1 v1-0)))
-          )
-      )
-    (let ((a1-2 (rand-vu-int-count-excluding 11 a1-1)))
-      (activate-by-type (-> this vehicle-tracker-array) (the-as traffic-type a1-2) arg0 arg1)
-      )
-    )
-  0
-  (none)
-  )
-|#
 
 (defmethod handle-new-vis-cell ((this traffic-engine) (arg0 vis-cell))
   (dotimes (s4-0 (-> arg0 segment-count))
