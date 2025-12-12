@@ -368,7 +368,7 @@
    (object-type-info-array  traffic-object-type-info  23 :inline) ;; increased the size from 21 to 23 according to traffic-type size
    (tracker-array           traffic-tracker           2 :inline)
    (citizen-tracker-array   traffic-tracker           :inline :overlay-at (-> tracker-array 0))
-   (vehicle-tracker-array   traffic-tracker           :inline :offset 7024)
+   (vehicle-tracker-array   traffic-tracker           :inline :overlay-at (-> tracker-array 1)) ;; :offset 7024
    (inactive-object-array   handle                    420)
    (suppressor              traffic-suppressor        :inline)
    (danger-sphere-count     int8)
@@ -442,5 +442,6 @@
     (update-alert-state (_type_) none)
     (update-suppressor (_type_) none)
     (recompute-supressions (_type_) none)
+    (activate-roboguard-city (_type_ nav-segment float) none) ;; added
     )
   )

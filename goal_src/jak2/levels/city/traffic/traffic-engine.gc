@@ -747,12 +747,14 @@
       )
     )
   (let ((v1-11 0))
-    (dotimes (a0-7 11)
-      (set! (-> this object-type-info-array v1-11 tracker-index) (the-as uint 1)) ;; for citizens
+    (dotimes (a0-7 (traffic-type max))
+      (when (or (< v1-11 11) (= v1-11 (traffic-type roboguard-city)))
+        (set! (-> this object-type-info-array v1-11 tracker-index) (the-as uint 1))
+        )
       (+! v1-11 1)
       )
     )
-  (set! (-> this object-type-info-array (traffic-type roboguard-city) tracker-index) (the-as uint 1)) ;; roboguard-city is also a citizen
+  ;(set! (-> this object-type-info-array (traffic-type roboguard-city) tracker-index) (the-as uint 1)) ;; roboguard-city is also a citizen
   (dotimes (s5-0 2)
     (reset (-> this tracker-array s5-0) (the-as uint s5-0) this)
     )
@@ -1030,11 +1032,21 @@
           (set! a1-1 (logior a1-1 (ash 1 v1-0)))
           )
       )
-    ;; check roboguard-city too, so it can also be spawned
-    (if (zero? (-> this object-type-info-array (traffic-type roboguard-city) inactive-count))
-      (set! a1-1 (logior a1-1 (ash 1 (traffic-type roboguard-city))))
+    (let ((a1-2 (rand-vu-int-count-excluding 11 a1-1)))
+      (activate-by-type (-> this vehicle-tracker-array) (the-as traffic-type a1-2) arg0 arg1)
       )
-    (let ((a1-2 (rand-vu-int-count-excluding (the int (traffic-type max)) a1-1)))
+    )
+  0
+  (none)
+  )
+
+;; spawn only roboguard-city
+(defmethod activate-roboguard-city ((this traffic-engine) (arg0 nav-segment) (arg1 float))
+  (let ((a1-1 0))
+    (if (zero? (-> this object-type-info-array (traffic-type roboguard-city) inactive-count))
+        (set! a1-1 (logior a1-1 (ash 1 (traffic-type roboguard-city))))
+        )
+    (let ((a1-2 (traffic-type roboguard-city)))
       (activate-by-type (-> this vehicle-tracker-array) (the-as traffic-type a1-2) arg0 arg1)
       )
     )
@@ -1064,6 +1076,7 @@
              (when (nonzero? (-> s3-0 nav-mesh-id))
                (while (and (< f30-0 (-> s3-0 length)) (> (-> s2-0 inactive-object-count) 0))
                  (activate-one-vehicle this s3-0 f30-0)
+                 (activate-roboguard-city this s3-0 f30-0) ;; added
                  (set! f30-0 (+ 24576.0 (* (-> s2-0 rand) (-> this inv-density-factor) (-> s3-0 spawn-spacing)) f30-0))
                  )
                )
@@ -1710,6 +1723,9 @@
                       ((= s3-3 1)
                        (if (nonzero? (-> s2-0 nav-mesh-id))
                            (activate-one-vehicle this s2-0 0.0)
+                           )
+                        (if (nonzero? (-> s2-0 nav-mesh-id)) ;; added
+                           (activate-roboguard-city this s2-0 0.0)
                            )
                        )
                       (else
