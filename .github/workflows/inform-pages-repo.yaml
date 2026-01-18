@@ -22,7 +22,7 @@ jobs:
       BUILDCACHE_LOG_FILE: ${{ github.workspace }}/buildcache.log
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install Package Dependencies
         run: |
@@ -67,7 +67,7 @@ jobs:
           python ./scripts/ci/docs/append-file-docs.py
 
       - name: Upload Docs Artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: opengoal-docs
           if-no-files-found: error
