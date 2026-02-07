@@ -46082,6 +46082,9 @@ Consists of a header and a list of [[merc-effect]]s."
 ;; roboguard-level                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; retail build `roboguard-level`
+
+#|
 (deftype roboguard-level (nav-enemy)
   (
     (unknown-n12kjh3n123 int32 5 :offset-assert 604)
@@ -46117,6 +46120,33 @@ Consists of a header and a list of [[merc-effect]]s."
 (define-extern *roboguard-level-exploder-params* joint-exploder-static-params)
 (define-extern *roboguard-level-nav-enemy-info* nav-enemy-info)
 (define-extern roboguard-roll-travel-post (function none :behavior roboguard-level))
+|#
+
+;; july preview build `roboguard-level`
+
+(deftype roboguard-level (nav-enemy)
+  ((flags               uint16  :offset 620)
+   (hit-timer           time-frame  :offset-assert 624)
+   (hit-lightning-timer time-frame  :offset-assert 632)
+   )
+  :method-count-assert 181
+  :size-assert         #x280
+  :flag-assert         #xb502000280
+  (:state-methods
+    idle ;; 31
+    stare ;; 35
+    hostile ;; 36
+    die ;; 38
+    ambush ;; 44
+    attack ;; 178
+    laser-attack ;; 179
+    )
+  (:methods
+    (roboguard-level-method-9 (_type_) symbol) ;; 9
+    )
+  )
+
+(define-extern *roboguard-level-nav-enemy-info* nav-enemy-info)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; castle-texture                 ;;

@@ -7697,33 +7697,33 @@
     [27, "v1", "art-joint-anim"],
     [417, "v1", "art-joint-anim"]
   ],
-  "(enter ambush roboguard-level)": [[[72, 76], "a0", "process-focusable"]],
-  "(code roll-enter roboguard-level)": [[10, "v1", "art-joint-anim"]],
-  "(trans roll-hostile roboguard-level)": [
+  //"(enter ambush roboguard-level)": [[[72, 76], "a0", "process-focusable"]],
+  //"(code roll-enter roboguard-level)": [[10, "v1", "art-joint-anim"]],
+  /*"(trans roll-hostile roboguard-level)": [
     [120, "gp", "process-focusable"],
     [130, "gp", "process-focusable"],
     [[157, 161], "gp", "process-focusable"]
-  ],
-  "(code roll-to-walk roboguard-level)": [[10, "v1", "art-joint-anim"]],
-  "(code idle-dizzy roboguard-level)": [[14, "v1", "art-joint-anim"]],
-  "(method 185 roboguard-level)": [
+  ],*/
+  //"(code roll-to-walk roboguard-level)": [[10, "v1", "art-joint-anim"]],
+  //"(code idle-dizzy roboguard-level)": [[14, "v1", "art-joint-anim"]],
+  /*"(method 185 roboguard-level)": [
     [[5, 28], "v1", "collide-shape-prim-group"],
     [[42, 65], "v1", "collide-shape-prim-group"],
     [[81, 108], "v1", "collide-shape-prim-group"]
-  ],
-  "(method 77 roboguard-level)": [
+  ],*/
+  /*"(method 77 roboguard-level)": [
     [30, "v1", "art-joint-anim"],
     [58, "v1", "art-joint-anim"]
-  ],
-  "(method 78 roboguard-level)": [
+  ],*/
+  /*"(method 78 roboguard-level)": [
     [24, "a2", "art-joint-anim"],
     [53, "a2", "art-joint-anim"]
-  ],
-  "(method 74 roboguard-level)": [[[10, 13], "v1", "attack-info"]],
-  "(method 76 roboguard-level)": [
+  ],*/
+  //"(method 74 roboguard-level)": [[[10, 13], "v1", "attack-info"]],
+  /*"(method 76 roboguard-level)": [
     [42, "s1", "process-drawable"],
     [58, "s1", "process-drawable"]
-  ],
+  ],*/
   "(code castle-wait-end cas-robot-door)": [[32, "v1", "art-joint-anim"]],
   "(method 11 cas-robot-door)": [
     ["_stack_", 16, "res-tag"],
@@ -10155,5 +10155,61 @@
   ],
   "(method 206 hal)": [[32, "a2", "bot"]],
   "(method 209 hal)": [[32, "v1", "bot"]],
-  "(method 220 hal)": [[29, "v1", "bot"]]
+  "(method 220 hal)": [[29, "v1", "bot"]],
+
+  "(method 76 roboguard-level)": [
+    [34, "s3", "process-focusable"],
+    [39, "a0", "process-focusable"],
+    [86, "s3", "process-focusable"]
+  ],
+
+  "(method 74 roboguard-level)": [
+    [15, "gp", "nav-enemy-info"],
+    [16, "v1", "attack-info"],
+    [19, "v1", "attack-info"],
+    [22, "v1", "attack-info"]
+  ],
+
+  "(method 78 roboguard-level)": [
+    [1, "v1", "knocked-type"],
+    [24, "a2", "art-joint-anim"],
+    [53, "a2", "art-joint-anim"]
+  ],
+
+  "(method 77 roboguard-level)": [
+    [7, "v1", "knocked-type"],
+    [30, "v1", "art-joint-anim"],
+    [58, "v1", "art-joint-anim"]
+  ],
+
+  "(code laser-attack roboguard-level)": [
+    [14, "v1", "art-joint-anim"]
+  ],
+
+  "(exit attack roboguard-level)": [
+    [6, "v1", "collide-shape-prim-group"],
+    [8, "v1", "collide-shape-prim-group"],
+    [10, "v1", "collide-shape-prim-group"],
+    [12, "v1", "collide-shape-prim-group"]
+  ],
+
+  "(code attack roboguard-level)": [
+    [43, "v1", "art-joint-anim"],
+    [105, "v1", "art-joint-anim"],
+    [157, "v1", "art-joint-anim"],
+    [228, "v1", "art-joint-anim"]
+  ],
+
+  "(enter attack roboguard-level)": [
+    [[3, 13], "v1", "collide-shape-prim-group"]
+  ],
+
+  "(post hostile roboguard-level)": [
+    [14, "a0", "process-focusable"]
+  ],
+
+  "(code ambush roboguard-level)": [
+    [21, "a0", "process-focusable"],
+    [62, "v1", "art-joint-anim"]
+  ]
 }

@@ -1582,7 +1582,7 @@
     ["L482", "uint64", true],
     ["L471", "uint64", true]
   ],
-  "roboguard-level": [
+  /*"roboguard-level": [
     ["L196", "uint64", true],
     ["L177", "uint64", true],
     ["L179", "uint64", true],
@@ -1591,7 +1591,7 @@
     ["L178", "uint64", true],
     ["L180", "uint64", true],
     ["L181", "uint64", true]
-  ],
+  ],*/
   "bombbot": [
     ["L289", "attack-info"],
     ["L266", "quaternion"],
@@ -1913,5 +1913,12 @@
     ["L337", "vector"]
   ],
   "bigmap": [["L127", "(pointer int64)", 16]],
-  "generic-merc": [["L172", "(inline-array invinitdata)", 8]]
+  "generic-merc": [["L172", "(inline-array invinitdata)", 8]],
+
+  "roboguard-level": [
+    ["L138", "uint64", true],
+    ["L114", "attack-info"],
+    ["L129", "uint64", true],
+    ["L128", "uint64", true]
+  ]
 }

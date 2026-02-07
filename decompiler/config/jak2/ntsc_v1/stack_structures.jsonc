@@ -1839,13 +1839,13 @@
   "(post idle cas-conveyor-switch)": [[592, "vector"]],
   "(post idle cas-electric-fence)": [[688, "vector"]],
   "(method 11 cas-switch)": [[32, "vector"]],
-  "(trans roll-hostile roboguard-level)": [[80, "vector"]],
-  "(code roll-hostile roboguard-level)": [[16, "vector"]],
-  "(method 74 roboguard-level)": [
+  //"(trans roll-hostile roboguard-level)": [[80, "vector"]],
+  //"(code roll-hostile roboguard-level)": [[16, "vector"]],
+  /*"(method 74 roboguard-level)": [
     [16, "vector"],
     [32, "vector"]
-  ],
-  "(method 76 roboguard-level)": [[32, "vector"]],
+  ],*/
+  //"(method 76 roboguard-level)": [[32, "vector"]],
   "(code spawning cas-robot-door)": [[16, "enemy-init-by-other-params"]],
   "(method 179 bombbot)": [
     [592, "vector"],
