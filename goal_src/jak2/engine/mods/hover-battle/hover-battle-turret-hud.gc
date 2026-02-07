@@ -1,0 +1,54 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+#| HUD types for hover-battle turrets.
+
+  Define here the HUD-related types used by the turret hover battles,
+  such as the turret crosshair/health meter and enemy counter displays. 
+
+  To define a custom crosshair/health HUD, use the following example:
+
+    (deftype hud-battle-turret-health (hud-turret-health)
+      ()
+      )
+
+    (defmethod init-callback ((this hud-battle-turret-health))
+      (set! (-> this level) (level-get *level* 'your-custom-level-name))
+      (init-turret-hud this "drillmid-minimap")
+      ((method-of-type hud init-callback) this)
+      0
+      (none)
+      )
+  
+  Also, in your custom level `.jsonc` file, make sure to include the turret
+  HUD textures inside the `"textures"` section. The first entry in this list 
+  must be the tpage name `"drillmid-minimap"`, followed by all the required 
+  textures for the turret crosshair/health HUD:
+ 
+    "drill-turret-hud-arrow-01", 
+    "drill-turret-hud-centre-01",
+    "drill-turret-hud-gun-arrow-01",
+    "drill-turret-hud-health-01",
+    "drill-turret-hud-health-02",
+    "drill-turret-hud-health-03",
+    "drill-turret-hud-health-04",
+    "drill-turret-hud-heat-ring-01",
+    "drill-turret-hud-heat-ring-02",
+    "drill-turret-hud-heat-ring-03",
+    "drill-turret-hud-heat-ring-04",
+    "drill-turret-hud-ring-01"
+
+|#
+
+;; the type used for drawing turret's crosshair/health HUD in custom levels
+(deftype hud-battle-turret-health (hud-turret-health)
+  ()
+  )
+
+(defmethod init-callback ((this hud-battle-turret-health))
+  (set! (-> this level) (level-get *level* 'hover-test))
+  (init-turret-hud this "drillmid-minimap")
+  ((method-of-type hud init-callback) this)
+  0
+  (none)
+  )

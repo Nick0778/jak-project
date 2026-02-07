@@ -1,7 +1,7 @@
 ;;-*-Lisp-*-
 (in-package goal)
 
-;; basically this will allocate the custom nav-network in memory while the level is being loaded
+;; These functions will allocate the custom nav-network in memory while the level is being loaded
 
 (declare-type nav-network basic)
 (define-extern *nav-network* nav-network)
@@ -25,6 +25,7 @@
   (none)
   )
 
+#|
 ;; added - the custom hud for wasp counting used in the example custom hover battle.
 ;; at the moment this uses "hud-plasmite" as a placeholder as we can't add new textures yet.
 (defmethod draw ((this hud-wasp))
@@ -63,3 +64,4 @@
   0
   (none)
   )
+|#

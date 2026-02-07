@@ -2,8 +2,9 @@
 ;; We use the convention of having a longer DGO name for levels without precomputed visibility.
 
 ;; the actual file name still needs to be 8.3
-("HRT.DGO"
- ("hover-formation-h.o"
+("HVT.DGO"
+ (
+  "hover-formation-h.o"
   "hover-nav-control-h.o"
   "hover-enemy-h.o"
   "hover-nav-network.o"
@@ -14,12 +15,16 @@
   "hover-nav-edit.o"
   "wasp-part.o"
   "wasp.o"
+  "crimson-guard-hover.o"
   "target-turret-shot.o"
   "target-turret.o"
-  "drill-turret.o"
-  "hover-test-setup.o" ;; custom code wich handles with some important stuff in this example.
-  "drill-turret-ext-ag.go"
+  "hover-battle-turret-h.o"
+  "hover-battle-turret-hud.o"
+  "hover-battle-turret.o"
+  "hover-test-setup.o"
   "jak-turret+0-ag.go"
+  "drill-turret-ext-ag.go"
   "wasp-ag.go"
+  "crimson-guard-hover-ag.go"
   "hover-test.go"
   ))

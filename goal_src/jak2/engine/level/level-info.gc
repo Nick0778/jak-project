@@ -15811,18 +15811,17 @@
   (cons! *level-load-list* 'test-zone)
   )
 
-;; this level is loaded as a borrow level in Strip Mine after beating Kor
 (define hover-test
   (new 'static 'level-load-info
-    :index #x9f
+    :index #x9e
     :name 'hover-test
     :visname 'hover-test-vis
-    :nickname 'hrt
+    :nickname 'hvt
     :dbname 'hover-test
     :taskname 'default
-    :packages '(hoverp turretp)
-    :memory-mode (load-buffer-mode borrow)
-    :music-bank #f
+    :packages '()
+    ;:memory-mode (load-buffer-mode large)
+    :music-bank 'strip
     :ambient-sounds '()
     :mood-func 'update-mood-default
     :mood-init #f
@@ -15830,18 +15829,41 @@
     :sky #t
     :use-camera-other #f
     :part-engine-max 16
-    :continues '()
+    :continues '((new 'static 'continue-point
+        :name "hover-test-start"
+        :level 'hover-test
+        :trans (new 'static 'vector :x (meters 21.05) :y 0.0 :z (meters -0.49) :w 1.0)
+        :quat (new 'static 'vector :y 0.65 :w -0.75)
+        :camera-trans (new 'static 'vector :x (meters -6.9712) :y (meters 87.8886) :z 0.0 :w 1.0)
+        :camera-rot (new 'static 'inline-array vector3s 3
+          (new 'static 'vector3s :data (new 'static 'array float 3 0.0368 0.0 0.9993))
+          (new 'static 'vector3s :data (new 'static 'array float 3 -0.1212 0.9926 0.0044))
+          (new 'static 'vector3s :data (new 'static 'array float 3 -0.9919 -0.1213  0.0365))
+          )
+        :on-goto #f
+        :vis-nick #f
+        :want (new 'static 'inline-array level-buffer-state 6
+          (new 'static 'level-buffer-state :name 'hover-test :display? 'display :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
+          )
+        :want-sound (new 'static 'array symbol 3 'drill1 'drill3 'drill6)
+        )
+      )
     :tasks '()
     :priority 100
     :load-commands '()
     :alt-load-commands '()
     :bsp-mask #xffffffffffffffff
     :buttom-height (meters -10000000)
-    :run-packages '("common")
+    :run-packages '()
     :wait-for-load #t
-    :login-func 'hover-test-login ;; call the function responsible to allocate custom nav-network in memory while the level is being loaded.
-    :activate-func 'hover-test-activate ;; call the function responsible to allocate custom nav-network in memory while the level is being loaded.
-    :deactivate-func 'hover-test-deactivate ;; call the function responsible to remove custom nav-network from memory.
+    :login-func 'hover-test-login
+    :activate-func 'hover-test-activate
+    :deactivate-func 'hover-test-deactivate
     :kill-func #f
     :borrow-level (new 'static 'array symbol 2 #f #f)
     :borrow-display? (new 'static 'array symbol 2 #f #f)
@@ -15865,7 +15887,7 @@
     :max-rain 1.0
     :fog-mult 1.0
     :ocean-alpha 1.0
-    :extra-sound-bank '((strip1 drill3) (strip3 drill1))
+    :extra-sound-bank #f
     )
   )
 

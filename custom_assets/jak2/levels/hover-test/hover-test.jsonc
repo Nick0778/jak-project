@@ -5,7 +5,7 @@
   // The file name, should be upper case and 8 characters or less.
   "iso_name": "HOVERTEST",
   // The nickname, should be exactly 3 characters
-  "nickname": "hrt", // 3 char name, all lowercase
+  "nickname": "hvt", // 3 char name, all lowercase
   // Background mesh file.
   // Must have vertex colors. Use the blender cycles renderer, bake, diffuse, uncheck color,
   // and bake to vertex colors. For now, only the first vertex color group is used, so make sure you
@@ -49,232 +49,264 @@
   // adds a 'type' tag (using the "symbol" and "string" lump types works the same way):
   // "spawn-types": ["type", "spyder", "juicer"]
 
-   // The base actor id for your custom level. If you have multiple levels, this should be unique!
-   "base_id": 100,
+  // The base actor id for your custom level. If you have multiple levels, this should be unique!
+  "base_id": 100,
 
   // All art groups you want to use in your custom level. Will add their models and corresponding textures to the FR3 file.
   // Removed so that the release builds don't have to double-decompile the game
-  "art_groups": ["drill-turret-ext-ag", "jak-turret+0-ag", "wasp-ag"],
+  "art_groups": ["jak-turret+0-ag", "drill-turret-ext-ag", "wasp-ag", "crimson-guard-hover-ag"],
 
-   // Any textures you want to include in your custom level.
-   // This is mainly useful for textures which are not in the common level files and have no art group associated with them.
-   // To get a list of all the textures, you can extract all of the game's textures
-   // by setting "save_texture_pngs" to true in the decompiler config.
-   "textures": ["drill-turret-hud-ring-01",
-                "drill-turret-hud-health-04",
-                "drill-turret-hud-health-03",
-                "drill-turret-hud-health-02",
-                "drill-turret-hud-health-01",
-                "hud-transparent-01",
-                "drill-turret-hud-heat-ring-02",
-                "drill-turret-hud-heat-ring-04",
-                "drill-turret-hud-heat-ring-03",
-                "drill-turret-hud-heat-ring-01",
-                "drill-turret-hud-arrow-01",
-                "drill-turret-hud-centre-01"], // for some reason turret's HUD textures don't work by adding them in there...
+  // If you have any custom models in the "custom_assets/jak2/models/custom_levels" folder that you want to use in your level, add them to this list.
+  // Note: Like with art groups, these should also be added to your level's .gd file.
+  //"custom_models": ["test-actor"],
 
-  "actors" : [
+  // Any textures you want to include in your custom level.
+  // This is mainly useful for textures which are not in the common level files and have no art group associated with them.
+  // To get a list of all the textures, you can extract all of the game's textures
+  // by setting "save_texture_pngs" to true in the decompiler config.
+  // The format is ["tpage-name", "texture-name1", "texture-name2", ...].
+  // If you want all textures from a tpage, you can just do ["tpage-name"].
+  "textures": ["drillmid-minimap", 
+    "drill-turret-hud-arrow-01", 
+    "drill-turret-hud-centre-01",
+    "drill-turret-hud-gun-arrow-01",
+    "drill-turret-hud-health-01",
+    "drill-turret-hud-health-02",
+    "drill-turret-hud-health-03",
+    "drill-turret-hud-health-04",
+    "drill-turret-hud-heat-ring-01",
+    "drill-turret-hud-heat-ring-02",
+    "drill-turret-hud-heat-ring-03",
+    "drill-turret-hud-heat-ring-04",
+    "drill-turret-hud-ring-01",
+    "hud-gruntegg-01",
+    "hud-krimsonflyer-01"
+  ],
+
+  "actors": [
     {
       "aid": 10000, // the ID of this actor
-      "trans": [2464.40, 70.72, 38.25], // translation
+      "trans": [-75.04, -12.54, -0.16], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
       "kill_mask": 0,
       "quat": [0, 0, 0, 1], // quaternion
-      "bsphere": [2464.40, 70.72, 38.25, 10], // bounding sphere
+      "bsphere": [-75.04, -12.54, -0.16, 10], // bounding sphere
       "lump": {
-        "name": "wasp-1",
+        "name": "test-wasp-1",
         "vis-dist": ["meters", 200.0],
-        "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
+        "alt-actor": ["uint32", 200000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner ambush)"], // some required options to make wasp work correctly with hover battle
+        "intro": ["vector4m",
+          [-75.04, -12.54, -0.16, 1.0],
+          [-73.04, 2.37, -0.14, 1.0],
+          [-63.54, 12.24, -0.13, 1.0],
+          [-48.80, 12.24, -0.12, 1.0]
+        ],
+        "intro-k": ["float",
+          0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0
+          ]
       }
     },
-
     {
       "aid": 20000, // the ID of this actor
-      "trans": [2370.88, 101.97, -110.67], // translation
+      "trans": [-66.69, -12.54, -5.79], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
       "kill_mask": 0,
       "quat": [0, 0, 0, 1], // quaternion
-      "bsphere": [2370.88, 101.97, -110.67, 10], // bounding sphere
+      "bsphere": [-66.69, -12.54, -5.79, 10], // bounding sphere
       "lump": {
-        "name": "wasp-2",
+        "name": "test-wasp-2",
         "vis-dist": ["meters", 200.0],
-        "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
+        "alt-actor": ["uint32", 200000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner ambush)"], // some required options to make wasp work correctly with hover battle
+        "intro": ["vector4m",
+          [-66.69, -12.54, -5.79, 1.0],
+          [-66.69, -1.54, -5.79, 1.0],
+          [-51.46, 8.83, -4.87, 1.0],
+          [-42.84, 9.70, -3.58, 1.0]
+        ],
+        "intro-k": ["float",
+          0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0
+          ]
       }
     },
-
     {
       "aid": 30000, // the ID of this actor
-      "trans": [2406.08, 80.72, 5.27], // translation
+      "trans": [-67.36, -12.54, 6.06], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
       "kill_mask": 0,
       "quat": [0, 0, 0, 1], // quaternion
-      "bsphere": [2406.08, 80.72, 5.27, 10], // bounding sphere
+      "bsphere": [-67.36, -12.54, 6.06, 10], // bounding sphere
       "lump": {
-        "name": "wasp-3",
+        "name": "test-wasp-3",
         "vis-dist": ["meters", 200.0],
-        "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
+        "alt-actor": ["uint32", 200000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner ambush)"], // some required options to make wasp work correctly with hover battle
+        "intro": ["vector4m",
+          [-67.36, -12.54, 6.06, 1.0],
+          [-66.69, -0.75, 6.16, 1.0],
+          [-57.41, 7.36, 5.33, 1.0],
+          [-46.20, 7.36, 3.04, 1.0]
+        ],
+        "intro-k": ["float",
+          0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0
+          ]
       }
     },
-
     {
       "aid": 40000, // the ID of this actor
-      "trans": [2478.03, 77.62, 40.81], // translation
+      "trans": [-35.52, 14.84, -33.73], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
       "kill_mask": 0,
       "quat": [0, 0, 0, 1], // quaternion
-      "bsphere": [2478.03, 77.62, 40.81, 10], // bounding sphere
+      "bsphere": [-35.52, 14.84, -33.73, 10], // bounding sphere
       "lump": {
-        "name": "wasp-4",
+        "name": "test-wasp-4",
         "vis-dist": ["meters", 200.0],
-        "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
+        "alt-actor": ["uint32", 200000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner ambush)"], // some required options to make wasp work correctly with hover battle
+        "intro": ["vector4m",
+          [-35.52, 14.84, -33.73, 1.0],
+          [-43.51, 10.24, -27.47, 1.0],
+          [-42.48, 10.24, -15.21, 1.0],
+          [-33.03, 13.24, -5.97, 1.0]
+        ],
+        "intro-k": ["float",
+          0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0
+          ]
       }
     },
-
     {
       "aid": 50000, // the ID of this actor
-      "trans": [2350.00, 124.74, -69.20], // translation
+      "trans": [-30.09, 14.45, 39.00], // translation
       "etype": "wasp",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
       "kill_mask": 0,
       "quat": [0, 0, 0, 1], // quaternion
-      "bsphere": [2350.00, 124.74, -69.20, 10], // bounding sphere
+      "bsphere": [-30.09, 14.45, 39.00, 10], // bounding sphere
       "lump": {
-        "name": "wasp-5",
+        "name": "test-wasp-5",
         "vis-dist": ["meters", 200.0],
-        "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
+        "alt-actor": ["uint32", 200000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner ambush)"], // some required options to make wasp work correctly with hover battle
+        "intro": ["vector4m",
+          [-30.09, 14.45, 39.00, 1.0],
+          [-36.79, 17.11, 25.56, 1.0],
+          [-45.43, 17.11, 9.73, 1.0],
+          [-38.69, 13.36, 4.72, 1.0]
+        ],
+        "intro-k": ["float",
+          0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0
+          ]
       }
     },
-
     {
       "aid": 60000, // the ID of this actor
-      "trans": [2406.92, 82.99, -0.34], // translation
-      "etype": "wasp",  // actor type
+      "trans": [-87.36, 20.08, -2.94], // translation
+      "etype": "crimson-guard-hover",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
       "kill_mask": 0,
       "quat": [0, 0, 0, 1], // quaternion
-      "bsphere": [2406.92, 82.99, -0.34, 10], // bounding sphere
+      "bsphere": [-87.36, 20.08, -2.94, 10], // bounding sphere
       "lump": {
-        "name": "wasp-6",
+        "name": "test-crimson-guard-hover-1",
         "vis-dist": ["meters", 200.0],
-        "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
+        "alt-actor": ["uint32", 200000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner ambush)"], // some required options to make wasp work correctly with hover battle
+        "intro": ["vector4m",
+          [-87.36, 20.08, -2.94, 1.0],
+          [-74.67, 20.08, -3.59, 1.0],
+          [-59.91, 10.20, -3.85, 1.0],
+          [-41.84, 10.20, -3.45, 1.0]
+        ],
+        "intro-k": ["float",
+          0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0
+          ]
       }
     },
-
     {
-      "aid": 70000, // the ID of this actor
-      "trans": [2493.56, 95.74, -129.08], // translation
-      "etype": "wasp",  // actor type
+      "aid": 7000, // the ID of this actor
+      "trans": [-99.70, 17.61, 3.40], // translation
+      "etype": "crimson-guard-hover",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
       "kill_mask": 0,
       "quat": [0, 0, 0, 1], // quaternion
-      "bsphere": [2493.56, 95.74, -129.08, 10], // bounding sphere
+      "bsphere": [-99.70, 17.61, 3.40, 10], // bounding sphere
       "lump": {
-        "name": "wasp-7",
+        "name": "test-crimson-guard-hover-2",
         "vis-dist": ["meters", 200.0],
-        "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
+        "alt-actor": ["uint32", 200000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner ambush)"], // some required options to make wasp work correctly with hover battle
+        "intro": ["vector4m",
+          [-99.70, 17.61, 3.40, 1.0],
+          [-69.68, 17.61, 1.93, 1.0],
+          [-44.05, 9.99, 0.71, 1.0],
+          [-36.83, 9.99, 0.36, 1.0]
+        ],
+        "intro-k": ["float",
+          0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0
+          ]
       }
     },
-
     {
-      "aid": 80000, // the ID of this actor
-      "trans": [2557.83, 75.99, 45.89], // translation
-      "etype": "wasp",  // actor type
+      "aid": 8000, // the ID of this actor
+      "trans": [-87.31, 20.08, 10.33], // translation
+      "etype": "crimson-guard-hover",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
       "kill_mask": 0,
       "quat": [0, 0, 0, 1], // quaternion
-      "bsphere": [2557.83, 75.99, 45.89, 10], // bounding sphere
+      "bsphere": [-87.31, 20.08, 10.33, 10], // bounding sphere
       "lump": {
-        "name": "wasp-8",
+        "name": "test-crimson-guard-hover-3",
         "vis-dist": ["meters", 200.0],
-        "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
+        "alt-actor": ["uint32", 200000], // the formation actor related with this actor - (hover-formation-1)
         "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
+        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner ambush)"], // some required options to make wasp work correctly with hover battle
+        "intro": ["vector4m",
+          [-87.31, 20.08, 10.33, 1.0],
+          [-77.62, 20.08, 8.25, 1.0],
+          [-58.65, 9.24, 4.63, 1.0],
+          [-43.35, 9.24, 3.05, 1.0]
+        ],
+        "intro-k": ["float",
+          0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0
+          ]
       }
     },
-
-    {
-      "aid": 90000, // the ID of this actor
-      "trans": [2535.10, 158.23, -76.32], // translation
-      "etype": "wasp",  // actor type
-      "game_task": "(game-task none)", // associated game task (for powercells, etc)
-      "kill_mask": 0,
-      "quat": [0, 0, 0, 1], // quaternion
-      "bsphere": [2535.10, 158.23, -76.32, 10], // bounding sphere
-      "lump": {
-        "name": "wasp-9",
-        "vis-dist": ["meters", 200.0],
-        "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
-        "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle
-      }
-    },
-
     {
       "aid": 100000, // the ID of this actor
-      "trans": [2526.53, 156.85, -79.39], // translation
-      "etype": "wasp",  // actor type
-      "game_task": "(game-task none)", // associated game task (for powercells, etc)
-      "kill_mask": 0,
+      "trans": [-19.87, 7.45, -0.73], // translation
+      "etype": "hover-battle-turret", // actor type
+      "game_task": 0, // associated game task (for powercells, etc)
       "quat": [0, 0, 0, 1], // quaternion
-      "bsphere": [2526.53, 156.85, -79.39, 10], // bounding sphere
+      "bsphere": [-19.87, 7.45, -0.73, 10], // bounding sphere
       "lump": {
-        "name": "wasp-10",
-        "vis-dist": ["meters", 200.0],
-        "alt-actor": ["uint32", 300000], // the formation actor related with this actor - (hover-formation-1)
-        "options": ["uint32", 256],
-        "enemy-options": ["enum-uint32", "(enemy-option multi-focus spawner)"] // some required options to make wasp work correctly with hover battle 
+        "name": "test-turret-1",
+        "rotoffset": ["degrees", -90.0]
       }
     },
 
     {
       "aid": 200000, // the ID of this actor
-      "trans": [2568.04, 124.99, -100.85], // translation
-      "etype": "turret",  // actor type
-      "game_task": 0, // associated game task (for powercells, etc)
-      "kill_mask": 0,
-      "quat": [0, 0, 0, 1], // quaternion
-      "bsphere": [2568.04, 124.99, -100.85, 10], // bounding sphere
-      "lump": {
-        "name": "strip-turret-1",
-        "extra-id": ["int32", 6], // initialize the required hover battle from the turret - check out 'turret-init!' method from 'drill-turret'     
-        "rotoffset": ["degrees", -46.0],
-        "formation-actor": ["uint32", 300000], // the desired formation actor for this hover battle - (hover-formation-1)
-        "first-wave": ["uint32", 30000, 60000], // (wasp-3, wasp-6)
-        "second-wave": ["uint32", 10000, 20000, 30000], // (wasp-1, wasp-2, wasp-3)
-        "third-wave": ["uint32", 50000, 40000], // (wasp-5, wasp-4)
-        "fourth-wave": ["uint32", 70000, 80000, 30000, 60000], // (wasp-7, wasp-8, wasp-3, wasp-6)
-        "fifth-wave": ["uint32", 90000, 100000] // (wasp-9, wasp-10)
-      }
-    },
-
-    {
-      "aid": 300000, // the ID of this actor
-      "trans": [2568.04, 124.99, -100.85], // translation
+      "trans": [-19.87, 7.45, -0.73], // translation
       "etype": "hover-formation",  // actor type
       "game_task": "(game-task none)", // associated game task (for powercells, etc)
       "quat": [0, 0, 0, 1], // quaternion
-      "bsphere": [2568.04, 124.99, -100.85, 10], // bounding sphere
+      "bsphere": [-19.87, 7.45, -0.73, 10], // bounding sphere
       "lump": {
-        "name": "hover-formation-1",
-        "alt-actor": ["uint32", 200000] // this should reference the actor that will setup the hover batlle, in this case the turrets - (strip-turret-1)
+        "name": "test-hover-formation-1",
+        "alt-actor": ["uint32", 100000] // this should reference the actor that will setup the hover batlle, in this case the turrets - (test-turret-1)
       }
     }
   ]

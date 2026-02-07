@@ -1,0 +1,43 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+#|
+  Here is where you define the arrays hover-battle-command for each hover battle.
+  Each entry defines a specific command executed by the hover-battle-manager
+  during the spawning sequence of a hover battle.
+
+  The 'command' field determines the action to execute (typically 'spawn'),
+  while the 'wave' field selects which enemy group (wave-group) to spawn.
+  The 'time' field specifies the delay before the next command is processed,
+  and 'alive-count' defines how many enemies must remain alive before
+  advancing to the next command in the sequence.
+
+  NOTE:
+    :wave #x0 or omitting the :wave field -> first-wave-group
+    :wave #x1 -> second-wave-group
+    :wave #x2 -> third-wave-group
+    :wave #x3 -> fourth-wave-group
+    :wave #x4 -> fifth-wave-group
+
+  Example:
+    (define *test-turret-1-battle*
+      (new 'static 'boxed-array :type hover-battle-command
+        (new 'static 'hover-battle-command :command 'spawn :time (seconds 2) :alive-count 1)
+        (new 'static 'hover-battle-command :command 'spawn :wave #x1 :time (seconds 2) :alive-count 2)
+        (new 'static 'hover-battle-command :command 'spawn :wave #x2 :time (seconds 2) :alive-count 1)
+        (new 'static 'hover-battle-command :command 'spawn :wave #x3 :time (seconds 2))
+        )
+      )
+|#
+
+(define *test-turret-1-battle*
+  (new 'static 'boxed-array :type hover-battle-command
+    (new 'static 'hover-battle-command :command 'spawn :time (seconds 2) :alive-count 1)
+    (new 'static 'hover-battle-command :command 'spawn :wave #x1 :time (seconds 2))
+    (new 'static 'hover-battle-command :command 'spawn :wave #x2 :time (seconds 2))
+    (new 'static 'hover-battle-command :command 'spawn :time (seconds 2) :alive-count 1)
+    (new 'static 'hover-battle-command :command 'spawn :time (seconds 2) :alive-count 1)
+    (new 'static 'hover-battle-command :command 'spawn :wave #x1 :time (seconds 2))
+    (new 'static 'hover-battle-command :command 'spawn :wave #x2 :time (seconds 3))
+    )
+  )

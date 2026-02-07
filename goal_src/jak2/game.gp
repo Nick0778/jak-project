@@ -308,9 +308,14 @@
 ;; to also generate a collide-mesh, add :gen-mesh #t
 (build-actor "test-actor" :force-run #t :gen-mesh #t)
 
+(goal-src "engine/mods/hover-battle/hover-battle-turret-h.gc" "process-focusable") ;; hover-battle-command array definitions code
+(goal-src "engine/mods/hover-battle/hover-battle-turret-hud.gc" "process-focusable") ;; hover-battle-turret HUD types definitions code
+(goal-src "engine/mods/hover-battle/hover-battle-turret.gc" "process-focusable") ;; custom turret type for using with custom level hover battles
+
+;; hover battle test level
 (build-custom-level "hover-test")
-;; the DGO file
-(custom-level-cgo "HRT.DGO" "hover-test/hover-test.gd")
+(goal-src "engine/mods/hover-battle/hover-test/hover-test-setup.gc" "process-focusable")
+(custom-level-cgo "HVT.DGO" "hover-test/hover-test.gd")
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; ANIMATIONS

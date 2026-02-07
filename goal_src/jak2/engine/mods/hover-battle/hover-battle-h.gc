@@ -1,0 +1,63 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+(deftype hover-enemy-actor (structure)
+  ((name   string)
+    )
+  )
+
+(deftype hover-battle-data (structure)
+  ((turret-name        string)
+    (hover-battle-id   int32)
+    (formation-name    string)
+    (first-wave-group  (array hover-enemy-actor))
+    (second-wave-group (array hover-enemy-actor))
+    (third-wave-group  (array hover-enemy-actor))
+    (fourth-wave-group (array hover-enemy-actor))
+    (fifth-wave-group  (array hover-enemy-actor))
+    )
+  )
+
+(defmacro static-hover-battle-data (&key turret-name
+                                 &key hover-battle-id
+                                 &key formation-name
+                                 &key (first-wave-group (new 'static 'boxed-array :type hover-enemy-actor))
+                                 &key (second-wave-group (new 'static 'boxed-array :type hover-enemy-actor))
+                                 &key (third-wave-group (new 'static 'boxed-array :type hover-enemy-actor))
+                                 &key (fourth-wave-group (new 'static 'boxed-array :type hover-enemy-actor))
+                                 &key (fifth-wave-group (new 'static 'boxed-array :type hover-enemy-actor)))
+  `(new 'static 'hover-battle-data
+     :turret-name ,turret-name
+     :hover-battle-id ,hover-battle-id
+     :formation-name ,formation-name
+     :first-wave-group ,first-wave-group
+     :second-wave-group ,second-wave-group
+     :third-wave-group ,third-wave-group
+     :fourth-wave-group ,fourth-wave-group
+     :fifth-wave-group ,fifth-wave-group
+     )
+  )
+
+(define *hover-battle-data* (new 'static 'boxed-array :type hover-battle-data
+    (static-hover-battle-data
+      :turret-name "test-turret-1"
+      :hover-battle-id 0
+      :formation-name "test-hover-formation-1"
+      :first-wave-group (new 'static 'boxed-array :type hover-enemy-actor
+        (new 'static 'hover-enemy-actor :name "test-wasp-1")
+        (new 'static 'hover-enemy-actor :name "test-wasp-2")
+        (new 'static 'hover-enemy-actor :name "test-wasp-3")
+        )
+      :second-wave-group (new 'static 'boxed-array :type hover-enemy-actor
+        (new 'static 'hover-enemy-actor :name "test-wasp-4")
+        (new 'static 'hover-enemy-actor :name "test-wasp-5")
+        )
+      :third-wave-group (new 'static 'boxed-array :type hover-enemy-actor
+        (new 'static 'hover-enemy-actor :name "test-crimson-guard-hover-1")
+        (new 'static 'hover-enemy-actor :name "test-crimson-guard-hover-2")
+        (new 'static 'hover-enemy-actor :name "test-crimson-guard-hover-3")
+        )
+      )
+    )
+  )
+  
