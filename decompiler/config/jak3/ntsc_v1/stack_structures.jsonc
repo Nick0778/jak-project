@@ -2519,5 +2519,19 @@
     [32, "vector"],
     [48, "vector"],
     [64, "vector"]
+  ],
+
+  "(method 26 scoutbot-shot)": [[32, "vector"]],
+
+  "(trans hostile scoutbot)": [[32, "vector"]],
+
+  "(method 185 scoutbot)": [
+    [48, "vector"],
+    [96, "matrix"],
+    [160, "vector"]
+  ],
+
+  "(method 153 scoutbot)": [
+    [32, "vector"]
   ]
 }

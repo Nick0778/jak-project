@@ -11343,5 +11343,40 @@
     [[81, 99], "a0", "(inline-array vector4w)"],
     [[165, 190], "a0", "(inline-array vector4w)"]
   ],
-  "(event idle progress)": [[[10, 80], "v1", "mc-status-code"]]
+  "(event idle progress)": [[[10, 80], "v1", "mc-status-code"]],
+
+  "cshape-reaction-scoutbot-shot": [
+    [15, "v1", "scoutbot-shot"]
+  ],
+
+  "sparticle-scoutbot-track-gun-joint": [
+    [14, "v1", "gun-info"],
+    [18, "v1", "gun-info"],
+    [22, "v1", "gun-info"]
+  ],
+
+  "(trans hostile scoutbot)": [
+    [127, "a0", "process-focusable"]
+  ],
+
+  "(code close-attack scoutbot)": [
+    [49, "a0", "process-focusable"]
+  ],
+
+  "(code attack-shoot scoutbot)": [
+    [14, "v1", "art-joint-anim"],
+    [86, "v1", "art-joint-anim"]
+  ],
+
+  "(code ambush scoutbot)": [
+    [18, "v1", "art-joint-anim"]
+  ],
+
+  "(method 185 scoutbot)": [
+    [85, "v1", "matrix"]
+  ],
+
+  "(method 186 scoutbot)": [
+    [4, "v1", "collide-shape-prim-group"]
+  ]
 }
