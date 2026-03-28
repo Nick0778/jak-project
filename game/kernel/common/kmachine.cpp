@@ -37,8 +37,8 @@ namespace MiniAudioLib {
 #include "common/log/log.h"
 #include "common/symbols.h"
 #include "common/util/FileUtil.h"
-#include "common/util/FontUtils.h"
 #include "common/util/Timer.h"
+#include "common/util/font/font_utils.h"
 #include "common/util/string_util.h"
 
 #include "game/external/discord.h"
@@ -641,6 +641,16 @@ s32 kwrite(u64 fs, u64 buffer, s32 size) {
     }
   }
   return result;
+}
+
+s32 kmkdir(u64 name) {
+  char acStack_90[128];
+  if (Ptr<String>(name)->data()[4] == '/') {  // start from the fourth character?
+    sprintf(acStack_90, "%s", Ptr<String>(name)->data() + 5);
+  } else {
+    sprintf(acStack_90, "host:%s", Ptr<String>(name)->data() + 4);
+  }
+  return ee::sceMkDir(acStack_90, 0x1fd);
 }
 
 /*!
@@ -1255,6 +1265,11 @@ void pc_set_letterbox(int w, int h) {
   Gfx::g_global_settings.lbox_h = h;
 }
 
+void pc_set_brightness_contrast(s32 color, s32 alpha) {
+  Gfx::g_global_settings.brightness_contrast_color = color;
+  Gfx::g_global_settings.brightness_contrast_alpha = alpha;
+}
+
 void pc_renderer_tree_set_lod(Gfx::RendererTreeType tree, int lod) {
   switch (tree) {
     case Gfx::RendererTreeType::TFRAG3:
@@ -1447,6 +1462,7 @@ void init_common_pc_port_functions(
   make_func_symbol_func("pc-set-msaa", (void*)pc_set_msaa);
   make_func_symbol_func("pc-set-frame-rate", (void*)pc_set_frame_rate);
   make_func_symbol_func("pc-set-game-resolution", (void*)pc_set_game_resolution);
+  make_func_symbol_func("pc-set-brightness-contrast", (void*)pc_set_brightness_contrast);
   make_func_symbol_func("pc-set-letterbox", (void*)pc_set_letterbox);
   make_func_symbol_func("pc-renderer-tree-set-lod", (void*)pc_renderer_tree_set_lod);
   make_func_symbol_func("pc-set-collision-mode", (void*)Gfx::CollisionRendererSetMode);
