@@ -121,7 +121,6 @@
    (jammed-starting-time      time-frame)
    (spawners                  battle-spawner-array)
    (allies                    battle-ally-array)
-   (alt-actor-max-count       int32)
    )
   (:state-methods
     idle
@@ -159,7 +158,6 @@
     (beaten? (_type_) symbol)
     (spawner-active? (_type_ battle-spawner symbol) symbol)
     (spawner-active-count (_type_) int)
-    (handle-custom-level-entities (_type_) none)
     )
   )
 
@@ -495,36 +493,6 @@
                       :desired-alive-count #x6
                       :spawner-collide-with (collide-spec enemy hit-by-others-list)
                       )
-                    (new 'static 'battle-info
-                      :id 23
-                      :notice-spec #x2
-                      :notice-distance 163840.0
-                      :dont-spawn-initial-until-notice? #f
-                      :play-battle-music #f
-                      :min-battle-spawn-delay #x12c
-                      :max-battle-spawn-delay #x4b0
-                      :max-spawner-notice-attack-delay #x78
-                      :spawner-blocked-by-player-xz 24576.0
-                      :pick-spawner-max-dist 163840.0
-                      :max-count #x6
-                      :desired-alive-count #x3
-                      :spawner-collide-with (collide-spec enemy hit-by-others-list)
-                      )
-                    (new 'static 'battle-info
-                      :id 24
-                      :notice-spec #x2
-                      :notice-distance 122880.0
-                      :dont-spawn-initial-until-notice? #f
-                      :play-battle-music #f
-                      :min-battle-spawn-delay #x96
-                      :max-battle-spawn-delay #x12c
-                      :max-spawner-notice-attack-delay #x78
-                      :spawner-blocked-by-player-xz 24576.0
-                      :pick-spawner-max-dist 163840.0
-                      :max-count #x22
-                      :desired-alive-count #x8
-                      :spawner-collide-with (collide-spec enemy hit-by-others-list)
-                      )
                     )
         )
 
@@ -603,7 +571,6 @@
   )
 
 (defmethod draw-battle-marks ((this battle))
-  (local-vars (sv-16 string) (sv-32 string))
   (let ((s4-0 (-> this root trans))
         (s5-0 (the-as int (-> this max-count)))
         )
@@ -645,13 +612,7 @@
             (s2-1 #t)
             (s1-1 577)
             )
-        (let ((s0-1 format))
-          (set! sv-16 (clear *temp-string*))
-          (set! sv-32 "~%spawner~%~S")
-          (let ((a2-5 (res-lump-struct (-> s4-1 entity) 'name structure)))
-            (s0-1 sv-16 sv-32 a2-5)
-            )
-          )
+        (format (clear *temp-string*) "~%spawner~%~S" (res-lump-struct (-> s4-1 entity) 'name structure))
         (s3-1
           s2-1
           (the-as bucket-id s1-1)
@@ -680,7 +641,7 @@
       (vector-copy! gp-0 (-> arg0 attack-pos))
       (set! (-> gp-0 w) f0-0)
       (let ((s5-0 (-> this info spawner-collide-with))
-            (f30-0 (* f0-0 f0-0))
+            (f30-0 (square f0-0))
             )
         (set! *actor-list-length* 0)
         (if (logtest? s5-0 (collide-spec hit-by-others-list))
@@ -707,14 +668,10 @@
                       (.add.y.vf.x vf1 vf1 vf1)
                       (.add.z.vf.x vf1 vf1 vf1)
                       (.mov a2-5 vf1)
-                      (let ((f0-2 a2-5)
-                            (f1-1 (+ (-> a1-5 world-sphere w) (-> gp-0 w)))
-                            )
-                        (when (< f0-2 (* f1-1 f1-1))
-                          (when (< *actor-list-length* 256)
-                            (set! (-> *actor-list* *actor-list-length*) (the-as collide-shape a0-3))
-                            (set! *actor-list-length* (+ *actor-list-length* 1))
-                            )
+                      (when (< a2-5 (square (+ (-> a1-5 world-sphere w) (-> gp-0 w))))
+                        (when (< *actor-list-length* 256)
+                          (set! (-> *actor-list* *actor-list-length*) (the-as collide-shape a0-3))
+                          (set! *actor-list-length* (+ *actor-list-length* 1))
                           )
                         )
                       )
@@ -748,14 +705,10 @@
                       (.add.y.vf.x vf1 vf1 vf1)
                       (.add.z.vf.x vf1 vf1 vf1)
                       (.mov a2-12 vf1)
-                      (let ((f0-3 a2-12)
-                            (f1-5 (+ (-> a1-17 world-sphere w) (-> gp-0 w)))
-                            )
-                        (when (< f0-3 (* f1-5 f1-5))
-                          (when (< *actor-list-length* 256)
-                            (set! (-> *actor-list* *actor-list-length*) (the-as collide-shape a0-6))
-                            (set! *actor-list-length* (+ *actor-list-length* 1))
-                            )
+                      (when (< a2-12 (square (+ (-> a1-17 world-sphere w) (-> gp-0 w))))
+                        (when (< *actor-list-length* 256)
+                          (set! (-> *actor-list* *actor-list-length*) (the-as collide-shape a0-6))
+                          (set! *actor-list-length* (+ *actor-list-length* 1))
                           )
                         )
                       )
@@ -786,7 +739,7 @@
 (defmethod spawner-blocked? ((this battle) (arg0 battle-spawner))
   (when (not (logtest? (-> this flags) (battle-flags no-spawner-block)))
     (let ((f0-0 (-> this info spawner-blocked-by-player-xz)))
-      (if (and (< 0.0 f0-0) (>= (* f0-0 f0-0) (vector-vector-xz-distance-squared (target-pos 0) (-> arg0 attack-pos))))
+      (if (and (< 0.0 f0-0) (>= (square f0-0) (vector-vector-xz-distance-squared (target-pos 0) (-> arg0 attack-pos))))
           (return #t)
           )
       )
@@ -1387,13 +1340,13 @@
   )
 
 (defmethod initialize-spawner-breeds ((this battle) (arg0 battle-spawner) (arg1 entity-actor))
-  (local-vars (sv-16 res-tag) (sv-32 res-tag))
   (let ((s2-0 0)
         (s5-0 0)
         (s4-0 0)
         )
-    (set! sv-16 (new 'static 'res-tag))
-    (let ((s1-0 (res-lump-data arg1 'spawn-types pointer :tag-ptr (& sv-16))))
+    (let* ((sv-16 (new 'static 'res-tag))
+           (s1-0 (res-lump-data arg1 'spawn-types pointer :tag-ptr (& sv-16)))
+           )
       (dotimes (s0-0 2)
         (set! s2-0 0)
         (when s1-0
@@ -1426,8 +1379,9 @@
          )
        )
       (else
-        (set! sv-32 (new 'static 'res-tag))
-        (let ((v1-18 (res-lump-data arg1 'spawn-percs pointer :tag-ptr (& sv-32))))
+        (let* ((sv-32 (new 'static 'res-tag))
+               (v1-18 (res-lump-data arg1 'spawn-percs pointer :tag-ptr (& sv-32)))
+               )
           (when v1-18
             (let ((a0-16 (min (the-as int (-> sv-32 elt-count)) s4-0))
                   (a1-14 0)
@@ -1522,9 +1476,10 @@
   )
 
 (defmethod initialize-enemy-lists ((this battle))
-  (local-vars (v0-4 battle-ally-array) (sv-16 res-tag) (sv-32 entity-actor) (sv-33 entity-actor) (sv-34 entity-actor))
-  (set! sv-16 (new 'static 'res-tag))
-  (let ((v0-0 (res-lump-data (-> this entity) 'actor-groups pointer :tag-ptr (& sv-16))))
+  (local-vars (v0-4 battle-ally-array))
+  (let* ((sv-16 (new 'static 'res-tag))
+         (v0-0 (res-lump-data (-> this entity) 'actor-groups pointer :tag-ptr (& sv-16)))
+         )
     (when (and v0-0 (nonzero? (-> sv-16 elt-count)))
       (let* ((s5-0 (-> (the-as (pointer actor-group) v0-0) 0))
              (s4-0 (-> s5-0 length))
@@ -1534,33 +1489,34 @@
                 (s2-0 0)
                 )
             (dotimes (s0-0 s4-0)
-              (set! sv-32 (-> s5-0 data s0-0 actor))
-              (when sv-32
-                (let ((v0-1 (res-lump-value sv-32 'enemy-options uint128 :time -1000000000.0)))
-                  (cond
-                    ((logtest? #x80000 v0-1)
-                     (+! s1-0 1)
-                     (cond
-                       ((zero? s3-0)
-                        0
-                        )
-                       (else
-                         (let ((a1-2 (-> this spawners data (+ s1-0 -1))))
-                           (initialize-spawner this a1-2 sv-32)
+              (let ((sv-32 (-> s5-0 data s0-0 actor)))
+                (when sv-32
+                  (let ((v0-1 (res-lump-value sv-32 'enemy-options uint128 :time -1000000000.0)))
+                    (cond
+                      ((logtest? #x80000 v0-1)
+                       (+! s1-0 1)
+                       (cond
+                         ((zero? s3-0)
+                          0
+                          )
+                         (else
+                           (let ((a1-2 (-> this spawners data (+ s1-0 -1))))
+                             (initialize-spawner this a1-2 sv-32)
+                             )
                            )
                          )
                        )
-                     )
-                    (else
-                      (when (not (logtest? (-> sv-32 extra perm status) (entity-perm-status dead)))
-                        (+! s2-0 1)
-                        (cond
-                          ((zero? s3-0)
-                           0
-                           )
-                          (else
-                            (let ((a1-3 (-> this allies data (+ s2-0 -1))))
-                              (initialize-ally this a1-3 sv-32)
+                      (else
+                        (when (not (logtest? (-> sv-32 extra perm status) (entity-perm-status dead)))
+                          (+! s2-0 1)
+                          (cond
+                            ((zero? s3-0)
+                             0
+                             )
+                            (else
+                              (let ((a1-3 (-> this allies data (+ s2-0 -1))))
+                                (initialize-ally this a1-3 sv-32)
+                                )
                               )
                             )
                           )
@@ -1580,9 +1536,6 @@
             )
           )
         )
-      )
-    (when (and (not v0-0) (zero? (-> sv-16 elt-count)))
-      (handle-custom-level-entities this)
       )
     )
   0
@@ -1649,320 +1602,3 @@
   (initialize-battle this)
   (init-go this)
   )
-
-(defmethod handle-custom-level-entities ((this battle))
-  (local-vars (v0-4 battle-ally-array) (sv-16 res-tag) (sv-32 entity-actor))
-  (set! sv-16 (new 'static 'res-tag))
-  (let ((v0-0 (res-lump-data (-> this entity) 'alt-actor pointer :tag-ptr (& sv-16)))) ;; using 'alt-actor' instead of 'actor-group'
-    (when (and v0-0 (nonzero? (-> sv-16 elt-count)))
-      (set! (-> this alt-actor-max-count) (the-as int (-> sv-16 elt-count))) ;; store the max count of elements from 'alt-actor' lump in 'alt-actor-max-count' field
-      (let ((entity (the-as entity-actor #f))) ;; declare a var to store all entities references
-        (dotimes (s3-0 2)
-          (let ((s1-0 0)
-                (s2-0 0)
-                )
-            (dotimes (i (-> this alt-actor-max-count)) ;; iterate through 'i' while he is less than 'alt-actor-max-count'
-              (set! entity (entity-actor-lookup (-> this entity) 'alt-actor i)) ;; find the entity stored inside 'alt-actor' lump at the index 'i'
-              (format #t "entity[~d]: ~s~%" i entity) ;; print the array on screen
-              (when entity ;; run this code on every entity stored inside 'alt-actor' lump  
-                (let ((v0-1 (res-lump-value entity 'enemy-options uint128 :time -1000000000.0)))
-                  (cond
-                    ((logtest? #x80000 v0-1)
-                     (+! s1-0 1)
-                     (cond
-                       ((zero? s3-0)
-                        0
-                        )
-                       (else
-                         (let ((a1-2 (-> this spawners data (+ s1-0 -1))))
-                           (initialize-spawner this a1-2 entity)
-                           )
-                         )
-                       )
-                     )
-                    (else
-                      (when (not (logtest? (-> entity extra perm status) (entity-perm-status dead)))
-                        (+! s2-0 1)
-                        (cond
-                          ((zero? s3-0)
-                           0
-                           )
-                          (else
-                            (let ((a1-3 (-> this allies data (+ s2-0 -1))))
-                              (initialize-ally this a1-3 entity)
-                              )
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            (set! v0-4 (when (zero? s3-0)
-                         (set! (-> this spawners) (new 'process 'battle-spawner-array s1-0))
-                         (set! v0-4 (new 'process 'battle-ally-array s2-0))
-                         (set! (-> this allies) v0-4)
-                         v0-4
-                         )
-                  )
-            )
-          )
-        )
-      )
-    )
-  0
-  (none)
-  )
-
-#|
-(defmethod handle-custom-level-entities ((this battle))
-  (local-vars (v0-4 battle-ally-array) (sv-32 entity-actor) (sv-33 entity-actor) (sv-34 entity-actor) (sv-35 entity-actor) (sv-36 entity-actor))
-  (when (= (-> this entity aid) 40000) ;; battle-1
-            (dotimes (s3-0 2)
-              (let ((s1-0 0)
-                (s2-0 0)
-                )
-              (dotimes (s0-0 1)
-                (set! sv-32 (the-as entity-actor (entity-by-name "dp-bipedal-1")))
-                (set! sv-33 (the-as entity-actor (entity-by-name "dp-bipedal-2")))
-                (set! sv-34 (the-as entity-actor (entity-by-name "dp-bipedal-3")))
-                (when sv-32
-                  (let ((enm-option (res-lump-value sv-32 'enemy-options enemy-option :time -1000000000.0)))
-                    (cond
-                      ((logtest? (enemy-option spawner) enm-option)
-                        (+! s1-0 1)
-                        (cond
-                          ((zero? s3-0)
-                            0
-                            )
-                          (else
-                            (let ((a1-2 (-> this spawners data (+ s1-0 -1))))
-                              (initialize-spawner this a1-2 (the-as entity-actor sv-32))
-                              )
-                            )
-                          )
-                      )
-                      (else
-                        (when (not (logtest? (-> sv-32 extra perm status) (entity-perm-status dead)))
-                          (+! s2-0 1)
-                          (cond
-                            ((zero? s3-0)
-                            0
-                            )
-                            (else
-                              (let ((a1-3 (-> this allies data (+ s2-0 -1))))
-                                (initialize-ally this a1-3 (the-as entity-actor sv-32))
-                                )
-                              )
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                (when sv-33
-                  (let ((enm-option (res-lump-value sv-33 'enemy-options enemy-option :time -1000000000.0)))
-                    (cond
-                      ((logtest? (enemy-option spawner) enm-option)
-                        (+! s1-0 1)
-                        (cond
-                          ((zero? s3-0)
-                            0
-                            )
-                          (else
-                            (let ((a1-2 (-> this spawners data (+ s1-0 -1))))
-                              (initialize-spawner this a1-2 (the-as entity-actor sv-33))
-                              )
-                            )
-                          )
-                      )
-                      (else
-                        (when (not (logtest? (-> sv-33 extra perm status) (entity-perm-status dead)))
-                          (+! s2-0 1)
-                          (cond
-                            ((zero? s3-0)
-                            0
-                            )
-                            (else
-                              (let ((a1-3 (-> this allies data (+ s2-0 -1))))
-                                (initialize-ally this a1-3 (the-as entity-actor sv-33))
-                                )
-                              )
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                (when sv-34
-                  (let ((enm-option (res-lump-value sv-34 'enemy-options enemy-option :time -1000000000.0)))
-                    (cond
-                      ((logtest? (enemy-option spawner) enm-option)
-                        (+! s1-0 1)
-                        (cond
-                          ((zero? s3-0)
-                            0
-                            )
-                          (else
-                            (let ((a1-2 (-> this spawners data (+ s1-0 -1))))
-                              (initialize-spawner this a1-2 (the-as entity-actor sv-34))
-                              )
-                            )
-                          )
-                      )
-                      (else
-                        (when (not (logtest? (-> sv-34 extra perm status) (entity-perm-status dead)))
-                          (+! s2-0 1)
-                          (cond
-                            ((zero? s3-0)
-                            0
-                            )
-                            (else
-                              (let ((a1-3 (-> this allies data (+ s2-0 -1))))
-                                (initialize-ally this a1-3 (the-as entity-actor sv-34))
-                                )
-                              )
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
-              (set! v0-4 (when (zero? s3-0)
-                         (set! (-> this spawners) (new 'process 'battle-spawner-array s1-0))
-                         (set! v0-4 (new 'process 'battle-ally-array s2-0))
-                         (set! (-> this allies) v0-4)
-                         v0-4
-                         )
-                  )
-                )
-              )
-            )
-  (when (= (-> this entity aid) 50000) ;; battle-2
-            (dotimes (s3-0 2)
-              (let ((s1-0 0)
-                (s2-0 0)
-                )
-              (dotimes (s0-0 1)
-                (set! sv-32 (the-as entity-actor (entity-by-name "spydroid-orig-1")))
-                (set! sv-33 (the-as entity-actor (entity-by-name "spydroid-orig-2")))
-                (set! sv-34 (the-as entity-actor (entity-by-name "spydroid-orig-3")))
-                (when sv-32
-                  (let ((enm-option (res-lump-value sv-32 'enemy-options enemy-option :time -1000000000.0)))
-                    (cond
-                      ((logtest? (enemy-option spawner) enm-option)
-                        (+! s1-0 1)
-                        (cond
-                          ((zero? s3-0)
-                            0
-                            )
-                          (else
-                            (let ((a1-2 (-> this spawners data (+ s1-0 -1))))
-                              (initialize-spawner this a1-2 (the-as entity-actor sv-32))
-                              )
-                            )
-                          )
-                      )
-                      (else
-                        (when (not (logtest? (-> sv-32 extra perm status) (entity-perm-status dead)))
-                          (+! s2-0 1)
-                          (cond
-                            ((zero? s3-0)
-                            0
-                            )
-                            (else
-                              (let ((a1-3 (-> this allies data (+ s2-0 -1))))
-                                (initialize-ally this a1-3 (the-as entity-actor sv-32))
-                                )
-                              )
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                (when sv-33
-                  (let ((enm-option (res-lump-value sv-33 'enemy-options enemy-option :time -1000000000.0)))
-                    (cond
-                      ((logtest? (enemy-option spawner) enm-option)
-                        (+! s1-0 1)
-                        (cond
-                          ((zero? s3-0)
-                            0
-                            )
-                          (else
-                            (let ((a1-2 (-> this spawners data (+ s1-0 -1))))
-                              (initialize-spawner this a1-2 (the-as entity-actor sv-33))
-                              )
-                            )
-                          )
-                      )
-                      (else
-                        (when (not (logtest? (-> sv-33 extra perm status) (entity-perm-status dead)))
-                          (+! s2-0 1)
-                          (cond
-                            ((zero? s3-0)
-                            0
-                            )
-                            (else
-                              (let ((a1-3 (-> this allies data (+ s2-0 -1))))
-                                (initialize-ally this a1-3 (the-as entity-actor sv-33))
-                                )
-                              )
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                (when sv-34
-                  (let ((enm-option (res-lump-value sv-34 'enemy-options enemy-option :time -1000000000.0)))
-                    (cond
-                      ((logtest? (enemy-option spawner) enm-option)
-                        (+! s1-0 1)
-                        (cond
-                          ((zero? s3-0)
-                            0
-                            )
-                          (else
-                            (let ((a1-2 (-> this spawners data (+ s1-0 -1))))
-                              (initialize-spawner this a1-2 (the-as entity-actor sv-34))
-                              )
-                            )
-                          )
-                      )
-                      (else
-                        (when (not (logtest? (-> sv-34 extra perm status) (entity-perm-status dead)))
-                          (+! s2-0 1)
-                          (cond
-                            ((zero? s3-0)
-                            0
-                            )
-                            (else
-                              (let ((a1-3 (-> this allies data (+ s2-0 -1))))
-                                (initialize-ally this a1-3 (the-as entity-actor sv-34))
-                                )
-                              )
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
-              (set! v0-4 (when (zero? s3-0)
-                         (set! (-> this spawners) (new 'process 'battle-spawner-array s1-0))
-                         (set! v0-4 (new 'process 'battle-ally-array s2-0))
-                         (set! (-> this allies) v0-4)
-                         v0-4
-                         )
-                  )
-                )
-              )
-            )
-  0
-  (none)
-  )
-|#
