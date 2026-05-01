@@ -1,0 +1,9 @@
+("KERNEL.CGO"
+ ("gcommon.o"
+  "gstring-h.o"
+  "gkernel-h.o"
+  "gkernel.o"
+  "pskernel.o"
+  "dgo-h.o"
+  "gstate.o"
+ ))

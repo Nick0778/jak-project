@@ -1,0 +1,9 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: water-info-h.gc
+;; name in dgo: water-info-h
+;; dgos: ENGINE, GAME
+
+;; DECOMP BEGINS
+

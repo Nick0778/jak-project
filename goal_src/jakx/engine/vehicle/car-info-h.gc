@@ -1,0 +1,9 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: car-info-h.gc
+;; name in dgo: car-info-h
+;; dgos: ENGINE, GAME
+
+;; DECOMP BEGINS
+
