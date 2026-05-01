@@ -1,0 +1,9 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: minimap-h.gc
+;; name in dgo: minimap-h
+;; dgos: ENGINE, GAME
+
+;; DECOMP BEGINS
+

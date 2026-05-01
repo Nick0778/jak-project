@@ -1,0 +1,9 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: dma-h.gc
+;; name in dgo: dma-h
+;; dgos: ENGINE, GAME
+
+;; DECOMP BEGINS
+

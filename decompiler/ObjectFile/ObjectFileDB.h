@@ -196,7 +196,8 @@ class ObjectFileDB {
   void write_disassembly(const fs::path& output_dir,
                          bool disassemble_data,
                          bool disassemble_code,
-                         bool print_hex);
+                         bool print_hex,
+                         bool dump_function_metadata);
 
   void process_object_file_data(
       ObjectFileData& data,
@@ -272,7 +273,7 @@ class ObjectFileDB {
                              const Config& cfg,
                              const fs::path& dump_out);
   std::string process_game_count_file();
-  std::string process_game_text_files(const Config& cfg);
+  std::string process_game_text_files(const Config& cfg, std::string text_string = "COMMON");
   std::string process_all_spool_subtitles(const Config& cfg, const fs::path& image_out);
 
   const ObjectFileData& lookup_record(const ObjectFileRecord& rec) const;
