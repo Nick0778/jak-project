@@ -9,9 +9,9 @@
   // you want to run on the entire game.
   "dgo_names": [
     // engine files
-    "CGO/ART.CGO",
-    "CGO/COMMON.CGO",
-    "CGO/ENGINE.CGO",
+    // "CGO/ART.CGO",
+    // "CGO/COMMON.CGO",
+    // "CGO/ENGINE.CGO",
     "CGO/KERNEL.CGO",
     "CGO/GAME.CGO"
     // "DGO/ASHCRED.DGO",
