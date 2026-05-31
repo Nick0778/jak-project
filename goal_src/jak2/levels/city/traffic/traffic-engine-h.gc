@@ -369,7 +369,7 @@
    (tracker-array           traffic-tracker           2 :inline)
    (citizen-tracker-array   traffic-tracker           :inline :overlay-at (-> tracker-array 0))
    (vehicle-tracker-array   traffic-tracker           :inline :overlay-at (-> tracker-array 1)) ;; :offset 7024
-   (inactive-object-array   handle                    420)
+   (inactive-object-array   handle                    460) ;; 23 types * 20 handles per type (old value was 21)
    (suppressor              traffic-suppressor        :inline)
    (danger-sphere-count     int8)
    (pad                     int8                      15)

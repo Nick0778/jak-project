@@ -221,7 +221,7 @@
   ;; (set! (-> this fast-spawn) #f)
   (let ((max-to-spawn 1)
         (spawned-nb 0)
-        (spawn-mask #x1fffff)
+        (spawn-mask #x7fffff) ;; changed #x1fffff (21 bits) to #x7fffff (23 bits)
         )
     (if (-> this fast-spawn)
         (set! max-to-spawn 120)
@@ -464,7 +464,7 @@
     (set! (-> traffic-want-counts 19) 3)
     (set! (-> traffic-want-counts 20) 0)
     (set! (-> traffic-want-counts 21) 0)
-    (set! (-> traffic-want-counts 22) 14) ;; roboguard-city want-count
+    (set! (-> traffic-want-counts 22) 3) ;; roboguard-city want-count
     (set! (-> traffic-want-counts 0) 15)
     (set! (-> traffic-want-counts 1) 15)
     (set! (-> traffic-want-counts 2) 14)
