@@ -9,25 +9,7 @@
   // it will make the decompiler much faster.
   "allowed_objects": [],
 
-  // TODO - these objects currently cause various errors in the decompiler that need to be fixed
-  // thankfully no header files so hopefully the impact on all-types is minimal
-  "banned_objects": [
-    "dma",
-    "race-line",
-    "merc-blend-shape",
-    "foreground",
-    "generic-effect",
-    "shadow-cpu",
-    "collide-mesh",
-    "collide-shape",
-    "collide-cache",
-    "entity",
-    "task-control",
-    "net-mgr-medius-cache",
-    "water-anim",
-    "editable",
-    "gstring"
-  ],
+  "banned_objects": [],
 
   ////////////////////////////
   // CODE ANALYSIS OPTIONS
@@ -64,17 +46,15 @@
   // write goal imports for the part group table
   "process_part_group_table": false,
   // write out a json file containing the art info mapping, run this with all objects allowed
-  // TODO - rerun this once all objects can be allowed
   "dump_art_group_info": false,
   // write out a json file containing the joint node mapping, run this with all objects allowed
-  // TODO - rerun this once all objects can be allowed
-  "dump_joint_geo_info": false,
+  // TODO - not done yet
+  "dump_joint_geo_info": true,
   // write out a json file containing tpage and texture mappings, run with all objects allowed
-  // TODO - rerun this once all objects can be allowed
   "dump_tex_info": false,
   // write out a json file containing the part group table, run with all objects allowed
-  // TODO - re-run this once particle code has been decomped and once all objects can be allowed
-  "dump_part_group_table": false,
+  // TODO - not done yet
+  "dump_part_group_table": true,
 
   // set to false to skip adding .STR files to the decompiler database
   "read_spools": false,

@@ -715,7 +715,7 @@ void ObjectFileDB::write_disassembly(const fs::path& output_dir,
 
   if (dump_function_metadata) {
     json data = file_func_metadata_map;
-    file_util::write_text_file(output_dir / "func_metadata.json", data.dump(2));
+    file_util::write_text_file(output_dir / "_func_metadata.json", data.dump(2));
   }
 
   lg::info("Wrote functions dumps:");
