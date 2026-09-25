@@ -36,6 +36,8 @@ add_library(compiler
         build_level/common/Tfrag.cpp
         build_level/common/Tie.cpp
         build_level/jak1/ambient.cpp
+        build_level/jak2/Region.cpp
+        build_level/jak3/Region.cpp
         compiler/Compiler.cpp
         compiler/Env.cpp
         compiler/Val.cpp
@@ -69,6 +71,7 @@ add_library(compiler
         build_actor/jak3/build_actor.cpp
         debugger/Debugger.cpp
         debugger/DebugInfo.cpp
+        debugger/DebugServer.cpp
         emitter/IGenX86.cpp
         emitter/IGenARM64.cpp
         listener/Listener.cpp
@@ -82,7 +85,7 @@ add_library(compiler
         regalloc/Allocator_v2.cpp
         compiler/docs/DocTypes.cpp)
 
-target_link_libraries(compiler common Zydis tiny_gltf decomp)
+target_link_libraries(compiler common Zydis capstone tiny_gltf decomp)
 
 if (WIN32)
     target_link_libraries(compiler mman)
@@ -94,7 +97,7 @@ add_executable(goalc-simple simple_main.cpp)
 add_executable(build_level build_level/main.cpp)
 add_executable(build_actor build_actor/main.cpp)
 
-target_link_libraries(goalc common Zydis compiler)
-target_link_libraries(goalc-simple common Zydis compiler)
-target_link_libraries(build_level common Zydis compiler)
-target_link_libraries(build_actor common Zydis compiler)
+target_link_libraries(goalc common Zydis capstone compiler)
+target_link_libraries(goalc-simple common Zydis capstone compiler)
+target_link_libraries(build_level common Zydis capstone compiler)
+target_link_libraries(build_actor common Zydis capstone compiler)

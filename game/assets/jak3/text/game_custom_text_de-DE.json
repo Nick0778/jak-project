@@ -1,4 +1,6 @@
 {
+  "a4": "Bitte entferne oder verbinde kein Zubehör und schalte weder das System noch das Spiel aus",
+  "b6": "Während dieses Symbol angezeigt wird, entferne oder verbinde kein Zubehör und schalte nicht das System oder das Spiel aus",
   "7c8": "<FLAG_DUTCH> Dutch",
   "11fe": "Keine Mission",
   "11ff": "Spielt eine Bonusmission",
@@ -229,6 +231,7 @@
   "134c": "Trigger-Effekte",
   "134d": "Fix Projectile Focus",
   "134e": "Eco Grid (Pac-Man) D-Pad Controls",
+  "134f": "Analogempfindlichkeit",
   "1350": "Nichts",
   "1351": "Drehung",
   "1352": "Boost",
@@ -257,7 +260,5 @@
   "1369": "Light Regeneration",
   "136a": "Light Flight",
   "136b": "Flash Freeze",
-  "136c": "Light Shield",
-  "a4": "Bitte entferne oder verbinde kein Zubehör und schalte weder das System noch das Spiel aus",
-  "b6": "Während dieses Symbol angezeigt wird, entferne oder verbinde kein Zubehör und schalte nicht das System oder das Spiel aus"
+  "136c": "Light Shield"
 }

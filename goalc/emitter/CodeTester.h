@@ -19,6 +19,14 @@
 
 #include "goalc/emitter/InstructionSet.h"
 #include "goalc/emitter/ObjectGenerator.h"
+#ifdef OS_POSIX
+#include <sys/mman.h>
+#elif _WIN32
+#include "third-party/mman/mman.h"
+#endif
+#if defined(__APPLE__) && defined(__aarch64__)
+#include <pthread.h>  // pthread_jit_write_protect_np
+#endif
 
 namespace emitter {
 class CodeTester {
@@ -30,13 +38,22 @@ class CodeTester {
   ObjectGenerator m_gen;
 
  public:
+  struct DisasmLine {
+    uint64_t address;
+    std::string text;
+  };
+
   CodeTester();
   CodeTester(InstructionSet instruction_set);
   std::string dump_to_hex_string(bool nospace = false);
+  std::vector<DisasmLine> disassemble();
+  std::string dump_to_asm_string();
+  void print_hex_dump();
+  void print_asm_dump();
   ObjectGenerator generator() const { return m_gen; }
   void init_code_buffer(int capacity);
-  void emit_push_all_gprs(bool exclude_rax = false);
-  void emit_pop_all_gprs(bool exclude_rax = false);
+  void emit_push_all_gprs(bool exclude_return_register = false);
+  void emit_pop_all_gprs(bool exclude_return_register = false);
   void emit_push_all_simd();
   void emit_pop_all_simd();
   void emit_return();
@@ -49,12 +66,27 @@ class CodeTester {
    */
   template <typename T>
   T execute_ret(u64 in0, u64 in1, u64 in2, u64 in3) {
+#if defined(__aarch64__)
+    // allegedly needed because ARM requires flushing after writing new instructions
+    // on x86 it does nothing
+    __builtin___clear_cache((char*)code_buffer, (char*)code_buffer + code_buffer_size);
+#endif
     // clang-format off
-    u64 result_u64 = ((u64(*)(u64, u64, u64, u64))code_buffer)(in0, in1, in2, in3);
+#if defined(__APPLE__) && defined(__aarch64__)
+  // block writes while generated code runs
+  pthread_jit_write_protect_np(1);
+  u64 result_u64 = ((u64(*)(u64, u64, u64, u64))code_buffer)(in0, in1, in2, in3);
+  pthread_jit_write_protect_np(0);
+  T result_T;
+  memcpy(&result_T, &result_u64, sizeof(T));
+  return result_T;
+#else
+  u64 result_u64 = ((u64(*)(u64, u64, u64, u64))code_buffer)(in0, in1, in2, in3);
+  T result_T;
+  memcpy(&result_T, &result_u64, sizeof(T));
+  return result_T;
+#endif
     // clang-format on
-    T result_T;
-    memcpy(&result_T, &result_u64, sizeof(T));
-    return result_T;
   }
 
   /*!
@@ -69,11 +101,65 @@ class CodeTester {
     return ret;
   }
 
+  int get_reg_count() {
+    if (m_gen.instr_set() == InstructionSet::ARM64) {
+      return 31;  // 32 = XZR which is a special case / zero register
+    } else {
+      return 16;
+    }
+  }
+
+  int get_simd_reg_count() {
+    if (m_gen.instr_set() == InstructionSet::ARM64) {
+      return 32;
+    } else {
+      return -1;  // TODO
+    }
+  }
+
+  Register get_stack_reg() {
+    if (m_gen.instr_set() == InstructionSet::ARM64) {
+      return SP;
+    } else {
+      return RSP;
+    }
+  }
+
+  Register get_return_reg() {
+    if (m_gen.instr_set() == InstructionSet::ARM64) {
+      return X0;
+    } else {
+      return RAX;
+    }
+  }
+
   /*!
    * Should allow emitter tests which run code to do the right thing on windows.
    */
   Register get_c_abi_arg_reg(int i) {
-    // TODO ARM64 - x86 specific
+    if (m_gen.instr_set() == InstructionSet::ARM64) {
+      switch (i) {
+        case 0:
+          return X0;
+        case 1:
+          return X1;
+        case 2:
+          return X2;
+        case 3:
+          return X3;
+        case 4:
+          return X4;
+        case 5:
+          return X5;
+        case 6:
+          return X6;
+        case 7:
+          return X7;
+        default:
+          throw std::runtime_error("Invalid ARM64 arg register index");
+      }
+    }
+    // x86 ABI registers differ by platform.
 #ifdef _WIN32
     switch (i) {
       case 0:
@@ -113,6 +199,8 @@ class CodeTester {
    */
   int size() const { return code_buffer_size; }
   const u8* data() const { return code_buffer; }
+
+  uintptr_t code_address() const { return reinterpret_cast<uintptr_t>(code_buffer); }
 
   /*!
    * Write over existing data at the given offset.

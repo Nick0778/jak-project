@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: master
 
@@ -48,7 +48,7 @@ jobs:
           mv ./build ./build.master
 
       - name: Checkout PR
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           clean: "false"
 
@@ -66,9 +66,9 @@ jobs:
 
       - name: Compile and preserve (master)
         run: |
-          ./build.master/goalc/goalc --game jak1 --cmd "(make-group \"all-code\")"
-          ./build.master/goalc/goalc --game jak2 --cmd "(make-group \"all-code\")"
-          ./build.master/goalc/goalc --game jak3 --cmd "(make-group \"all-code\")"
+          ./build.master/goalc/goalc --game jak1 --cmd '(make-group "all-code")'
+          ./build.master/goalc/goalc --game jak2 --cmd '(make-group "all-code")'
+          ./build.master/goalc/goalc --game jak3 --cmd '(make-group "all-code")'
           mv ./out/jak1/obj ./out/jak1/obj.master
           mv ./out/jak2/obj ./out/jak2/obj.master
           mv ./out/jak3/obj ./out/jak3/obj.master

@@ -112,7 +112,7 @@
   (progress-subtitles #x006e)
   (progress-restart-mission #x006f)
   (text-0072 #x0072)
-  (text-0073 #x0073)
+  (progress-saved-game #x0073)
   (progress-qr #x0074)
   (text-0075 #x0075)
   (text-0076 #x0076)
@@ -1553,7 +1553,6 @@
   (progress-fps-disclaimer-warning #x1314)
   (progress-fps-disclaimer #x1315)
   (progress-highscores-local-score #x1316)
-  ;; gap here if you want to use it
   (progress-graphics-ps2 #x1333)
   (progress-graphics-actor-culling #x1334)
   (progress-graphics-force-envmap #x1335)
@@ -1612,7 +1611,6 @@
   (trick-board-lightjak-swoop #x136a)
   (trick-board-lightjak-freeze #x136b)
   (trick-board-lightjak-shield #x136c)
-
   )
 ;; ---text-id
 
