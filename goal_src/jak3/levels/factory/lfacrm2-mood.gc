@@ -67,6 +67,15 @@
     )
   )
 
+#|
+(defstate arrived (fac-elevator-a)
+  :virtual #t
+  :code (behavior ()
+    (go-virtual dormant)
+    )
+  )
+|#
+
 (defstate arrived (fac-elevator-a)
   :virtual #t
   :code (behavior ()

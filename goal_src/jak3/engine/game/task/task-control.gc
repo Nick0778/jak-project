@@ -536,24 +536,9 @@
     (('atoll)
       (prototypes-game-visible-set!
        '("atoll-tank.mb")
-       (not (task-node-closed? (game-task-node arena-training-1-introduction)))
+       (task-node-closed? (game-task-node city-win-resolution))
        this
        )
-      (prototypes-game-visible-set!
-        '("lowres-casboss.mb")
-        (not (task-node-closed? (game-task-node arena-training-1-introduction)))
-        this
-        )
-      (prototypes-game-visible-set!
-        '("atoll-lowres-stadium-canopies.mb")
-        (not (task-node-closed? (game-task-node arena-training-1-introduction)))
-        this
-        )
-      (prototypes-game-visible-set!
-        '("atoll-lowres-stadium-tower-01.mb")
-        (not (task-node-closed? (game-task-node arena-training-1-introduction)))
-        this
-        )
      )
     (('ctymarkb)
      )
@@ -3491,16 +3476,25 @@
                           (send-event self 'front))
                 (want-load 'ctyslumc 'ctywide-ff 'freehq))))))
 
-        ;; fac-elevator-a-1 - on-notice
-        (set-pair-script! "fac-elevator-a-1" 'on-notice '((when (task-closed? "city-win-resolution") (send-event self 'move-to 'bottom) (send-event self 'go-dormant))))
+          ;; lfacrm2 region hacks + elevators up/down cameras hacks
+          (when (= (level-status? *level* 'lfacrm2 #f) 'active)
+            ;; fac-elevator-a-1 - on-notice
+            (set-pair-script! "fac-elevator-a-1" 'on-notice '((when (task-closed? "city-win-resolution") (send-event self 'move-to 'bottom) (send-event self 'go-dormant))))
+            ;; fac-elevator-a-1 - on-deactivate
+            (set-pair-script! "fac-elevator-a-1" 'on-deactivate '((when #t (send-event self 'use-camera #f))))
 
-        ;; fac-elevator-a-2 - on-notice
-        (when (= (-> (level-get-target-inside *level*) name) 'factoryc)
-          (set-pair-script! "fac-elevator-a-2" 'on-notice '((when (task-closed? "city-win-resolution") (send-event self 'move-to 'top) (send-event self 'go-dormant))))
-          )
+            ;; fac-elevator-a-2 - on-notice
+            (set-pair-script! "fac-elevator-a-2" 'on-notice '((when (task-closed? "city-win-resolution") (send-event self 'move-to 'top) (send-event self 'go-dormant))))
+            ;; fac-elevator-a-2 - on-deactivate
+            (set-pair-script! "fac-elevator-a-2" 'on-deactivate '((when #t (send-event self 'use-camera #f))))
 
-        ;; fac-warp-effect-1 - add-data-to-entity! - on-notice
-        (add-data-to-entity! "fac-warp-effect-1" 'on-notice 1 pair (the pointer '(when (task-closed? "desert-final-boss-resolution") '("vinroom-warp" #f #f)))))
+            ;; lfacrm2 region hacks + elevators up/down cameras hacks
+            (set-region-data! 1314 'on-enter '(when (task-closed? "desert-final-boss-resolution") (want-load 'factorya 'factoryc)))
+            (set-region-data! 1313 'on-enter '(when (task-closed? "desert-final-boss-resolution") (want-display 'factoryc 'display)))
+            (add-data-to-entity! "fac-elevator-a-1" 'on-up   1 pair (the pointer '(begin (send-event self 'use-camera "camera-318"))))
+            (add-data-to-entity! "fac-elevator-a-2" 'on-down 1 pair (the pointer '(begin (send-event self 'use-camera "camera-319"))))
+            )
+        )
 
         ;; Temple to Eco Mine
 
@@ -3510,8 +3504,8 @@
             (set-pair-script! "tpl-mardoor-4" 'on-notice '((and (task-closed? "desert-final-boss-resolution") (not (task-closed? "city-win-resolution"))) '(templea templec)))
             )
           (when (= (-> (level-get-target-inside *level*) name) 'templea)
-            (set-region-data! 1372 "on-enter" '(when (task-closed? "desert-final-boss-resolution") (want-load 'templea 'templeb 'templec) (want-display 'templeb 'display) (want-display 'templec 'display)))
-            (set-region-data! 1372 "on-exit" '(when (task-closed? "desert-final-boss-resolution") (want-display 'templec #f)))
+            (set-region-data! 1372 'on-enter '(when (task-closed? "desert-final-boss-resolution") (want-load 'templea 'templeb 'templec) (want-display 'templeb 'display) (want-display 'templec 'display)))
+            (set-region-data! 1372 'on-exit '(when (task-closed? "desert-final-boss-resolution") (want-display 'templec #f)))
             )
   
           (set-pair-script! "tpl-door-a-15" 'on-notice '((not (task-closed? "city-win-resolution")) '(templec)))
@@ -3576,21 +3570,11 @@
             (task-node-open! (game-task-node comb-travel-return-introduction) 'event)
             )
           )
-
-        ;; lfacrm2 region hacks + elevators up/down cameras hacks
-        
-        (when (= (level-status? *level* 'lfacrm2 #f) 'active)
-          (set-region-data! 1314 "on-enter" '(when (task-closed? "desert-final-boss-resolution") (want-load 'factorya 'factoryc)))
-          (set-region-data! 1313 "on-enter" '(when (task-closed? "desert-final-boss-resolution") (want-display 'factoryc 'display)))
-          (add-data-to-entity! "fac-elevator-a-1" 'on-up 1 pair (the pointer '(begin (send-event self 'use-camera "camera-318"))))
-          (add-data-to-entity! "fac-elevator-a-2" 'on-down 1 pair (the pointer '(begin (send-event self 'use-camera "camera-319"))))
-          )
-
+      
         ;;; EXTRA AND CRAZY STUFF
 
         ;; Sewer locked airlock
 
-        #|
         (when (and (entity-by-name "com-airlock-outer-40") (= (-> (level-get-target-inside *level*) name) 'sewb))
           (add-data-to-entity! "com-airlock-outer-40" 'on-notice 1 pair (the pointer '(when (task-closed? "desert-final-boss-resolution") '(sewb))))
           (add-data-to-entity! "com-airlock-outer-40" 'next-actor 1 uint32 (the pointer 40938))
@@ -3604,11 +3588,9 @@
           (add-data-to-entity! "com-airlock-inner-51" 'distance 1 float (the pointer (meters 20.0000)))
           (add-data-to-entity! "com-airlock-inner-51" 'idle-distance 1 float (the pointer (meters 40.0000)))
           )
-        |#
 
         ;; atollext airlocks
 
-        #|
         (when (and (entity-by-name "com-airlock-inner-17") (= (level-status? *level* 'atollext #f) 'active))
           (set-pair-script! "com-airlock-inner-17" 'on-inside '((want-load 'atollext 'atoll #f)))
           (set-pair-script! "com-airlock-inner-17" 'on-enter '((want-display 'atollext 'display) (want-display 'sewa 'display)))
@@ -3622,7 +3604,6 @@
           (set-pair-script! "com-airlock-inner-18" 'on-inside '((want-load 'atollext 'sewa #f)))
           (set-pair-script! "com-airlock-inner-18" 'on-exit '((want-load 'atollext 'sewa #f)))
           )
-        |#
 
         ;; Sewer Scoutbot
 
@@ -3652,4 +3633,4 @@
       )
     )
   )
-
+  

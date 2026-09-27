@@ -1543,6 +1543,7 @@
 
 (set! (-> *part-hellcat-dust-landing-fac-curve-settings* scale-y-scalar) *curve-fac-dust-scale-y*)
 
+;; added - return to factory scene
 (load-scene (new 'static 'scene
               :name "factory-return-intro"
               :extra #f
@@ -1837,7 +1838,7 @@
                   )
                 )
               :load-point "factorya-intro-b"
-              :end-point "factoryc-start"
+              :end-point "factoryc-start-lfacrm2"
               :borrow '((factorya 1 lfacrm1 copy))
               :sfx-volume -1.0
               :ambient-volume -1.0

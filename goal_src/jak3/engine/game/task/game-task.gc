@@ -1311,7 +1311,7 @@
             :play-node (game-task-node factory-mine-return-resolution)
             :play-continue #f
             :kiosk-play-continue #f
-            )  
+            )
           )
         )
   (set! (-> game-info sub-task-list)

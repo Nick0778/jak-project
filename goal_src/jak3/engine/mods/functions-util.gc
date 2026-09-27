@@ -61,19 +61,23 @@
   (none)
   )
 
-(defun set-region-data! ((id int) (event-name string) (data pair))
-  (cond
-    ((string= event-name "on-enter")
-      (set! (-> (region-lookup-by-id id) on-enter) data)
-      )
-    ((string= event-name "on-inside")
-      (set! (-> (region-lookup-by-id id) on-inside) data)
-      )
-    ((string= event-name "on-exit")
-      (set! (-> (region-lookup-by-id id) on-exit) data)
-      )
-    (else
-      (format 0 "ERROR: invalid event-name!~%")
+(defun set-region-data! ((id int) (event symbol) (data pair))
+  (let ((region (region-lookup-by-id id)))
+    (when region
+      (cond
+        ((= event 'on-enter)
+          (set! (-> region on-enter) data)
+          )
+        ((= event 'on-inside)
+          (set! (-> region on-inside) data)
+          )
+        ((= event 'on-exit)
+          (set! (-> region on-exit) data)
+          )
+        (else
+          (format 0 "ERROR: invalid event ~A!~%" event)
+          )
+        )
       )
     )
   (none)

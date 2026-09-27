@@ -7,6 +7,7 @@
 
 (define-extern menu-respond-to-pause (function symbol))
 (define-extern anim-tester-add-object (function string none))
+(defun-extern runs-every-frame (none)) ;; mod-base-change
 
 ;; DECOMP BEGINS
 
@@ -159,12 +160,6 @@
        (set! *pause-lock* #f)
        (sound-group-pause (the-as sound-group #xffffffff))
        (set! (-> *game-info* pause-start-time) (-> *display* real-clock frame-counter))
-       ;; If there are custom audios playing, then, pause them
-       (if (is-any-sound-playing?)
-        (pause-all-sounds)
-        )
-       ;; added - custom music player stuff
-       (false! *custom-music-fade?*)
        )
       (('freeze)
        (logior! (-> *setting-control* user-default process-mask) (process-mask freeze))
@@ -177,8 +172,6 @@
        (logclear! (-> *setting-control* user-default process-mask) (process-mask freeze pause progress))
        (sound-group-pause (the-as sound-group #xffffffff))
        (set! *pause-lock* #f)
-       ;; added - custom music player stuff
-       (false! *custom-music-fade?*)
        )
       (('progress)
        (logclear! (-> *setting-control* user-default process-mask) (process-mask freeze pause menu))
@@ -190,19 +183,10 @@
              )
          )
        (set! (-> *game-info* pause-start-time) (-> *display* real-clock frame-counter))
-       ;; If there are custom audios playing, then, pause them
-       (if (is-any-sound-playing?)
-        (pause-all-sounds)
-        )
-       ;; added - custom music player stuff
-       (false! *custom-music-fade?*)
        )
       (('game)
        (logclear! (-> *setting-control* user-default process-mask) (process-mask freeze pause menu))
        (sound-group-continue (the-as sound-group #xffffffff))
-       (resume-all-sounds) ;; Resume all custom audios
-       ;; added - custom music player stuff
-       (false! *custom-music-fade?*)
        )
       )
     (apply-settings *setting-control*)
@@ -1510,6 +1494,7 @@
     (if (-> *level* loading-level)
         (load-continue (-> *level* loading-level))
         )
+    (runs-every-frame) ;; mod-base-change
 
     ;; run the drawing system!
     ;; (note that this does a significant amount of non-drawing stuff, like collision callbacks, actors-update,

@@ -2109,6 +2109,40 @@
 
 (declare-type warp-gate process-drawable)
 
+#|
+(deftype fac-warp-effect (process-drawable)
+  ()
+  (:state-methods
+    idle
+    )
+  )
+
+
+(defstate idle (fac-warp-effect)
+  :virtual #t
+  :code sleep-code
+  :post (behavior ()
+    (ja :num! (loop!))
+    (ja-post)
+    )
+  )
+
+(defmethod init-from-entity! ((this fac-warp-effect) (arg0 entity-actor))
+  "Set up a newly created process from the entity that created it."
+  (set! (-> this root) (new 'process 'trsqv))
+  (process-drawable-from-entity! this arg0)
+  (initialize-skeleton
+    this
+    (the-as skeleton-group (art-group-get-by-name *level* "skel-fac-warp-effect" (the-as (pointer level) #f)))
+    (the-as pair 0)
+    )
+  (go (method-of-object this idle))
+  )
+|#
+
+;; fac-warp-effect now became a warp-gate
+(declare-type warp-gate process-drawable)
+
 (deftype fac-warp-effect (warp-gate) 
   ()
   )

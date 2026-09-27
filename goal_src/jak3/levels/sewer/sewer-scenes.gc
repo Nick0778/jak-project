@@ -2143,3 +2143,188 @@
     (:rotate-y (degrees 0))
     )
   )
+
+(load-scene (new 'static 'scene
+              :name "sewer-ate-entrance"
+              :extra #f
+              :info #f
+              :scene-flags (scene-flags scf1 scf2 scf3 scf4 scf8)
+              :mask-to-clear (process-mask movie projectile)
+              :entity "scene-stage-142"
+              :art-group "scenecamera"
+              :anim "sewer-port-exit"
+              :parts 2
+              :command-list '((0 (kill "sew-elevator-39") (kill "sew-elevator-47") (kill "sew-elevator-64"))
+                (64 (want-load 'ctywide-ff 'ctyport 'sewa))
+                (200 (fadeout (frame-time-30 10)))
+                (10000
+                  (restore "sew-elevator-39")
+                  (restore "sew-elevator-47")
+                  (restore "sew-elevator-64")
+                  (save)
+                  )
+                )
+              :cut-list '(129)
+              :wait-ground-time (seconds 1)
+              :actor (new 'static 'boxed-array :type scene-actor
+                (new 'static 'scene-actor
+                  :name "scenecamera"
+                  :level #f
+                  :art-group "skel-scenecamera"
+                  :prefix ""
+                  :draw-frames '((min max))
+                  :scissor-frames '()
+                  :shadow-frames '((min max))
+                  :cloth-reset-frames '()
+                  :cloth-commands '()
+                  :camera 4
+                  :shadow-flags -1
+                  :shadow-volume-joint #f
+                  )
+                (new 'static 'scene-actor
+                  :name "jakc-highres"
+                  :level 'sewa
+                  :art-group "skel-jakc-highres"
+                  :prefix ""
+                  :draw-frames '((min max))
+                  :scissor-frames '()
+                  :shadow-frames '((0 100) (129 end))
+                  :cloth-reset-frames '((0 193))
+                  :cloth-commands '()
+                  :flags #x1
+                  :shadow-flags -1
+                  :shadow-volume-joint #f
+                  :no-draw-seg #x380
+                  )
+                (new 'static 'scene-actor
+                  :name "sidekick-highres"
+                  :level 'sewa
+                  :art-group "skel-sidekick-highres"
+                  :prefix ""
+                  :draw-frames '((min max))
+                  :scissor-frames '()
+                  :shadow-frames '((0 100) (129 end))
+                  :cloth-reset-frames '()
+                  :cloth-commands '()
+                  :flags #x1
+                  :shadow-flags -1
+                  :shadow-volume-joint #f
+                  )
+                (new 'static 'scene-actor
+                  :name "sew-elevator"
+                  :level 'sewa
+                  :art-group "skel-sew-elevator"
+                  :prefix ""
+                  :draw-frames '((min max))
+                  :scissor-frames '()
+                  :shadow-frames '((min max))
+                  :cloth-reset-frames '()
+                  :cloth-commands '()
+                  :flags #x1
+                  :shadow-flags -1
+                  :shadow-volume-joint #f
+                  )
+                )
+              :load-point "sewb-ate-elevator"
+              :end-point "atoll-elevator"
+              :borrow '()
+              :sfx-volume -1.0
+              :ambient-volume -1.0
+              :music-delay 1500.0
+              :on-running #f
+              :on-complete #f
+              )
+            )
+
+(load-scene
+  (new 'static 'scene
+    :name "ate-elevator-exit"
+    :extra #f
+    :info #f
+    :scene-flags (scene-flags scf1 scf2 scf3 scf4 scf8)
+    :mask-to-clear (process-mask movie projectile)
+    :entity "scene-stage-145"
+    :art-group "scenecamera"
+    :anim "sewer-genb-entrance"
+    :parts 2
+    :command-list '((0 (kill "sew-elevator-42") (kill "sew-elevator-34") (kill "sew-elevator-44") (kill "sew-elevator-50"))
+      (2 (want-load 'sewa 'sewm 'sewl) (want-display 'sewl 'display))
+      (10000
+        (restore "sew-elevator-42")
+        (restore "sew-elevator-34")
+        (restore "sew-elevator-44")
+        (restore "sew-elevator-50")
+        (save)
+        )
+      )
+    :cut-list '(129)
+    :wait-ground-time (seconds 1)
+    :actor (new 'static 'boxed-array :type scene-actor
+      (new 'static 'scene-actor
+        :name "scenecamera"
+        :level #f
+        :art-group "skel-scenecamera"
+        :prefix ""
+        :draw-frames '((min max))
+        :scissor-frames '()
+        :shadow-frames '((min max))
+        :cloth-reset-frames '()
+        :cloth-commands '()
+        :camera 4
+        :shadow-flags -1
+        :shadow-volume-joint #f
+        )
+      (new 'static 'scene-actor
+        :name "jakc-highres"
+        :level 'sewa
+        :art-group "skel-jakc-highres"
+        :prefix ""
+        :draw-frames '((min max))
+        :scissor-frames '()
+        :shadow-frames '((min max))
+        :cloth-reset-frames '((25 195))
+        :cloth-commands '()
+        :flags #x1
+        :shadow-flags -1
+        :shadow-volume-joint #f
+        :no-draw-seg #x380
+        )
+      (new 'static 'scene-actor
+        :name "sidekick-highres"
+        :level 'sewa
+        :art-group "skel-sidekick-highres"
+        :prefix ""
+        :draw-frames '((min max))
+        :scissor-frames '()
+        :shadow-frames '((min max))
+        :cloth-reset-frames '()
+        :cloth-commands '()
+        :flags #x1
+        :shadow-flags -1
+        :shadow-volume-joint #f
+        )
+      (new 'static 'scene-actor
+        :name "sew-elevator"
+        :level 'sewa
+        :art-group "skel-sew-elevator"
+        :prefix ""
+        :draw-frames '((min max))
+        :scissor-frames '()
+        :shadow-frames '((min max))
+        :cloth-reset-frames '()
+        :cloth-commands '()
+        :flags #x1
+        :shadow-flags -1
+        :shadow-volume-joint #f
+        )
+      )
+    :load-point "atoll-elevator"
+    :end-point "sewb-ate-elevator"
+    :borrow '()
+    :sfx-volume -1.0
+    :ambient-volume -1.0
+    :music-delay 1500.0
+    :on-running #f
+    :on-complete #f
+    )
+  )
