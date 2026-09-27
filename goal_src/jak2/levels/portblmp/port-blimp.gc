@@ -361,14 +361,14 @@
 (defpart 9011
   :init-specs ((:texture (glow effects))
     (:num 1.0)
-    (:scale-x (meters 12))                 ;; Aumentado (Original: 5)
+    (:scale-x (meters 12))
     (:rot-x (degrees 11.25))
     (:scale-y :copy scale-x)
     (:r 255.0)
     (:g 255.0)
     (:b 255.0)
     (:a 128.0)
-    (:scalevel-x (meters 1.2))             ;; Expansão mais rápida
+    (:scalevel-x (meters 1.2))
     (:rotvel-z (degrees 0.3))
     (:scalevel-y :copy scalevel-x)
     (:fade-r 0.0)
@@ -385,7 +385,7 @@
 (defpart 9012
   :init-specs ((:texture (glow effects))
     (:num 1.0)
-    (:scale-x (meters 5))                  ;; Aumentado (Original: 2)
+    (:scale-x (meters 5))
     (:rot-x (degrees 11.25))
     (:scale-y :copy scale-x)
     (:r 255.0)
@@ -408,16 +408,16 @@
 
 (defpart 9013
   :init-specs ((:texture (bigpuff effects))
-    (:num 3.0 2.0)                         ;; Mais partículas (Original: 2.0 1.0)
-    (:x (meters 0) (meters 1.5))           ;; Maior espalhamento inicial
-    (:scale-x (meters 5.0) (meters 4.0))   ;; Aumentado (Original: 2.5 2)
+    (:num 3.0 2.0)
+    (:x (meters 0) (meters 1.5))
+    (:scale-x (meters 5.0) (meters 4.0))
     (:rot-z (degrees 0) (degrees 360))
     (:scale-y :copy scale-x)
     (:r 70.0 20.0)
     (:g 70.0 20.0)
     (:b 70.0 20.0)
     (:a 0.0 50.0)
-    (:vel-y (meters 0.02) (meters 0.2))    ;; Maior velocidade vertical
+    (:vel-y (meters 0.02) (meters 0.2))
     (:scalevel-x (meters 0.066) (meters 0.04))
     (:rotvel-z (degrees -0.12) (degrees 0.24))
     (:scalevel-y :copy scalevel-x)
@@ -436,8 +436,8 @@
 
 (defpart 9014
   :init-specs ((:texture (flamingstick effects))
-    (:num 8.0 4.0)                         ;; Aumentado a quantidade
-    (:scale-x (meters 0.5) (meters 1.0))   ;; Aumentado escala
+    (:num 8.0 4.0)
+    (:scale-x (meters 0.5) (meters 1.0))
     (:rot-x 4)
     (:rot-z (degrees 0) (degrees 360))
     (:scale-y (meters 0.5) (meters 0.3))
@@ -456,16 +456,16 @@
 
 (defpart 9015
   :init-specs ((:texture (specs effects))
-    (:num 16.0 6.0)                        ;; Mais partículas projetadas
+    (:num 16.0 6.0)
     (:x (meters 0.5))
-    (:scale-x (meters 2.0) (meters 0.5))   ;; Aumentado (Original: 1 0.25)
+    (:scale-x (meters 2.0) (meters 0.5))
     (:rot-z (degrees 0) (degrees 360))
     (:scale-y :copy scale-x)
     (:r 255.0)
     (:g 255.0)
     (:b 255.0)
     (:a 16.0 48.0)
-    (:vel-y (meters 0.15) (meters 0.15))   ;; Projeção mais forte
+    (:vel-y (meters 0.15) (meters 0.15))
     (:scalevel-x (meters 0.012) (meters 0.003))
     (:rotvel-z (degrees -0.12) (degrees 0.24))
     (:scalevel-y :copy scalevel-x)
@@ -485,8 +485,8 @@
 (defpart 9016
   :init-specs ((:texture (explosion-nebula effects))
     (:birth-func 'birth-func-texture-group)
-    (:num 2.0 0.5)                         ;; Mais denso
-    (:scale-x (meters 2.5) (meters 2.0))   ;; Aumentado (Original: 1 1)
+    (:num 2.0 0.5)
+    (:scale-x (meters 2.5) (meters 2.0))
     (:rot-z (degrees 0))
     (:scale-y :copy scale-x)
     (:r 255.0)
@@ -513,10 +513,10 @@
 
 (defpart 9017
   :init-specs ((:texture (explosion-wave effects))
-    (:num 4.0 0.5)                         ;; Mais denso
-    (:scale-x (meters 2.5) (meters 2.0))   ;; Aumentado (Original: 1 1)
+    (:num 4.0 0.5)
+    (:scale-x (meters 2.5) (meters 2.0))
     (:rot-z (degrees 0) (degrees 3600) :store)
-    (:scale-y (meters 1.8) (meters 0.5))   ;; Aumentado
+    (:scale-y (meters 1.8) (meters 0.5))
     (:r 255.0)
     (:g 255.0)
     (:b 255.0)
@@ -541,7 +541,7 @@
   :duration (seconds 2)
   :linger-duration (seconds 1)
   :flags (use-local-clock unk-5 unk-6)
-  :bounds (static-bspherem 0 0 0 35)       ;; Raio Bounding Sphere aumentado para 35 para não recortar na tela
+  :bounds (static-bspherem 0 0 0 35)
   :rotate ((degrees 0) (degrees 90) (degrees 0))
   :parts ((sp-item 9011 :flags (bit6) :period (seconds 3) :length (seconds 0.017))
     (sp-item 9012 :flags (bit6) :period (seconds 3) :length (seconds 0.017))
@@ -741,13 +741,11 @@
       (until #f
         (ja :num-func num-func-identity :frame-num 0.0)
         (seek! (-> self position y) 0.0 (* 819.2 (-> self clock time-adjust-ratio)))
-
-        ;; O barco spawna em Z = 11468800.0 e bate no muro em Z = 7987200.0.
-        ;; O meio do caminho fica em torno de Z = 9728000.0.
+        
         (when (< (-> self position z) 9888000.0) 
           (if (-> self small)
-            (seek! (-> self speed) 0.55 (* 0.02 (-> self clock time-adjust-ratio)))  ;; Barco pequeno fica bem rápido
-            (seek! (-> self speed) 0.45 (* 0.05 (-> self clock time-adjust-ratio)))  ;; Barco grande ganha embalo constante
+            (seek! (-> self speed) 0.55 (* 0.02 (-> self clock time-adjust-ratio)))
+            (seek! (-> self speed) 0.45 (* 0.05 (-> self clock time-adjust-ratio)))
             )
           )
 
