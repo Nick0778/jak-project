@@ -365,11 +365,11 @@
    (flags                   uint8)
    (alert-state             traffic-alert-state       :inline)
    (level-data-array        traffic-level-data        2 :inline)
-   (object-type-info-array  traffic-object-type-info  21 :inline)
+   (object-type-info-array  traffic-object-type-info  23 :inline) ;; increased the size from 21 to 23 according to traffic-type size
    (tracker-array           traffic-tracker           2 :inline)
    (citizen-tracker-array   traffic-tracker           :inline :overlay-at (-> tracker-array 0))
-   (vehicle-tracker-array   traffic-tracker           :inline :offset 7024)
-   (inactive-object-array   handle                    420)
+   (vehicle-tracker-array   traffic-tracker           :inline :overlay-at (-> tracker-array 1)) ;; :offset 7024
+   (inactive-object-array   handle                    460) ;; 23 types * 20 handles per type (old value was 21)
    (suppressor              traffic-suppressor        :inline)
    (danger-sphere-count     int8)
    (pad                     int8                      15)
@@ -442,5 +442,7 @@
     (update-alert-state (_type_) none)
     (update-suppressor (_type_) none)
     (recompute-supressions (_type_) none)
+    (activate-roboguard-city (_type_ nav-segment float) none) ;; added
     )
   )
+  

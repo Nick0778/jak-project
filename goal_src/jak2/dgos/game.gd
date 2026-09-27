@@ -338,11 +338,13 @@
   "prototype.o"
   "main-collide.o"
   "video.o"
+  "portblmp-subtitle-manager.o" ;; added
   "capture-pc.o" ;; added
   "pckernel-common.o" ;; added
   "pckernel.o" ;; added
   "subtitle2-h.o" ;; added
   "subtitle2.o" ;; added
+  "input-display.o" ;;added ;;mod-base-change
   "main.o"
   "collide-cache.o"
   "collide-debug.o"
@@ -428,7 +430,7 @@
   "jak-swim+0-ag.go"
   "blocking-plane-ag.go"
   "los-control-h.o"
-  "airlock.o"
+  "airlock.o" ;; comment this out when using the customizable airlock system — see https://github.com/OpenGOAL-Mods/OG-Mod-Base/tree/main/goal_src/jak2/engine/mods/airlock-customizable/README.md for more details
   "water-anim.o"
   "blocking-plane.o"
   "idle-control.o"
@@ -455,12 +457,12 @@
   "process-taskable.o"
   "scene-actor.o"
   "scene-looper.o"
-  ;"warp-gate.o" ;; original warp-gate logic - be sure to comment this out if using the menu system logic below
-  "warp-gate-menu-h.o" ;; added - warp-gate menu definitions file (commented out by default)
-  "air-train-menu-h.o" ;; added - air-train menu definitions file (commented out by default)
-  "warp-gate-menu-data.o" ;; added - type definitions for warp-gate and air-train with menu logic (commented out by default)
-  "warp-gate-menu.o" ;; added - warp-gate menu logic (commented out by default)
-  "air-train-menu.o" ;; added - air-train menu logic (commented out by default)
+  "warp-gate.o" ;; original warp-gate logic - be sure to comment this out if using the menu system logic below
+  ;"warp-gate-menu-h.o" ;; added - warp-gate menu definitions file (commented out by default)
+  ;"air-train-menu-h.o" ;; added - air-train menu definitions file (commented out by default)
+  ;"warp-gate-menu-data.o" ;; added - type definitions for warp-gate and air-train with menu logic (commented out by default)
+  ;"warp-gate-menu.o" ;; added - warp-gate menu logic (commented out by default)
+  ;"air-train-menu.o" ;; added - air-train menu logic (commented out by default)
   "guard-projectile.o"
   "metalhead-projectile.o"
   "los-control.o"
@@ -470,6 +472,13 @@
   "elec-gate.o"
   "cty-guard-turret-button.o"
   "entity-debug.o" ;; added
+  "mod-settings.o" ;; added ;;mod-base-change
+  "mod-common-functions.o" ;; added
+  "orb-placer.o"  ;; added
+  "mod-custom-code.o" ;; added
+  "path-editor-h.o" ;; added - path-editor-h
+  "path-editor.o" ;; added - path-editor
+  "mod-debug.o" ;; added
   "hover-formation-h.o" ;; added 
   "hover-battle-h.o" ;; added - hover-battle-data array definitions code
   "hover-battle.o" ;; added - hover-battle-manager type definition code

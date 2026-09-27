@@ -1,0 +1,167 @@
+    ;;-*-Lisp-*-
+    (in-package goal)
+
+    ;; name: mod-custom-code.gc
+    ;; name in dgo: mod-custom-code
+    ;; dgos: TODO
+
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; What is this file for.
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    #| This file contains function defenitions that are pre placed in the mod base,
+    so if you place custom code inside of these functions, it will exectue based on
+    the name of the function, for example, if you place (set! (-> *game-info* fuel) (+ (-> *game-info* fuel) 1))
+    to the function named runs-on-orb-pickup, then jaks powercell count will increase each time you collect
+    an orb |#
+
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; Begin function defintions.
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    ;; hatkid's custom region don't work properly with the data, so I'm going to use this instead 
+    (defun set-region-data! ((id int) (event symbol) (data pair))
+      (let ((region (region-lookup-by-id id)))
+        (when region
+          (cond
+            ((= event 'on-enter)
+              (set! (-> region on-enter) data)
+              )
+            ((= event 'on-inside)
+              (set! (-> region on-inside) data)
+              )
+            ((= event 'on-exit)
+              (set! (-> region on-exit) data)
+              )
+            (else
+              (format 0 "ERROR: invalid event ~A!~%" event)
+              )
+            )
+          )
+        )
+      (none)
+      )
+
+    (defun test-zone-regions ()
+      ;; sphere region
+      (set-region-data! 1 'on-enter '(begin (print 'enter1) (send-event (actor-group 2) 'none)))
+      (set-region-data! 1 'on-inside '(begin (sound-play-loop "punch") (sound-play-loop "spin")))
+      (set-region-data! 1 'on-exit '(print 'exit1))
+
+      ;; face region
+      (set-region-data! 2 'on-enter '(begin (print 'enter14) (send-event "test-actor" 'rot)))
+
+      ;; water sphere region
+      ;; I did a small hack in script.gc in order to get this working
+      (set-region-data! 3 'on-inside '(water water-anim "water-anim-test-zone-1" (swim wade)))
+
+      ;; water volume region
+      (set-region-data! 4 'on-inside '(water height 0 (swim wade)))
+      (none)
+      )
+
+    (defun runs-every-frame ()
+      ;; (increase-power-cell-by-one) This is a call to increase-power-cell-by-one defined in mod-common-functions.gc
+
+      ;; Sample code to turn jak pink whenever he's doing the jetboard hover glitch
+      ;; (when *target* 
+      ;;   (if (board-hovering?)
+      ;;     (draw-pink *target*)
+      ;;     (draw-normal *target*)
+      ;;     )
+      ;;   )
+
+      (if *show-input-display* 
+        (input-display-on)
+        (input-display-off)
+        )
+
+      (when *debug-segment*
+        (orb-placer-maintenance)
+        )
+      
+      ;; defend the portwall stuff
+      (portblmp-hacks)
+      ;; hacks for custom tasks
+      (custom-tasks-hacks)
+      ;; regions
+      (test-zone-regions)
+
+      (none)
+      )
+
+    (defun runs-on-gem-pickup ()
+      ;; Code here runs on any scout fly pickup
+
+      (none)
+      )
+
+    (defun runs-on-task-close ()
+    
+
+      (none)
+      )
+
+    (defun runs-on-eco-pickup ((eco-type pickup-type) (parent process-tree))
+      (let* ((from-vent? #f))
+        ;; Code here runs as soon as you pickup ANY eco
+
+        (case eco-type
+          (((pickup-type eco-yellow))      
+            ;; Code here runs as soon as you pickup yellow eco
+
+            )
+          (((pickup-type eco-red))      
+            ;; Code here runs as soon as you pickup red eco
+
+            )
+          (((pickup-type eco-blue))      
+            ;; Code here runs as soon as you pickup blue eco
+
+            )
+
+          (((pickup-type eco-green))      
+            ;; Code here runs as soon as you pickup big green eco 
+
+            )
+          )
+        
+        (when from-vent?
+          ;; Code here runs only if the eco was picked up from a vent
+
+          )
+        )
+
+      (none)
+      )
+
+    (defun runs-on-jak-spawn ()
+      ;; Code here runs every time jak spawns (loading a file new game or death)   
+
+      (none)
+      )
+
+    (defun runs-on-jak-death ((death-event symbol))
+      (case death-event
+        (('dying)
+          ;; Code here runs immediately every time jak dies, before any death animation or death cutscene
+          
+          )
+        (('blackout)
+          ;; Code here runs after jak dies (and any death cutscene finishes), during the blackout before he spawns
+
+          )
+        )
+      
+      (none)
+      )
+
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; deprecated function defintions.
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    #| these are no longer recommended/supported however we include them anyways to not break anyones mods.
+    |#

@@ -49,7 +49,6 @@ namespace MiniAudioLib {
 #include "game/kernel/common/kernel_types.h"
 #include "game/kernel/common/kprint.h"
 #include "game/kernel/common/kscheme.h"
-#include "game/kernel/jak3/kscheme.h"
 #include "game/mips2c/mips2c_table.h"
 #include "game/runtime.h"
 #include "game/sce/libcdvd_ee.h"
@@ -202,7 +201,6 @@ std::mutex mainMusicMutex;
 
 // Mutex to synchronize access to sounds
 std::mutex soundMutex;
-std::condition_variable soundCondition;
 bool isPaused = false;  // flag to check whether the custom sounds are paused or not
 
 // Function to stop all instances of specific sound by filepath
@@ -226,18 +224,6 @@ void stopMP3(u32 filePathu32) {
     it->second.clear();
   }
 }
-
-// Function to stop all currently playing sounds.
-/* void stopAllSounds() {
-  for (auto& pair : maSoundMap) {
-    // stop all instances of this sound
-    for (auto sound : pair.second) {
-      MiniAudioLib::ma_sound_stop(&sound);
-    }
-    pair.second.clear();
-  }
-  maSoundMap.clear();
-}*/
 
 // Function to stop all currently playing sounds.
 void stopAllSounds() {
@@ -293,91 +279,25 @@ std::vector<std::string> getPlayingFileNames() {
   return playingFileNames;
 }
 
-/* u64 playMP3_internal(u32 filePathu32, u32 volume, bool isMainMusic) {
-  std::string filePath = Ptr<String>(filePathu32).c()->data();
-  std::string fullFilePath = fs::path(file_util::get_jak_project_dir() / "custom_assets" /
-                                      game_version_names[g_game_version] / "audio" / filePath)
-                                 .string();
-
-  if (!file_util::file_exists(fullFilePath)) {
-    // file doesn't exist, let GOAL side know we didn't find it
-    return bool_to_symbol(false);
-  }
-
-  std::thread thread([=]() {
-    std::cout << "Playing file: " << filePath << std::endl;
-
-    MiniAudioLib::ma_result result;
-    MiniAudioLib::ma_sound sound;
-
-    result = MiniAudioLib::ma_sound_init_from_file(&maEngine, fullFilePath.c_str(), 0, NULL, NULL,
-                                                   &sound);
-    if (result != MiniAudioLib::MA_SUCCESS) {
-      std::cout << "Failed to load: " << filePath << std::endl;
-      return;
-    }
-
-    MiniAudioLib::ma_sound_set_volume(&sound, ((float)volume) / 100.0);
-
-    if (isMainMusic) {
-      MiniAudioLib::ma_sound_set_looping(&sound, MA_TRUE);
-      mainMusicMutex.lock();
-      mainMusicSound = &sound;
-      mainMusicMutex.unlock();
-    }
-
-    MiniAudioLib::ma_sound_start(&sound);
-
-    if (!isMainMusic) {
-      std::lock_guard<std::mutex> lock(activeMusicsMutex);
-      if (maSoundMap.find(filePath) == maSoundMap.end()) {
-        maSoundMap.insert(std::make_pair(filePath, std::list<MiniAudioLib::ma_sound>()));
-      }
-      maSoundMap[filePath].push_back(sound);
-    }
-
-    // sleep/loop until we're no longer main music, or non-looping sound is stopped/ends
-    while (mainMusicSound == &sound || MiniAudioLib::ma_sound_is_playing(&sound)) {
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-
-    MiniAudioLib::ma_sound_stop(&sound);
-    MiniAudioLib::ma_sound_uninit(&sound);
-    std::cout << "Finished playing file: " << filePath << std::endl;
-
-    if (!isMainMusic) {
-      std::lock_guard<std::mutex> lock(activeMusicsMutex);
-      if (maSoundMap.find(filePath) != maSoundMap.end()) {
-        maSoundMap[filePath].remove_if(
-            [&](MiniAudioLib::ma_sound l_sound) { return &sound == &l_sound; });
-        forceStopSounds(); // Force sounds to stop. For some reason, without this `isAnySoundPlaying` will always return true even if the sound finished playing.
-      }
-    }
-  });
-
-  thread.detach();
-  return bool_to_symbol(true);
-}*/
-
 u64 playMP3_internal(u32 filePathu32, u32 volume, bool isMainMusic) {
   std::string filePath = Ptr<String>(filePathu32).c()->data();
   std::string fullFilePath = fs::path(file_util::get_jak_project_dir() / "custom_assets" /
-                                      game_version_names[g_game_version] / "audio" / filePath)
-                                 .string();
-
+                                  game_version_names[g_game_version] / "audio" / filePath).string();
+  
   if (!file_util::file_exists(fullFilePath)) {
     // file doesn't exist, let GOAL side know we didn't find it
     return bool_to_symbol(false);
   }
 
   std::thread thread([=]() {
+
     std::cout << "Playing file: " << filePath << std::endl;
 
     MiniAudioLib::ma_result result;
     MiniAudioLib::ma_sound sound;
 
     result = MiniAudioLib::ma_sound_init_from_file(&maEngine, fullFilePath.c_str(), 0, NULL, NULL,
-                                                   &sound);
+                                                    &sound);
     if (result != MiniAudioLib::MA_SUCCESS) {
       std::cout << "Failed to load: " << filePath << std::endl;
       return;
@@ -410,16 +330,21 @@ u64 playMP3_internal(u32 filePathu32, u32 volume, bool isMainMusic) {
        // Check if the game is paused
       if (isPaused) {
         // pause sound
-        std::cout << "Sounds paused, stopping playback..." << std::endl;
+        //std::cout << "Sounds paused, stopping playback..." << std::endl;
         MiniAudioLib::ma_sound_stop(&sound);  // stop the sound when paused
 
         // Wait until the game is resumed
-        while (isPaused) {
+        while (true) {
+          {
+            std::lock_guard<std::mutex> lock(soundMutex);
+            if (!isPaused)
+              break;
+          }
           std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
 
         // Resume the sound after the pause
-        std::cout << "Resuming sound: " << filePath << std::endl;
+        //std::cout << "Resuming sound: " << filePath << std::endl;
         MiniAudioLib::ma_sound_start(&sound);
       }
 
@@ -499,22 +424,22 @@ void changeMainMusicVolume(u32 volume) {
 
 // Function to check if any custom audio is being played or not. This will return true or false.
 u64 isAnySoundPlaying() {
-  bool anyPlaying = false;  // flag to track whether any sound is currently playing
+  bool anyPlaying = false;  // Flag to track whether any sound is currently playing
 
   std::lock_guard<std::mutex> activeLock(activeMusicsMutex);
 
   // Iterate over all entries in maSoundMap
   for (auto it = maSoundMap.begin(); it != maSoundMap.end();) {
-    auto& soundList = it->second;  // get the list of sounds for the current file
+    auto& soundList = it->second;  // Get the list of sounds for the current file
 
     // Remove sounds that have finished playing
     soundList.remove_if([](MiniAudioLib::ma_sound& sound) {
-      if (!MiniAudioLib::ma_sound_is_playing(&sound)) {  // check if the sound has stopped
-        MiniAudioLib::ma_sound_stop(&sound);             // stop the sound to free resources
-        MiniAudioLib::ma_sound_uninit(&sound);           // uninitialize to clean up memory
-        return true;                                     // remove this sound from the list
+      if (!MiniAudioLib::ma_sound_is_playing(&sound)) {  // Check if the sound has stopped
+        MiniAudioLib::ma_sound_stop(&sound);             // Stop the sound to free resources
+        MiniAudioLib::ma_sound_uninit(&sound);           // Uninitialize to clean up memory
+        return true;                                     // Remove this sound from the list
       }
-      return false;  // keep this sound in the list if it's still playing
+      return false;  // Keep this sound in the list if it's still playing
     });
 
     // If the list still contains sounds, set anyPlaying to true
@@ -524,19 +449,17 @@ u64 isAnySoundPlaying() {
 
     // If the list is empty after removing finished sounds, erase it from the map
     if (soundList.empty()) {
-      it = maSoundMap.erase(it);  // remove the entry and move iterator to the next valid element
+      it = maSoundMap.erase(it);  // Remove the entry and move iterator to the next valid element
     } else {
-      ++it;  // move to the next element in the map
+      ++it;  // Move to the next element in the map
     }
   }
 
-  if (anyPlaying) {
+  /*if (anyPlaying) {
     std::cout << "Some sound is being played!" << std::endl;
   } else {
     std::cout << "No sound is being played!" << std::endl;
-  }
-
-  //std::cout << "is-any-sound-playing?: " << bool_to_symbol(anyPlaying) << std::endl;
+  }*/
 
   return bool_to_symbol(anyPlaying);
 }
@@ -551,7 +474,7 @@ u64 isSoundPlaying(u32 filePathu32) {
 
   // Checks if the file is in the list of files being played
   if (std::find(playingFiles.begin(), playingFiles.end(), filePath) != playingFiles.end()) {
-    std::cout << "The sound: (" << filePath << ") is being played!" << std::endl;
+    //std::cout << "The sound: (" << filePath << ") is being played!" << std::endl;
     return bool_to_symbol(true);
   }
 
@@ -561,201 +484,17 @@ u64 isSoundPlaying(u32 filePathu32) {
 // Function to pause custom sounds
 void pauseAllSounds() {
   std::lock_guard<std::mutex> lock(soundMutex);
-  std::cout << "Pausing all sounds..." << std::endl;
+  //std::cout << "Pausing all sounds..." << std::endl;
   isPaused = true;  // pause sounds
 }
 
 // Function to resume custom sounds
 void resumeAllSounds() {
   std::lock_guard<std::mutex> lock(soundMutex);
-  std::cout << "Resuming all sounds..." << std::endl;
-  isPaused = false;             // resume sounds
-  soundCondition.notify_all();  // notifies the thread to resume
-  std::cout << "All sounds have resumed!" << std::endl;
+  //std::cout << "Resuming all sounds..." << std::endl;
+  isPaused = false; // resume sounds
+  //std::cout << "All sounds have resumed!" << std::endl;
 }
-
-//MiniAudioLib::ma_sound* g_cust_music;
-
-bool g_cust_engine_initialized = false;
-
-MiniAudioLib::ma_engine g_ma_engine_cust;
-
-MiniAudioLib::ma_sound* g_cust_music = nullptr;
-
-float get_custom_music_vol() {
-  auto volume = jak3::call_goal_function_by_name("custom-music-player-volume");
-
-  int int_volume = static_cast<int>(volume);
-
-  float vol = static_cast<float>(int_volume) / 100.0f;
-
-  if (vol < 0.f)
-    vol = 0.f;
-  if (vol > 1.f)
-    vol = 1.f;
-
-  return vol;
-}
-
-void lerp_custom_music(float vol, bool pause) {
-  auto lerp = [](float a, float b, float t) { return a + t * (b - a); };
-  float val;
-  if (pause) {
-    float time_elapsed = 1.f;
-    float start = vol;
-    float end = 0.f;
-    val = start;
-    while (val >= 0.01f) {
-      val = lerp(start, end, 1.0f - time_elapsed);
-      MiniAudioLib::ma_sound_set_volume(g_cust_music, std::min<float>(1.f, val));
-      time_elapsed -= 0.01f;
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-  } else {
-    float time_elapsed = 0.f;
-    float start = 0.f;
-    float end = vol;
-    val = start;
-    while (val < vol) {
-      val = lerp(start, end, time_elapsed);
-      MiniAudioLib::ma_sound_set_volume(g_cust_music, std::min<float>(1.f, val));
-      time_elapsed += 0.01f;
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-  }
-}
-
-void stop_custom_music(bool force) {
-  if (g_cust_music) {
-    if (force) {
-      MiniAudioLib::ma_sound_stop(g_cust_music);
-      MiniAudioLib::ma_sound_uninit(g_cust_music);
-#ifdef MA_UNIX
-      MiniAudioLib::ma_engine_stop(&g_ma_engine_cust);
-      MiniAudioLib::ma_engine_uninit(&g_ma_engine_cust);
-#endif
-      jak3::intern_from_c(-1, 0x40U, "*custom-music-playing?*")->value() = offset_of_s7();
-      return;
-    }
-    lerp_custom_music(get_custom_music_vol(), true);
-    MiniAudioLib::ma_sound_stop(g_cust_music);
-    MiniAudioLib::ma_sound_uninit(g_cust_music);
-    delete g_cust_music;
-    g_cust_music = nullptr;
-    jak3::intern_from_c(-1, 0x40U, "*custom-music-playing?*")->value() = offset_of_s7();
-  }
-}
-
-void pause_custom_music(bool lerp) {
-  if (g_cust_music) {
-    if (lerp) {
-      lerp_custom_music(get_custom_music_vol(), true);
-    }
-    MiniAudioLib::ma_sound_stop(g_cust_music);
-  }
-}
-
-u32 play_custom_music(u32 file_name, u32 volume) {
-  auto music_playing = jak3::intern_from_c(-1, 0x40U, "*custom-music-playing?*")->value() ==
-                       offset_of_s7() + jak3_symbols::FIX_SYM_TRUE;
-  auto music_is_playing = music_playing;
-  if (music_is_playing) {
-    printf("Custom music is already playing!\n");
-    return offset_of_s7();
-  }
-
-  std::thread music_thread([=] {
-    std::string name_str = Ptr<String>(file_name)->data();
-    std::string rel_path = "audio/music/" + name_str + ".wav";
-    std::string full_path =
-        (file_util::get_jak_project_dir() / "custom_assets" / "jak3" / rel_path).string();
-
-    if (!file_util::file_exists(full_path)) {
-      printf("Music file not found: %s\n", full_path.c_str());
-      return;
-    }
-
-    static std::mutex engine_init_mutex;
-    {
-      std::lock_guard<std::mutex> lock(engine_init_mutex);
-      if (!g_cust_engine_initialized) {
-        auto init_result = MiniAudioLib::ma_engine_init(nullptr, &g_ma_engine_cust);
-        if (init_result != MiniAudioLib::MA_SUCCESS) {
-          printf("Failed to initialize MiniAudio engine (error code: %d)\n", init_result);
-          return;
-        }
-        g_cust_engine_initialized = true;
-      }
-    }
-
-    auto* music = new MiniAudioLib::ma_sound;
-    auto result = MiniAudioLib::ma_sound_init_from_file(&g_ma_engine_cust, full_path.c_str(), 0,
-                                                        nullptr, nullptr, music);
-    if (result != MiniAudioLib::MA_SUCCESS) {
-      printf("Failed to load music: %s (error code: %d)\n", full_path.c_str(), result);
-      delete music;
-      return;
-    }
-
-    float vol = get_custom_music_vol();
-    printf("Playing music: %s (volume %f)\n", name_str.c_str(), vol);
-
-    MiniAudioLib::ma_sound_set_volume(music, 0.f);
-    MiniAudioLib::ma_sound_set_looping(music, MA_TRUE);
-    MiniAudioLib::ma_sound_start(music);
-
-    jak3::intern_from_c(-1, 0x40U, "*custom-music-playing?*")->value() =
-        offset_of_s7() + jak3_symbols::FIX_SYM_TRUE;
-    g_cust_music = music;
-    lerp_custom_music(vol, false);
-
-    auto paused_func = [](MiniAudioLib::ma_sound* music) {
-      while (!MiniAudioLib::ma_sound_is_playing(music)) {
-        auto pause = jak3::call_goal_function_by_name("custom-music-player-paused?");
-        if (pause == offset_of_s7()) {
-          auto fade = jak3::intern_from_c(-1, 0x40U, "*custom-music-fade?*")->value() ==
-                      offset_of_s7() + jak3_symbols::FIX_SYM_TRUE;
-          MiniAudioLib::ma_sound_start(music);
-          if (fade) {
-            lerp_custom_music(get_custom_music_vol(), false);
-          }
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
-      }
-    };
-
-    auto play_func = [&music, &paused_func]() {
-      while (MiniAudioLib::ma_sound_is_playing(music)) {
-        if (MasterExit != RuntimeExitStatus::RUNNING) {
-          stop_custom_music(true);
-          return;
-        }
-        auto stop = jak3::intern_from_c(-1, 0x40U, "*custom-music-stop*")->value();
-        if (stop == offset_of_s7() + jak3_symbols::FIX_SYM_TRUE) {
-          jak3::intern_from_c(-1, 0x40U, "*custom-music-stop*")->value() = offset_of_s7();
-          stop_custom_music(false);
-          return;
-        }
-        float vol = get_custom_music_vol();
-        MiniAudioLib::ma_sound_set_volume(music, std::min<float>(1.f, vol));
-        auto paused = jak3::call_goal_function_by_name("custom-music-player-paused?");
-        if (paused != offset_of_s7()) {
-          auto fade = jak3::intern_from_c(-1, 0x40U, "*custom-music-fade?*")->value() ==
-                      offset_of_s7() + jak3_symbols::FIX_SYM_TRUE;
-          pause_custom_music(fade);
-          paused_func(music);
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
-      }
-    };
-
-    play_func();
-  });
-
-  music_thread.detach();
-  return offset_of_s7() + jak3_symbols::FIX_SYM_TRUE;
-}
-
 
 /*!
  * Not checked super carefully for jak 2, but looks the same
@@ -1842,9 +1581,6 @@ void init_common_pc_port_functions(
   // Pause/Resume all sounds
   make_func_symbol_func("pause-all-sounds", (void*)pauseAllSounds);
   make_func_symbol_func("resume-all-sounds", (void*)resumeAllSounds);
-
-  // Play custom music
-  make_func_symbol_func("play-custom-music", (void*)play_custom_music);
 
   // discord rich presence
   make_func_symbol_func("pc-discord-rpc-set", (void*)set_discord_rpc);

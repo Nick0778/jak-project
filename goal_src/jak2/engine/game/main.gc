@@ -6,6 +6,7 @@
 ;; dgos: ENGINE, GAME
 
 ;; DECOMP BEGINS
+(defun-extern runs-every-frame (none))
 
 (defun set-letterbox-frames ((arg0 time-frame))
   "Set the remaining time until letterboxing is removed.
@@ -139,6 +140,10 @@
        (set! *pause-lock* #f)
        (sound-group-pause (sound-group sfx music dialog sog3 ambient dialog2 sog6 sog7))
        (set! (-> *game-info* pause-start-time) (-> *display* real-clock frame-counter))
+       ;; If there are custom audios playing, then, pause them
+       (if (is-any-sound-playing?)
+        (pause-all-sounds)
+        )
        )
       (('freeze)
        (logior! (-> *setting-control* user-default process-mask) (process-mask freeze))
@@ -163,10 +168,15 @@
              )
          )
        (set! (-> *game-info* pause-start-time) (-> *display* real-clock frame-counter))
+       ;; If there are custom audios playing, then, pause them
+       (if (is-any-sound-playing?)
+        (pause-all-sounds)
+        )
        )
       (('game)
        (logclear! (-> *setting-control* user-default process-mask) (process-mask freeze pause menu))
        (sound-group-continue (sound-group sfx music dialog sog3 ambient dialog2 sog6 sog7))
+       (resume-all-sounds) ;; Resume all custom audios
        )
       )
 
@@ -865,6 +875,7 @@
     (if (-> *level* loading-level)
         (load-continue (-> *level* loading-level))
         )
+    (runs-every-frame) ;;mod-base-change
 
     ; ;; Run blerc to modify foreground models
     (with-profiler 'merc *profile-merc-color*

@@ -50,8 +50,10 @@
   (tt17 17)
   (guard-bike 18)
   (hellcat 19)
-  (traffic-type-20 20)
-  (traffic-type-21 21)
+  (traffic-type-20 20) ;; not sure what this was supposed to be
+  (traffic-type-21 21) ;; enum ends here in vannila (apparently never used, but it indicated the enum limit)
+  (roboguard-city 22) ;; added - new traffic-type for my experiments
+  (max 23) ;; added - this will be used to indicate enum limit in the traffic system
   )
 ;; ---traffic-h:traffic-type
 

@@ -271,6 +271,8 @@
 (cgo-file "lguard.gd" common-dep)
 (cgo-file "lerbrngd.gd" common-dep)
 (cgo-file "lyskdcd.gd" common-dep)
+;; portblmp
+(cgo-file "portblmp.gd" common-dep)
 
 ;; test levels from the ps3 version
 (when USE_PS3_LEVELS
@@ -334,6 +336,23 @@
 (goal-src "engine/mods/hover-battle/hover-test/hover-test-setup.gc" "process-focusable")
 (custom-level-cgo "HVT.DGO" "hover-test/hover-test.gd")
 
+(build-custom-level "lwided")
+;; the DGO file
+(custom-level-cgo "LWD.DGO" "lwided/lwided.gd")
+
+;; atoll custom task level
+(build-custom-level "latoturret")
+(goal-src "levels/custom-tasks/atoll/atoll-destroy-obs.gc" "process-focusable") ;; mission actors code
+(goal-src "levels/custom-tasks/atoll/atoll-destroy-turret.gc" "process-focusable") ;; mission code
+(custom-level-cgo "LAT.DGO" "latoturret/latoturret.gd")
+
+;; sewer custom task level
+(build-custom-level "lsigsew")
+(goal-src "levels/custom-tasks/sewer/sig-sewer-h.gc" "process-focusable") ;; type and method definitions code
+(goal-src "levels/custom-tasks/sewer/sig-sewer-util-funcs.gc" "process-focusable") ;; some util functions code
+(goal-src "levels/custom-tasks/sewer/sig6-course.gc" "process-focusable") ;; bot course code
+(custom-level-cgo "LSS.DGO" "lsigsew/lsigsew.gd")
+
 ;;;;;;;;;;;;;;;;;;;;;
 ;; ANIMATIONS
 ;;;;;;;;;;;;;;;;;;;;;
@@ -374,7 +393,7 @@
   "TOSC0" "TOSC1" "TOSC2" "TOSSCARE" "TOTURRET" "TOUPOLES" "TOUSTART"
   "TOUWATER" "UNBD1" "UNBD2" "UNBD3" "UNBD4" "UNCONE" "UNCTHREE" "UNCTWO"
   "UNFSRES" "UNGSORES" "VIRESCUE" "VIRINTRO" "WOMAP" "YOFOREST" "YOLTRNYS"
-  "YOLYSAMS" "YOLYSKDC" "YOONINTE" "YOTOMBD")
+  "YOLYSAMS" "YOLYSKDC" "YOONINTE" "YOTOMBD" "CIPBRES")
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; MUSIC

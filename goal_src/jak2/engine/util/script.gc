@@ -207,6 +207,16 @@
              )
             ((type? arg0 string)
              (set! arg1 (process-by-ename (the-as string arg0)))
+
+             ;; added - get the process from a pair by its entity name string
+            (when (not arg1)
+              (let ((ent (entity-by-name (the-as string arg0))))
+                (when (and ent (type? ent entity-actor))
+                  (set! arg1 (-> (the-as entity-actor ent) extra process))
+                  )
+                )
+              )
+
              (cond
                (arg1
                  (empty)

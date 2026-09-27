@@ -1392,6 +1392,7 @@
     :activate-func #f
     :deactivate-func #f
     :kill-func #f
+    :borrow-size (new 'static 'array uint16 2 #x514 #x0) ;; added
     :borrow-level (new 'static 'array symbol 2 #f #f)
     :borrow-display? (new 'static 'array symbol 2 #f #f)
     :base-task-mask (task-mask task0)
@@ -4356,7 +4357,6 @@
     :activate-func 'strip-activate
     :deactivate-func 'strip-deactivate
     :kill-func #f
-    :borrow-size (new 'static 'array uint16 2 #x285 #x0) ;; added
     :borrow-level (new 'static 'array symbol 2 #f #f)
     :borrow-display? (new 'static 'array symbol 2 #f #f)
     :base-task-mask (task-mask task0)
@@ -4867,6 +4867,7 @@
     :activate-func #f
     :deactivate-func #f
     :kill-func #f
+    :borrow-size (new 'static 'array uint16 2 #x17c #x82f) ;; added
     :borrow-level (new 'static 'array symbol 2 #f #f)
     :borrow-display? (new 'static 'array symbol 2 #f #f)
     :base-task-mask (task-mask task0 primary0)
@@ -14686,6 +14687,109 @@
                    )
         )
 
+;; Added - Defined a new checkpoint for portblmp level
+(define portblmp
+  (new 'static 'level-load-info
+    :index #x9e
+    :name 'portblmp
+    :visname 'portblmp-vis
+    :nickname 'portblmp
+    :dbname 'portblmp
+    :taskname 'default
+    :packages '()
+    :music-bank 'city1
+    :ambient-sounds '()
+    :mood-func 'update-mood-default
+    :mood-init #f
+    :ocean #f
+    :sky #t
+    :use-camera-other #f
+    :continues '((new 'static 'continue-point
+        :name "ctyport-turret"
+        :level 'portblmp
+        :trans (new 'static 'vector :x (meters 605.40) :y (meters 4.29) :z (meters 1887.73) :w 1.0)
+        :quat (new 'static 'vector :y -0.15 :w 0.98)
+        :camera-trans (new 'static 'vector :x 375318.53 :y 25830.605 :z 826459.75 :w 1.0)
+        :camera-rot (new 'static 'inline-array vector3s 3
+          (new 'static 'vector3s :data (new 'static 'array float 3 0.9211 0.0 0.3893))
+          (new 'static 'vector3s :data (new 'static 'array float 3 -0.0471 0.9926 0.1115))
+          (new 'static 'vector3s :data (new 'static 'array float 3 -0.3864 -0.1210 0.9143))
+          )
+        :on-goto #f
+        :vis-nick 'portblmp
+        :want (new 'static 'inline-array level-buffer-state 6
+          (new 'static 'level-buffer-state :name 'portblmp :display? 'display :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name 'ctyport :display? 'display :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name 'ctywide :display? 'display :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
+          )
+        :want-sound (new 'static 'array symbol 3 'drill1 'ctywide1 'ctywide2) ;; Added - Drill Platform's sound banks for turret's sound
+        )
+      (new 'static 'continue-point
+        :name "ctyport-turret-res"
+        :level 'portblmp
+        :trans (new 'static 'vector :x (meters 604.33) :y (meters 4.29) :z (meters 1903.71) :w 1.0)
+        :quat (new 'static 'vector :y -0.98 :w -0.18)
+        :camera-trans (new 'static 'vector :x 375318.53 :y 25830.605 :z 826459.75 :w 1.0)
+        :camera-rot (new 'static 'inline-array vector3s 3
+          (new 'static 'vector3s :data (new 'static 'array float 3 -0.9349 0.0 -0.3546))
+          (new 'static 'vector3s :data (new 'static 'array float 3 0.0425 0.9927 -0.1121))
+          (new 'static 'vector3s :data (new 'static 'array float 3 0.3521 -0.1199 -0.9282))
+          )
+        :on-goto #f
+        :vis-nick 'portblmp
+        :want (new 'static 'inline-array level-buffer-state 6
+          (new 'static 'level-buffer-state :name 'portblmp :display? 'display :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name 'ctyport :display? 'display :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name 'ctywide :display? 'display :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
+          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
+          )
+        :want-sound (new 'static 'array symbol 3 'drill1 'ctywide1 'ctywide2) ;; Added - Drill Platform's sound banks for turret's sound
+        )
+      )
+    :tasks '()
+    :priority 100
+    :load-commands '()
+    :alt-load-commands '()
+    :bsp-mask #xffffffffffffffff
+    :buttom-height (meters -10000000)
+    :run-packages '("common")
+    :wait-for-load #t
+    :login-func #f
+    :activate-func #f
+    :deactivate-func #f
+    :kill-func #f
+    :borrow-size (new 'static 'array uint16 2 #x352 #x0)
+    :borrow-level (new 'static 'array symbol 2 #f #f)
+    :borrow-display? (new 'static 'array symbol 2 #f #f)  
+    :base-task-mask (task-mask task0)
+    :texture-anim-tfrag #f
+    :texture-anim-pris #f
+    :texture-anim-shrub #f
+    :texture-anim-alpha #f
+    :texture-anim-water #f
+    :texture-anim-twarp #f
+    :texture-anim-pris2 #f
+    :texture-anim-sprite #f
+    :texture-anim-map #f
+    :texture-anim-sky #f
+    :draw-priority 10.0
+    :fog-height 327680.0
+    :bigmap-id (bigmap-id city)
+    :ocean-near-translucent? #t
+    :ocean-far? #f
+    :mood-range (new 'static 'mood-range :data (new 'static 'array float 4 0.0 1.0 0.0 1.0))
+    :max-rain 1.0
+    :fog-mult 1.0
+    :ocean-alpha 1.0
+    :extra-sound-bank #f
+    )
+  )
+
 (when (or (= *kernel-boot-message* 'demo) (= *kernel-boot-message* 'demo-shared))
   (set! (-> ctywide memory-mode) (load-buffer-mode small-edge))
   0
@@ -15710,6 +15814,7 @@
                              chartest
                              dptest
                              ctyfence
+                             portblmp
                              )
         )
 
@@ -15741,7 +15846,7 @@
     :ambient-sounds '()
     :mood-func 'update-mood-default
     :mood-init #f
-    :ocean #f
+    :ocean '*ocean-map-test*
     :sky #t
     :use-camera-other #f
     :part-engine-max 16
@@ -15811,86 +15916,180 @@
   (cons! *level-load-list* 'test-zone)
   )
 
-(define hover-test
-  (new 'static 'level-load-info
-    :index #x9e
-    :name 'hover-test
-    :visname 'hover-test-vis
-    :nickname 'hvt
-    :dbname 'hover-test
-    :taskname 'default
-    :packages '()
-    ;:memory-mode (load-buffer-mode large)
-    :music-bank 'strip
-    :ambient-sounds '()
-    :mood-func 'update-mood-default
-    :mood-init #f
-    :ocean #f
-    :sky #t
-    :use-camera-other #f
-    :part-engine-max 16
-    :continues '((new 'static 'continue-point
-        :name "hover-test-start"
-        :level 'hover-test
-        :trans (new 'static 'vector :x (meters 21.05) :y 0.0 :z (meters -0.49) :w 1.0)
-        :quat (new 'static 'vector :y 0.65 :w -0.75)
-        :camera-trans (new 'static 'vector :x (meters -6.9712) :y (meters 87.8886) :z 0.0 :w 1.0)
-        :camera-rot (new 'static 'inline-array vector3s 3
-          (new 'static 'vector3s :data (new 'static 'array float 3 0.0368 0.0 0.9993))
-          (new 'static 'vector3s :data (new 'static 'array float 3 -0.1212 0.9926 0.0044))
-          (new 'static 'vector3s :data (new 'static 'array float 3 -0.9919 -0.1213  0.0365))
-          )
-        :on-goto #f
-        :vis-nick #f
-        :want (new 'static 'inline-array level-buffer-state 6
-          (new 'static 'level-buffer-state :name 'hover-test :display? 'display :force-vis? #f :force-inside? #f)
-          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
-          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
-          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
-          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
-          (new 'static 'level-buffer-state :name #f :display? #f :force-vis? #f :force-inside? #f)
-          )
-        :want-sound (new 'static 'array symbol 3 'drill1 'drill3 'drill6)
+(define lwided (new 'static 'level-load-info
+                 :index #x9f
+                 :task-level #x1
+                 :name 'lwided
+                 :visname 'lwided-vis
+                 :nickname 'lwd
+                 :dbname 'lwided
+                 :taskname 'city
+                 :packages '()
+                 :memory-mode (load-buffer-mode borrow)
+                 :music-bank #f
+                 :ambient-sounds '()
+                 :mood-func 'update-mood-ctywide
+                 :mood-init #f
+                 :ocean #f
+                 :sky #f
+                 :use-camera-other #f
+                 :continues '()
+                 :tasks '()
+                 :priority 100
+                 :load-commands '()
+                 :alt-load-commands '()
+                 :bsp-mask #xffffffffffffffff
+                 :buttom-height (meters -20)
+                 :run-packages '("common")
+                 :wait-for-load #f
+                 :login-func #f
+                 :activate-func 'lwide-activate
+                 :deactivate-func 'lwide-deactivate
+                 :kill-func 'lwide-kill ;; og:preserve-this required to suppress rogue entity errors
+                 :borrow-level (new 'static 'array symbol 2 #f #f)
+                 :borrow-display? (new 'static 'array symbol 2 #f #f)
+                 :texture-anim-tfrag #f
+                 :texture-anim-pris #f
+                 :texture-anim-shrub #f
+                 :texture-anim-alpha #f
+                 :texture-anim-water #f
+                 :texture-anim-twarp #f
+                 :texture-anim-pris2 #f
+                 :texture-anim-sprite #f
+                 :texture-anim-map #f
+                 :texture-anim-sky #f
+                 :draw-priority 10.0
+                 :level-flags #x1
+                 :fog-height 327680.0
+                 :bigmap-id (bigmap-id city)
+                 :ocean-near-translucent? #t
+                 :ocean-far? #f
+                 :mood-range (new 'static 'mood-range :data (new 'static 'array float 4 0.0 1.0 0.0 1.0))
+                 :max-rain 1.0
+                 :fog-mult 1.0
+                 :ocean-alpha 1.0
+                 :extra-sound-bank '((ctywide3 castle2))
+                 )
         )
-      )
-    :tasks '()
-    :priority 100
-    :load-commands '()
-    :alt-load-commands '()
-    :bsp-mask #xffffffffffffffff
-    :buttom-height (meters -10000000)
-    :run-packages '()
-    :wait-for-load #t
-    :login-func 'hover-test-login
-    :activate-func 'hover-test-activate
-    :deactivate-func 'hover-test-deactivate
-    :kill-func #f
-    :borrow-level (new 'static 'array symbol 2 #f #f)
-    :borrow-display? (new 'static 'array symbol 2 #f #f)
-    :base-task-mask (task-mask task0)
-    :texture-anim-tfrag #f
-    :texture-anim-pris #f
-    :texture-anim-shrub #f
-    :texture-anim-alpha #f
-    :texture-anim-water #f
-    :texture-anim-twarp #f
-    :texture-anim-pris2 #f
-    :texture-anim-sprite #f
-    :texture-anim-map #f
-    :texture-anim-sky #f
-    :draw-priority 10.0
-    :fog-height 327680.0
-    :bigmap-id (bigmap-id city)
-    :ocean-near-translucent? #t
-    :ocean-far? #t
-    :mood-range (new 'static 'mood-range :data (new 'static 'array float 4 0.0 1.0 0.0 1.0))
-    :max-rain 1.0
-    :fog-mult 1.0
-    :ocean-alpha 1.0
-    :extra-sound-bank #f
-    )
-  )
 
 (#when PC_PORT
-  (cons! *level-load-list* 'hover-test)
+  (cons! *level-load-list* 'lwided)
+  )
+
+;; custom level for atoll custom task (uses borrow memory-mode)
+(define latoturret (new 'static 'level-load-info
+                 :index #x75
+                 :task-level #x6
+                 :name 'latoturret
+                 :visname 'latoturret-vis
+                 :nickname 'lat
+                 :dbname 'latoturret
+                 :taskname 'atoll
+                 :packages '()
+                 :memory-mode (load-buffer-mode borrow)
+                 :music-bank #f
+                 :ambient-sounds '()
+                 :mood-func 'update-mood-atoll
+                 :mood-init #f
+                 :ocean #f
+                 :sky #f
+                 :use-camera-other #f
+                 :continues '()
+                 :tasks '()
+                 :priority 100
+                 :load-commands '()
+                 :alt-load-commands '()
+                 :bsp-mask #xffffffffffffffff
+                 :buttom-height (meters -20)
+                 :run-packages '("common")
+                 :wait-for-load #f
+                 :login-func #f
+                 :activate-func #f
+                 :deactivate-func #f
+                 :kill-func #f
+                 :borrow-level (new 'static 'array symbol 2 #f #f)
+                 :borrow-display? (new 'static 'array symbol 2 #f #f)
+                 :base-task-mask (task-mask task3)
+                 :texture-anim-tfrag #f
+                 :texture-anim-pris #f
+                 :texture-anim-shrub #f
+                 :texture-anim-alpha #f
+                 :texture-anim-water #f
+                 :texture-anim-twarp #f
+                 :texture-anim-pris2 #f
+                 :texture-anim-sprite #f
+                 :texture-anim-map #f
+                 :texture-anim-sky #f
+                 :draw-priority 10.0
+                 :fog-height 327680.0
+                 :ocean-near-translucent? #t
+                 :ocean-far? #f
+                 :mood-range (new 'static 'mood-range :data (new 'static 'array float 4 0.0 1.0 0.0 1.0))
+                 :max-rain 1.0
+                 :fog-mult 1.0
+                 :ocean-alpha 1.0
+                 :extra-sound-bank '((atoll4 sewer1))
+                 )
+        )
+(#when PC_PORT
+  (cons! *level-load-list* 'latoturret)
+  )
+
+;; custom level for sewer custom task (uses borrow memory-mode)
+(define lsigsew (new 'static 'level-load-info
+                 :index #x75
+                 :task-level #x6
+                 :name 'lsigsew
+                 :visname 'lsigsew-vis
+                 :nickname 'lss
+                 :dbname 'lsigsew
+                 :taskname 'sewer
+                 :packages '()
+                 :memory-mode (load-buffer-mode borrow)
+                 :music-bank #f
+                 :ambient-sounds '()
+                 :mood-func 'update-mood-sewer
+                 :mood-init #f
+                 :ocean #f
+                 :sky #f
+                 :use-camera-other #f
+                 :continues '()
+                 :tasks '()
+                 :priority 100
+                 :load-commands '()
+                 :alt-load-commands '()
+                 :bsp-mask #xffffffffffffffff
+                 :buttom-height (meters -20)
+                 :run-packages '("common")
+                 :wait-for-load #f
+                 :login-func #f
+                 :activate-func #f
+                 :deactivate-func #f
+                 :kill-func #f
+                 :borrow-level (new 'static 'array symbol 2 #f #f)
+                 :borrow-display? (new 'static 'array symbol 2 #f #f)
+                 :base-task-mask (task-mask task3)
+                 :texture-anim-tfrag #f
+                 :texture-anim-pris #f
+                 :texture-anim-shrub #f
+                 :texture-anim-alpha #f
+                 :texture-anim-water #f
+                 :texture-anim-twarp #f
+                 :texture-anim-pris2 #f
+                 :texture-anim-sprite #f
+                 :texture-anim-map #f
+                 :texture-anim-sky #f
+                 :draw-priority 10.0
+                 :fog-height 327680.0
+                 :ocean-near-translucent? #t
+                 :ocean-far? #f
+                 :mood-range (new 'static 'mood-range :data (new 'static 'array float 4 0.0 1.0 0.0 1.0))
+                 :max-rain 1.0
+                 :fog-mult 1.0
+                 :ocean-alpha 1.0
+                 :extra-sound-bank '((sewer4 sewer1) (sewer5 atoll2) (sewer6 atoll3))
+                 )
+        )
+(#when PC_PORT
+  (cons! *level-load-list* 'lsigsew)
   )

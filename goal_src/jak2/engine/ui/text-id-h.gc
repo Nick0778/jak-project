@@ -829,7 +829,7 @@
   (progress-graphics-ps2-lod-dist #x1337)
   (progress-graphics-msaa-off #x1338)
   (progress-graphics-display #x1339)
-  (language-name-finnish #x133a)
+  (language-name-finnish #x133a)  
   (progress-hint-subtitles #x133b)
   (language-name-portuguese #x133c)
   (language-name-swedish #x133d)
@@ -848,6 +848,33 @@
   (progress-controller-options-enable-pressure-sensitivity #x134a)
   (progress-controller-options-swap-r1-r2 #x134b)
   (progress-controller-options-enable-trigger-effects #x134c)
+  ;; mod text
+  (pad-triangle #x2000)
+  (pad-circle #x2001)
+  (pad-x #x2002)
+  (pad-square #x2003)
+  (scene-protect-blimp-res #x2004)
+
+  ;; custom task progress texts
+  (progress-missions-atoll-destroy-turrets #x3000) ;; "Destroy turrets in Pumping Station"
+  (progress-missions-sewer-sig #x3001) ;; "Protect Sig in Sewers"
+  
+  ;; destination names text
+  (caspad-name #x10000)
+  (nest-name #x10001)
+  (ctyport-name #x10002)
+  (strip-name #x10003)
+  (drill-name-1 #x10004)
+  (drill-name-2 #x10005)
+  (vinroom-name #x10006)
+  (mountain-top-name #x10007)
+  (mountain-bottom-name #x10008)
+
+  ;; menu stuff text
+  (select-destination #x100000)
+  (no-menu-data #x100001)
+  (next-page #x100002)
+  (previous-page #x100003)
 )
 ;; ---text-id
 

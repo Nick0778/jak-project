@@ -1,8 +1,8 @@
 ;;-*-Lisp-*-
 (in-package goal)
 
-(define *selected* -1)
-(define *items-per-page* 6)
+(define *wm-selected* -1)
+(define *wm-at-items-per-page* 6)
 
 (defmethod warp-select-menu ((this air-train))
   (let* ((menu (-> this menu-list))
@@ -11,12 +11,12 @@
           (available-count 0) ;; stores the amount of options that are available for selection 
           )
     (dotimes (i list-length)
-      (let* ((allow-task (-> menu i allow-when))
-              (forbid-task (-> menu i forbid-when))
-              )
-        ;; include the option if the `allow-when` task is closed,
-        ;; and the `forbid-when` task is either not set or not closed yet.
-        (when (and (or (not allow-task) (task-closed? allow-task)) (or (not forbid-task) (not (task-closed? forbid-task))))
+      (let* ((allowed? (-> menu i allow-when))
+             (forbidden? (-> menu i forbid-when)))
+        ;; include the option if `allowed?` is set and returns true,
+        ;; and `forbidden?` is either not set (not forbidden?) or does not return true (not (forbidden?)).
+        (when (and (or (not allowed?) (allowed?)) 
+                   (or (not forbidden?) (not (forbidden?))))
           (set! (-> available-idxs available-count) i) ;; store the available option indexes in `available-idxs` array  
           (+! available-count 1)
           )
@@ -24,11 +24,11 @@
       )
 
     (let* ((page (-> this page)) ;; current page
-            (start-idx (* page *items-per-page*)) ;; start index of the current page
-            (end-idx (+ start-idx *items-per-page*)) ;; exclusive end index for the current page, used to check if there's a next page
+            (start-idx (* page *wm-at-items-per-page*)) ;; start index of the current page
+            (end-idx (+ start-idx *wm-at-items-per-page*)) ;; exclusive end index for the current page, used to check if there's a next page
             (have-next-page? (< end-idx available-count)) ;; is there a next page?
             (have-prev-page? (> page 0)) ;; is there a previous page?
-            (items-this-page (min *items-per-page* (- available-count start-idx))) ;; amount of items in this page (only destination options is counted)
+            (items-this-page (min *wm-at-items-per-page* (- available-count start-idx))) ;; amount of items in this page (only destination options is counted)
             (extra-options (cond ((and have-prev-page? have-next-page?) 2) ;; add 2 if have next and previous pages
                                   (have-prev-page? 1) ;; add 1 if only have previous page 
                                   (have-next-page? 1) ;; add 1 if only have next page
@@ -58,9 +58,7 @@
                 (set! (-> this selected) 0)
                 )
               (else ;; warp to the selected destination
-                ;(return (the-as object (-> this selected)))
-                ;(set! *selected* (-> this selected))
-                (set! *selected* (-> available-idxs (+ start-idx (-> this selected))))
+                (set! *wm-selected* (-> available-idxs (+ start-idx (-> this selected))))
                 (go air-train-warp)
                 )
               )
@@ -204,10 +202,12 @@
           (list-length (-> menu length))
           )
     (dotimes (i list-length)
-      (let* ((allow-task (-> menu i allow-when))
-              (forbid-task (-> menu i forbid-when))
-              )
-        (when (and (or (not allow-task) (task-closed? allow-task)) (or (not forbid-task) (not (task-closed? forbid-task))))
+      (let* ((allowed? (-> menu i allow-when))
+             (forbidden? (-> menu i forbid-when)))
+        ;; include the option if `allowed?` is set and returns true,
+        ;; and `forbidden?` is either not set (not forbidden?) or does not return true (not (forbidden?)).
+        (when (and (or (not allowed?) (allowed?)) 
+                   (or (not forbidden?) (not (forbidden?))))
           (return #t)
           )
         )
@@ -289,12 +289,10 @@
     (send-event *camera* 'change-target *target*)
     (remove-setting! 'interp-time)
     (remove-setting! 'mode-name)
-    ;(process-release? *target*)
     )
   :trans (behavior ()
-    (format *stdcon* "selected: ~D~%" *selected*)
-    (format *stdcon* "page: ~D~%" (-> self page))
-    (warp-select-menu self)
+    ;(format *stdcon* "selected: ~D~%" *wm-selected*)
+    ;(format *stdcon* "page: ~D~%" (-> self page))
     (when (time-elapsed? (-> self state-time) (seconds 0.5))
       (warp-select-menu self)
       (when (cpad-pressed? 0 triangle)
@@ -324,7 +322,7 @@
 
 (defstate air-train-warp (air-train)
   :enter (behavior ()
-    (set-warp! self *selected*)
+    (set-warp! self *wm-selected*)
     )
   :code (behavior ()
     (warp-to-continue self)

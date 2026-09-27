@@ -1034,15 +1034,39 @@
             :play-continue "stadiumd-race-fail"
             :kiosk-play-continue #f
             )
+          ;; added - task for the cut `Defend the Portwall` mission
           (new 'static 'game-task-info
-            :name "strip-hover-battle"
-            :pre-play-node (game-task-node strip-hover-battle-introduction)
-            :kiosk-play-node (game-task-node strip-hover-battle-resolution)
-            :pre-play-continue "vinroom-start"
-            :play-node (game-task-node strip-hover-battle-resolution)
-            :play-continue "strip-warp"
-            :kiosk-play-continue "vinroom-start"
+            :name "city-protect-blimp"
+            :text-name (text-id progress-missions-defend-port-wall)
+            :pre-play-node (game-task-node city-protect-blimp-introduction)
+            :kiosk-play-node (game-task-node city-protect-blimp-introduction)
+            :pre-play-continue "ctyport-turret"
+            :play-node (game-task-node city-protect-blimp-resolution)
+            :play-continue "ctyport-turret"
+            :kiosk-play-continue #f
             )
+          ;; added - atoll custom task
+          (new 'static 'game-task-info
+            :name "atoll-destroy-turrets"
+            :text-name (text-id progress-missions-atoll-destroy-turrets)
+            :pre-play-node (game-task-node atoll-destroy-turrets-introduction)
+            :kiosk-play-node (game-task-node atoll-destroy-turrets-introduction)
+            :pre-play-continue "hideout-start"
+            :play-node (game-task-node atoll-destroy-turrets-destroy)
+            :play-continue "atoll-start"
+            :kiosk-play-continue "hideout-start"
+            )
+          ;; added - sewer custom task
+          (new 'static 'game-task-info
+            :name "sewer-sig"
+            :text-name (text-id progress-missions-sewer-sig)
+            :pre-play-node (game-task-node sewer-sig-introduction)
+            :kiosk-play-node (game-task-node sewer-sig-protect)
+            :pre-play-continue "hideout-start"
+            :play-node (game-task-node sewer-sig-protect)
+            :play-continue "sewesc-start"
+            :kiosk-play-continue "sewesc-start"
+            )  
           )
         )
   (set! (-> gp-0 sub-task-list)
@@ -1077,7 +1101,7 @@
               (stadiumd 0 #f #f) ;; added
               (introcst 0 lintcstb #f)
               (onintent 0 ltentout display)
-              (strip 0 #f #f) ;; added for hover-test
+              (portblmp 0 ltrnysam special) ;; added
               )
             :open? #f
             :on-close #f
@@ -8546,6 +8570,7 @@
               :on-complete #f
               :on-fail #f
               )
+            ;:borrow '((ctywide 1 lwided special)) ;; added - package containing roboguard art-group
             :borrow '()
             :open? #f
             :on-close #f
@@ -8590,6 +8615,7 @@
               :on-fail #f
               :end-sphere (new 'static 'sphere :x 195072.81 :y 223707.95 :z -6889803.0 :r 28672.0)
               )
+            ;:borrow '((ctywide 1 lwided special)) ;; added - package containing roboguard art-group
             :borrow '()
             :open? #f
             :on-close #f
@@ -8649,6 +8675,7 @@
             :task-mask (task-mask task1)
             :on-open #f
             :info #f
+            ;:borrow '((ctywide 1 lwided special)) ;; added - package containing roboguard art-group
             :borrow '()
             :open? #f
             :on-close #f
@@ -9176,7 +9203,7 @@
             :when-open #f
             :flags (game-task-node-flag save-on-life intro-wait task-manager)
             :parent-node (new 'static 'array game-task-node 4
-              (game-task-node city-defend-stadium-resolution)
+              (game-task-node city-protect-blimp-resolution) ;; changed - Construction site task will be after "Defend the Portwall" task
               (game-task-node none)
               (game-task-node none)
               (game-task-node none)
@@ -12316,48 +12343,339 @@
                     )
             :on-close #f
             )
-          ;; added for hover-test
+          ;; added - task node for the cut `Defend the Portwall` mission
           (new 'static 'game-task-node-info
-            :level 'strip
-            :task (game-task strip-hover-battle)
-            :name "strip-hover-battle-introduction"
-            :when-open #f
-            :flags (game-task-node-flag save-on-life)
-            :parent-node (new 'static 'array game-task-node 4
-              (game-task-node nest-boss-resolution)
-              (game-task-node none)
-              (game-task-node none)
-              (game-task-node none)
-              )
-            :on-open '(begin (task-close! "strip-hover-battle-introduction"))
-            :info #f
-            :borrow '()
-            :open? #f
-            :on-close #f
-            )
-          (new 'static 'game-task-node-info
-            :level 'strip
-            :task (game-task strip-hover-battle)
-            :name "strip-hover-battle-resolution"
+            :level 'city
+            :task (game-task city-protect-blimp)
+            :name "city-protect-blimp-introduction"
             :when-open (new 'static 'boxed-array :type game-task-event
               (new 'static 'game-task-event
                 :actor (game-task-actor minimap)
                 :action (game-task-action show)
-                :tex (game-task-icon gaticon-03)
+                :tex (game-task-icon gaticon-30)
+                :scene #f
+                )
+            )
+            :flags (game-task-node-flag save-on-life intro-wait task-manager)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node city-defend-stadium-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :info (new 'static 'task-manager-info
+              :mask (task-manager-mask intro-scene)
+              :level 'ctywide
+              :intro-scene "tor005" ;; Torn's intro speaker voice line from "Defend the Portwall" mission  
+              :resolution-scene #f
+              :resolution-scene-continue #f
+              :retry-continue #f
+              :fail-continue #f
+              :init-hook #f
+              :cleanup-hook #f
+              :update-hook #f
+              :code-hook #f
+              :complete-hook #f
+              :fail-hook #f
+              :event-hook #f
+              :final-node (game-task-node city-protect-blimp-introduction)
+              :intro-delay #x258
+              :on-complete #f
+              :on-fail #f
+              )
+            :task-mask (task-mask task0)
+            :borrow '((ctywide 1 lwideb special))
+            :open? #f
+            :on-close #f
+            :description (text-id progress-missions-defend-port-wall)
+            )
+          ;; added - task node for the cut `Defend the Portwall` mission
+          (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task city-protect-blimp)
+            :name "city-protect-blimp-resolution"
+            :when-open (new 'static 'boxed-array :type game-task-event
+              (new 'static 'game-task-event
+                :actor (game-task-actor minimap)
+                :action (game-task-action show)
+                :tex (game-task-icon gaticon-30)
                 :scene #f
                 )
               )
-            :flags (game-task-node-flag close-task abs-task-mask)
+            :flags (game-task-node-flag close-task abs-task-mask task-manager)
             :parent-node (new 'static 'array game-task-node 4
-              (game-task-node strip-hover-battle-introduction)
+              (game-task-node city-protect-blimp-introduction)
               (game-task-node none)
               (game-task-node none)
               (game-task-node none)
               )
             :task-mask (task-mask done)
             :on-open #f
+            :info (new 'static 'task-manager-info
+              :mask (task-manager-mask resolution-scene)
+              :level 'portblmp
+              :intro-scene #f
+              :resolution-scene "city-protect-blimp-res"
+              :resolution-scene-continue "ctyport-turret-res"
+              :retry-continue "ctyport-turret"
+              :fail-continue "ctyport-turret"
+              :init-hook #f
+              :cleanup-hook #f
+              :update-hook #f
+              :code-hook #f
+              :complete-hook #f
+              :fail-hook #f
+              :event-hook #f
+              :final-node (game-task-node city-protect-blimp-resolution)
+              :on-complete #f
+              :on-fail #f
+              )
+            :task-mask (task-mask task0)
+            :borrow '((ctywide 1 lwideb special))
+            :open? #f
+            :on-close #f
+            :description (text-id progress-missions-defend-port-wall)
+            )
+          ;; added - atoll custom task
+          (new 'static 'game-task-node-info
+            :level 'atoll
+            :task (game-task atoll-destroy-turrets)
+            :name "atoll-destroy-turrets-introduction"
+            :when-open (new 'static 'boxed-array :type game-task-event
+              (new 'static 'game-task-event
+                :actor (game-task-actor minimap)
+                :action (game-task-action show)
+                :tex (game-task-icon gaticon-07)
+                :scene #f
+                )
+              )
+            :flags (game-task-node-flag save-on-life intro-wait task-manager)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node nest-boss-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :task-mask (task-mask task3)
+            :on-open #f
+            :info (new 'static 'task-manager-info
+              :mask (task-manager-mask intro-scene)
+              :level 'ctywide
+              :intro-scene "tor005" ;; placeholder 
+              :resolution-scene #f
+              :resolution-scene-continue #f
+              :retry-continue #f
+              :fail-continue #f
+              :init-hook #f
+              :cleanup-hook #f
+              :update-hook #f
+              :code-hook #f
+              :complete-hook #f
+              :fail-hook #f
+              :event-hook #f
+              :final-node (game-task-node atoll-destroy-turrets-introduction)
+              :intro-delay #x258
+              :on-complete #f
+              :on-fail #f
+              )
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :description (text-id progress-missions-atoll-destroy-turrets)
+            )
+          (new 'static 'game-task-node-info
+            :level 'atoll
+            :task (game-task atoll-destroy-turrets)
+            :name "atoll-destroy-turrets-destroy"
+            :when-open (new 'static 'boxed-array :type game-task-event
+              (new 'static 'game-task-event
+                :actor (game-task-actor minimap)
+                :action (game-task-action show)
+                :tex (game-task-icon gaticon-07)
+                :scene #f
+                )
+              )
+            :flags (game-task-node-flag save-on-life task-manager)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node atoll-destroy-turrets-introduction)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :info (new 'static 'task-manager-info
+              :level 'latoturret
+              :intro-scene #f
+              :resolution-scene #f
+              :resolution-scene-continue #f
+              :retry-continue "atoll-start"
+              :fail-continue #f
+              :init-hook #f
+              :cleanup-hook #f
+              :update-hook #f
+              :code-hook #f
+              :complete-hook #f
+              :fail-hook #f
+              :event-hook #f
+              :final-node (game-task-node atoll-destroy-turrets-destroy)
+              :on-complete #f
+              :on-fail #f
+              )
+            :borrow '((atoll 0 latoturret display))
+            :open? #f
+            :on-close #f
+            :description (text-id progress-missions-atoll-destroy-turrets)
+            )
+          (new 'static 'game-task-node-info
+            :level 'atoll
+            :task (game-task atoll-destroy-turrets)
+            :name "atoll-destroy-turrets-turn-on-valve"
+            :when-open #f
+            :flags (game-task-node-flag save-on-life)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node atoll-destroy-turrets-destroy)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
             :info #f
-            :borrow '((strip 0 hover-test display))
+            :borrow '((atoll 0 latoturret display))
+            :open? #f
+            :on-close #f
+            :description (text-id progress-missions-atoll-destroy-turrets)
+            )
+          (new 'static 'game-task-node-info
+            :level 'atoll
+            :task (game-task atoll-destroy-turrets)
+            :name "atoll-destroy-turrets-resolution"
+            :when-open #f
+            :flags (game-task-node-flag close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node atoll-destroy-turrets-turn-on-valve)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :info #f
+            :borrow '((atoll 0 latoturret display))
+            :open? #f
+            :on-close #f
+            )
+          ;; added - sewer custom task
+          (new 'static 'game-task-node-info
+            :level 'sewer
+            :task (game-task atoll-destroy-turrets)
+            :name "sewer-sig-introduction"
+            :when-open (new 'static 'boxed-array :type game-task-event
+              (new 'static 'game-task-event
+                :actor (game-task-actor minimap)
+                :action (game-task-action show)
+                :tex (game-task-icon gaticon-06)
+                :scene #f
+                )
+              )
+            :flags (game-task-node-flag save-on-life intro-wait task-manager)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node atoll-destroy-turrets-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :task-mask (task-mask task3)
+            :on-open #f
+            :info (new 'static 'task-manager-info
+              :mask (task-manager-mask intro-scene)
+              :level 'ctywide
+              :intro-scene "krew001" ;; placeholder 
+              :resolution-scene #f
+              :resolution-scene-continue #f
+              :retry-continue #f
+              :fail-continue #f
+              :init-hook #f
+              :cleanup-hook #f
+              :update-hook #f
+              :code-hook #f
+              :complete-hook #f
+              :fail-hook #f
+              :event-hook #f
+              :final-node (game-task-node sewer-sig-introduction)
+              :intro-delay #x258
+              :on-complete #f
+              :on-fail #f
+              )
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :description (text-id progress-missions-sewer-sig)
+            )
+          (new 'static 'game-task-node-info
+            :level 'sewer
+            :task (game-task sewer-sig)
+            :name "sewer-sig-protect"
+            :when-open (new 'static 'boxed-array :type game-task-event
+              (new 'static 'game-task-event
+                :actor (game-task-actor minimap)
+                :action (game-task-action show)
+                :tex (game-task-icon gaticon-06)
+                :scene #f
+                )
+              )
+            :flags (game-task-node-flag save-on-life task-manager)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node sewer-sig-introduction)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :info (new 'static 'task-manager-info
+              :level 'lsigsew
+              :intro-scene #f
+              :resolution-scene #f
+              :resolution-scene-continue #f
+              :retry-continue "sewesc-start"
+              :fail-continue #f
+              :init-hook #f
+              :cleanup-hook #f
+              :update-hook #f
+              :code-hook #f
+              :complete-hook #f
+              :fail-hook #f
+              :event-hook #f
+              :final-node (game-task-node sewer-sig-resolution)
+              :on-complete #f
+              :on-fail #f
+              )
+            :borrow '((sewesc 0 lsigsew display))
+            :open? #f
+            :on-close #f
+            :description (text-id progress-missions-sewer-sig)
+            )
+          (new 'static 'game-task-node-info
+            :level 'sewer
+            :task (game-task sewer-sig)
+            :name "sewer-sig-resolution"
+            :when-open (new 'static 'boxed-array :type game-task-event
+              (new 'static 'game-task-event
+                :actor (game-task-actor minimap)
+                :action (game-task-action show)
+                :tex (game-task-icon gaticon-06)
+                :scene #f
+                )
+              )
+            :flags (game-task-node-flag save-on-life close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node sewer-sig-protect)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :info #f
+            :borrow '((sewesc 0 lsigsew display))
             :open? #f
             :on-close #f
             )

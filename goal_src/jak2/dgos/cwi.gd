@@ -32,6 +32,7 @@
   "metalhead-predator.o"
   "metalhead-grunt.o"
   "metalhead-flitter.o"
+  "roboguard-city.o" ;; added
   "traffic-engine.o"
   "trail-graph.o"
   "trail.o"

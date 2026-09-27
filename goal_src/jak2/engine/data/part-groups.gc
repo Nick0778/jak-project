@@ -1291,3 +1291,7 @@
 (defconstant group-ctygenc-sign-8x4 (-> *part-group-id-table* 853))
 (defconstant group-ctygenc-sign-4x8 (-> *part-group-id-table* 854))
 
+;; added - portblmp stuff
+(defconstant group-port-mh-boat-smoke-trail (-> *part-group-id-table* 1128))
+;; custom particle group
+(defconstant group-mh-boat-explosion-large (-> *part-group-id-table* 1200))
